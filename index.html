@@ -20,12 +20,11 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #FFF5E1 0%, #FFEFD5 100%);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 99999; text-align: center; padding: 20px; transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-            cursor: pointer;
+            z-index: 99999; text-align: center; padding: 20px; transition: opacity 0.5s ease-out;
         }
         .intro-content {
             display: flex; flex-direction: column; align-items: center; gap: 20px;
-            animation: introBounce 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+            animation: introBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
         @keyframes introBounce {
             0% { transform: scale(0.7); opacity: 0; }
@@ -48,7 +47,7 @@
             margin-top: 15px; padding: 12px 36px; background-color: #3CB371; color: white;
             font-size: 18px; font-weight: 900; border: none; border-radius: 30px; cursor: pointer;
             box-shadow: 0 6px 0 #2E8B57, 0 10px 20px rgba(60, 179, 113, 0.3); transition: transform 0.1s, box-shadow 0.1s;
-            animation: pulseBtn 2s infinite;
+            animation: pulseBtn 2s infinite; pointer-events: auto;
         }
         .intro-enter-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #2E8B57; }
         @keyframes pulseBtn {
@@ -184,8 +183,8 @@
 <body>
 <div id="toast">提示信息</div>
 
-<!-- ===== 动态效果引导页 ===== -->
-<div id="intro-mask">
+<!-- ===== 动态效果引导页（绑定直接点击和按钮触发） ===== -->
+<div id="intro-mask" onclick="enterGame()">
     <div class="intro-content">
         <div class="intro-title-1">开心苗苗乐</div>
         <div class="intro-title-2">
@@ -193,7 +192,7 @@
             <span>演员超话制作</span>
         </div>
         <div class="intro-title-3">制作：林科森 | 制图：老周</div>
-        <button class="intro-enter-btn" onclick="enterGame()">点击进入</button>
+        <button class="intro-enter-btn" onclick="enterGame(event)">点击进入</button>
     </div>
 </div>
 
@@ -277,18 +276,19 @@
 
 <script>
     // 点击进入游戏引导页
-    function enterGame() {
+    function enterGame(e) {
+        if (e) e.stopPropagation();
         const mask = document.getElementById('intro-mask');
         if (!mask) return;
         mask.style.opacity = '0';
-        mask.style.transform = 'scale(1.1)';
         setTimeout(() => {
             mask.style.display = 'none';
-        }, 600);
+        }, 500);
+        
         // 尝试自动播放背景音乐
         const bgm = document.getElementById('bgm');
         if(bgm && bgm.paused) {
-            bgm.play().catch(e => console.log('BGM auto-play blocked'));
+            bgm.play().catch(err => console.log('BGM auto-play blocked'));
             const btn = document.getElementById('bgm-toggle');
             if(btn) {
                 btn.innerText = '🎵';
@@ -296,14 +296,6 @@
             }
         }
     }
-
-    // 给整个引导页加上全局点击监听，确保点击任意地方都能直接进入
-    document.addEventListener('DOMContentLoaded', () => {
-        const mask = document.getElementById('intro-mask');
-        if (mask) {
-            mask.addEventListener('click', enterGame);
-        }
-    });
 
     const ROWS = 9, COLS = 9; let TILE_SIZE = 40;
     const TYPES = ['🥋', '🕶️', '🗡️', '👊', '🧨', '📿', '🍶']; 
@@ -677,7 +669,7 @@
         document.getElementById('capture-area').style.display = 'flex'; document.getElementById('final-poster-img').style.display = 'none'; document.getElementById('save-tip-text').innerText = "正在生成海报...";
         setTimeout(() => {
             html2canvas(document.getElementById('capture-area'), { scale: 3, backgroundColor: "#FFF5E1", useCORS: true }).then(canvas => {
-                document.getElementById('final-poster-img').src = canvas.toDataURL('image/png'); document.getElementById('capture-area').style.display = 'none'; document.getElementById('final-poster-img'].style.display = 'block'; document.getElementById('save-tip-text').innerText = "👇 长按上方图片即可保存到相册 👇";
+                document.getElementById('final-poster-img').src = canvas.toDataURL('image/png'); document.getElementById('capture-area').style.display = 'none'; document.getElementById('final-poster-img').style.display = 'block'; document.getElementById('save-tip-text').innerText = "👇 长按上方图片即可保存到相册 👇";
             });
         }, 500);
     }
