@@ -146,7 +146,7 @@
             touch-action: none;
         }
 
-        /* 警戒线 */
+        /* 警戒线下调，给道具留出空间 */
         #danger-line {
             position: absolute;
             left: 0;
@@ -175,43 +175,52 @@
             100% { text-shadow: 0 0 8px rgba(255, 255, 255, 1), 0 0 15px rgba(255, 107, 107, 0.7); transform: scale(1.02); }
         }
 
-        /* ★炸弹UI（左上角红框位置）★ */
-        #bomb-container {
+        /* ★ 左上角工具收纳栏（炸弹 & 重组） ★ */
+        #tools-container {
             position: absolute;
-            left: 10px; 
-            top: 15px; 
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid #FF334B;
-            border-radius: 12px;
-            padding: 6px 12px;
-            display: none; 
-            align-items: center;
-            gap: 6px;
-            box-shadow: 2px 4px 10px rgba(255, 51, 75, 0.2);
+            left: 10px;
+            top: 12px;
+            display: flex;
+            gap: 8px;
             z-index: 20;
-            cursor: grab;
-            transition: transform 0.2s;
         }
-        #bomb-container:active { cursor: grabbing; transform: scale(0.95); }
-        #bomb-icon { font-size: 20px; pointer-events: none; }
-        #bomb-count { font-size: 14px; font-weight: 900; color: #FF334B; pointer-events: none; white-space: nowrap;}
+        .tool-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            padding: 4px 8px;
+            display: flex; 
+            align-items: center;
+            gap: 4px;
+            cursor: grab;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .tool-btn:active { cursor: grabbing; transform: scale(0.95); }
+        .tool-icon { font-size: 14px; pointer-events: none; }
+        .tool-count { font-size: 12px; font-weight: 900; pointer-events: none; white-space: nowrap;}
         
-        /* 拖动时的虚拟炸弹图层与爆炸蓄力圈 */
-        #ghost-bomb {
+        #bomb-container { border: 2px solid #FF334B; box-shadow: 2px 4px 8px rgba(255, 51, 75, 0.2); display: none; }
+        #bomb-container .tool-count { color: #FF334B; }
+        
+        #shake-container { border: 2px solid #4169E1; box-shadow: 2px 4px 8px rgba(65, 105, 225, 0.2); }
+        #shake-container .tool-count { color: #4169E1; }
+        .tool-disabled { opacity: 0.5; pointer-events: none; border-color: #999 !important; }
+        .tool-disabled .tool-count { color: #999 !important; }
+
+        /* 拖动时的虚拟道具图层与蓄力圈 */
+        #ghost-tool {
             display: none;
             position: fixed;
-            font-size: 40px;
+            font-size: 30px;
             z-index: 9999;
             pointer-events: none;
             transform: translate(-50%, -50%);
         }
-        #ghost-bomb-indicator {
+        #ghost-tool-indicator {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,51,75,0.4) 0%, rgba(255,51,75,0.1) 100%);
-            border: 2px dashed #FF334B;
+            border: 2px dashed;
             width: 100px; height: 100px;
             transition: width 0.05s, height 0.05s;
             z-index: -1;
@@ -514,10 +523,16 @@
         <div id="danger-line"><span id="danger-label">苗友应激警戒线 ⚠️</span></div>
         <div id="dropper-preview"></div>
 
-        <!-- 炸弹收纳槽：左上角红框位置 -->
-        <div id="bomb-container">
-            <span id="bomb-icon">💣</span>
-            <span id="bomb-count">炸弹 × 0</span>
+        <!-- ★ 道具栏：左上角并排显示 ★ -->
+        <div id="tools-container">
+            <div id="bomb-container" class="tool-btn">
+                <span class="tool-icon">💣</span>
+                <span id="bomb-count" class="tool-count">炸弹 × 0</span>
+            </div>
+            <div id="shake-container" class="tool-btn">
+                <span class="tool-icon">🌀</span>
+                <span id="shake-count" class="tool-count">重组 × 3</span>
+            </div>
         </div>
 
         <!-- 暂停与存档蒙层 -->
@@ -531,7 +546,6 @@
                 <button class="btn-core btn-green" id="load-btn" onclick="showLoadMenu()">读取进度 📂</button>
             </div>
 
-            <!-- 自定义命名存档面板 -->
             <div id="save-menu" style="display:none; background:#FFF5E1; padding: 20px; border-radius:15px; width: 85%; max-width: 300px; border: 3px solid #FAD6A5;">
                 <h3 style="color:#D2691E; text-align:center; margin-bottom:15px;">新建存档</h3>
                 <input type="text" id="save-name-input" placeholder="请输入存档名称..." style="width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #DEB887; border-radius: 8px; font-weight:bold; color:#5C4033; font-size:14px; text-align:center;">
@@ -541,11 +555,9 @@
                 </div>
             </div>
 
-            <!-- 读取存档面板 -->
             <div id="load-menu" style="display:none; background:#FFF5E1; padding: 20px; border-radius:15px; width: 85%; max-width: 300px; border: 3px solid #FAD6A5;">
                 <h3 style="color:#D2691E; text-align:center; margin-bottom:15px;">读取存档</h3>
                 <div id="save-list" style="max-height: 200px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
-                    <!-- 存档列表动态生成 -->
                 </div>
                 <button class="btn-core btn-pink" style="width:100%;" onclick="backToPause()">返回</button>
             </div>
@@ -559,7 +571,6 @@
                     <img src="xiemiao.png" alt="谢苗" style="width: 32px; height: 32px; object-fit: contain; mix-blend-mode: multiply;">
                 </div>
                 <div class="poster-title">合成大苗哥</div>
-                
                 <div class="score-layout">
                     <div class="poster-egg-img"></div>
                     <div class="poster-score-box">
@@ -567,9 +578,7 @@
                         <div class="poster-score-num" id="final-score">0</div>
                     </div>
                 </div>
-
                 <div class="poster-role-tag" id="max-role-tag">解锁最高形态：-</div>
-                
                 <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; white-space: nowrap;">
                     <img src="avatar-logo.png" alt="Logo" style="width: 30px; height: 30px; object-fit: contain; border-radius: 50%; border: 1.5px solid #FAD6A5;">
                     <div class="poster-footer">演员谢苗超话制作</div>
@@ -589,10 +598,10 @@
     </div>
 </div>
 
-<!-- 拖拽时屏幕跟随的虚拟炸弹 -->
-<div id="ghost-bomb">
-    <div id="ghost-bomb-indicator"></div>
-    💣
+<!-- 拖拽时屏幕跟随的虚拟道具 -->
+<div id="ghost-tool">
+    <div id="ghost-tool-indicator"></div>
+    <span id="ghost-tool-icon"></span>
 </div>
 
 <script>
@@ -601,17 +610,17 @@
     let bgmStarted = false;
     let userToggledBgm = false; 
     let motionInitialized = false;
-    let lastShakeTime = 0;
     
     // 状态控制
     let isPaused = false;
     let bombCount = 0;
-    let isDraggingBomb = false;
+    let shakeCount = 3;
+    let currentDragTool = null; // 'bomb' or 'shake'
     
-    // 炸弹蓄力参数 (最小 role1, 最大 role8)
-    let minBlastRadius = 24; 
-    let maxBlastRadius = 62; 
-    let currentBlastRadius = 24;
+    // 蓄力参数
+    let minBlastRadius = 20; 
+    let maxBlastRadius = 60; 
+    let currentBlastRadius = 20;
     let growTimer = null;
     let fuseOscNode = null;
     let fuseGainNode = null;
@@ -620,9 +629,16 @@
     const pauseToggle = document.getElementById('pause-toggle');
     const bgm = document.getElementById('bgm');
     const pauseMask = document.getElementById('pause-mask');
+    
     const bombContainer = document.getElementById('bomb-container');
     const bombCountEl = document.getElementById('bomb-count');
-    const ghostBomb = document.getElementById('ghost-bomb');
+    const shakeContainer = document.getElementById('shake-container');
+    const shakeCountEl = document.getElementById('shake-count');
+    
+    const ghostTool = document.getElementById('ghost-tool');
+    const ghostIcon = document.getElementById('ghost-tool-icon');
+    const ghostInd = document.getElementById('ghost-tool-indicator');
+    
     const loadBtn = document.getElementById('load-btn');
     const saveToast = document.getElementById('save-toast');
 
@@ -695,7 +711,7 @@
         const saves = getSaves();
         const list = document.getElementById('save-list');
         list.innerHTML = '';
-        const keys = Object.keys(saves).reverse(); // 最新存档排前面
+        const keys = Object.keys(saves).reverse(); 
         if (keys.length === 0) {
             list.innerHTML = '<div style="text-align:center; color:#888;">暂无存档</div>';
         } else {
@@ -727,7 +743,7 @@
             }));
 
         const saves = getSaves();
-        saves[name] = { score, highestLevel, bombCount, currentDropLevel, bodies: bodiesData };
+        saves[name] = { score, highestLevel, bombCount, shakeCount, currentDropLevel, bodies: bodiesData };
         localStorage.setItem('miaoGeSaves', JSON.stringify(saves));
         
         saveToast.innerText = `✨ [${name}] 保存成功 ✨`;
@@ -747,10 +763,12 @@
         score = data.score || 0;
         highestLevel = data.highestLevel || 0;
         bombCount = data.bombCount || 0;
+        shakeCount = (data.shakeCount !== undefined) ? data.shakeCount : 3;
         currentDropLevel = data.currentDropLevel || 0;
         
         scoreEl.innerText = score;
         updateBombUI();
+        updateShakeUI();
         
         const info = ROLES[currentDropLevel];
         previewEl.style.width = (info.radius * 2) + 'px';
@@ -769,7 +787,7 @@
         const restoredBodies = data.bodies.map(d => {
             const rInfo = ROLES[d.level];
             const circle = Bodies.circle(d.x, d.y, rInfo.radius, {
-                angle: d.angle, restitution: 0.05, friction: 0.02, density: 0.005, render: { visible: false }
+                angle: d.angle, restitution: 0.05, friction: 0.01, density: 0.005, render: { visible: false }
             });
             Matter.Body.setVelocity(circle, { x: d.vx, y: d.vy });
             circle.roleInfo = rInfo;
@@ -781,29 +799,43 @@
         togglePause();
     }
 
-    // ========== 炸弹拖拽与循环蓄力逻辑 ==========
-    bombContainer.addEventListener('mousedown', startDragBomb);
-    bombContainer.addEventListener('touchstart', startDragBomb, {passive: false});
+    // ========== 统一道具拖拽与蓄力循环逻辑 ==========
+    bombContainer.addEventListener('mousedown', (e) => startDragTool('bomb', e));
+    bombContainer.addEventListener('touchstart', (e) => startDragTool('bomb', e), {passive: false});
+    
+    shakeContainer.addEventListener('mousedown', (e) => startDragTool('shake', e));
+    shakeContainer.addEventListener('touchstart', (e) => startDragTool('shake', e), {passive: false});
 
-    function updateBombIndicator() {
-        const ind = document.getElementById('ghost-bomb-indicator');
-        ind.style.width = (currentBlastRadius * 2) + 'px';
-        ind.style.height = (currentBlastRadius * 2) + 'px';
+    function updateToolIndicator() {
+        ghostInd.style.width = (currentBlastRadius * 2) + 'px';
+        ghostInd.style.height = (currentBlastRadius * 2) + 'px';
     }
 
-    function startDragBomb(e) {
-        if (bombCount <= 0 || isGameOver || isPaused) return;
-        e.preventDefault(); e.stopPropagation();
-        isDraggingBomb = true;
+    function startDragTool(type, e) {
+        if (isGameOver || isPaused) return;
+        if (type === 'bomb' && bombCount <= 0) return;
+        if (type === 'shake' && shakeCount <= 0) return;
         
-        // 动态读取 ROLES 数组中 role1(索引0) 和 role8(索引7) 的大小边界
+        e.preventDefault(); e.stopPropagation();
+        currentDragTool = type;
+        
         minBlastRadius = ROLES[0].radius;
         maxBlastRadius = ROLES[7].radius;
         currentBlastRadius = minBlastRadius; 
         
-        ghostBomb.style.display = 'block';
-        updateGhostBombPos(e);
-        updateBombIndicator();
+        if (type === 'bomb') {
+            ghostIcon.innerText = '💣';
+            ghostInd.style.borderColor = '#FF334B';
+            ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.4) 0%, rgba(255,51,75,0.1) 100%)';
+        } else {
+            ghostIcon.innerText = '🌀';
+            ghostInd.style.borderColor = '#4169E1';
+            ghostInd.style.background = 'radial-gradient(circle, rgba(65,105,225,0.4) 0%, rgba(65,105,225,0.1) 100%)';
+        }
+        
+        ghostTool.style.display = 'block';
+        updateGhostToolPos(e);
+        updateToolIndicator();
 
         startFuseSound();
 
@@ -811,42 +843,43 @@
         growTimer = setInterval(() => {
             currentBlastRadius += 0.8; 
             if (currentBlastRadius > maxBlastRadius) {
-                currentBlastRadius = minBlastRadius; // 到达role8大小后自动循环回role1大小
+                currentBlastRadius = minBlastRadius; 
             }
-            updateBombIndicator();
+            updateToolIndicator();
         }, 20);
 
-        document.addEventListener('mousemove', moveDragBomb);
-        document.addEventListener('touchmove', moveDragBomb, {passive: false});
-        document.addEventListener('mouseup', endDragBomb);
-        document.addEventListener('touchend', endDragBomb);
+        document.addEventListener('mousemove', moveDragTool);
+        document.addEventListener('touchmove', moveDragTool, {passive: false});
+        document.addEventListener('mouseup', endDragTool);
+        document.addEventListener('touchend', endDragTool);
     }
 
-    function updateGhostBombPos(e) {
+    function updateGhostToolPos(e) {
         const x = e.touches ? e.touches[0].clientX : e.clientX;
         const y = e.touches ? e.touches[0].clientY : e.clientY;
-        ghostBomb.style.left = x + 'px';
-        ghostBomb.style.top = y + 'px';
+        ghostTool.style.left = x + 'px';
+        ghostTool.style.top = y + 'px';
     }
 
-    function moveDragBomb(e) {
-        if (!isDraggingBomb) return;
+    function moveDragTool(e) {
+        if (!currentDragTool) return;
         e.preventDefault(); e.stopPropagation();
-        updateGhostBombPos(e);
+        updateGhostToolPos(e);
     }
 
-    function endDragBomb(e) {
-        if (!isDraggingBomb) return;
-        isDraggingBomb = false;
-        ghostBomb.style.display = 'none';
+    function endDragTool(e) {
+        if (!currentDragTool) return;
+        const toolType = currentDragTool;
+        currentDragTool = null;
+        ghostTool.style.display = 'none';
         
         clearInterval(growTimer);
         stopFuseSound();
 
-        document.removeEventListener('mousemove', moveDragBomb);
-        document.removeEventListener('touchmove', moveDragBomb);
-        document.removeEventListener('mouseup', endDragBomb);
-        document.removeEventListener('touchend', endDragBomb);
+        document.removeEventListener('mousemove', moveDragTool);
+        document.removeEventListener('touchmove', moveDragTool);
+        document.removeEventListener('mouseup', endDragTool);
+        document.removeEventListener('touchend', endDragTool);
 
         let x, y;
         if (e.changedTouches) {
@@ -861,7 +894,11 @@
         if (x >= box.left && x <= box.right && y >= box.top && y <= box.bottom) {
             const localX = x - box.left;
             const localY = y - box.top;
-            executeBomb(localX, localY, currentBlastRadius);
+            if (toolType === 'bomb') {
+                executeBomb(localX, localY, currentBlastRadius);
+            } else if (toolType === 'shake') {
+                executeShake(localX, localY, currentBlastRadius);
+            }
         }
     }
 
@@ -875,7 +912,6 @@
         bodies.forEach(b => {
             if (b.roleInfo && !b.isStatic) {
                 const dist = Matter.Vector.magnitude(Matter.Vector.sub(b.position, {x, y}));
-                // 清除红圈范围内的球
                 if (dist < radius + b.roleInfo.radius) {
                     toRemove.push(b);
                     score += (b.roleInfo.level + 1) * 2; 
@@ -911,12 +947,79 @@
         setTimeout(() => { wrapper.classList.remove('shake'); wave.remove(); }, 300);
     }
 
+    // 局部重组核心逻辑：仅打乱指定范围内球体的位置坐标
+    function executeShake(x, y, radius) {
+        shakeCount--;
+        updateShakeUI();
+        
+        const bodies = Composite.allBodies(engine.world);
+        const targets = [];
+        
+        bodies.forEach(b => {
+            if (b.roleInfo && !b.isStatic) {
+                const dist = Matter.Vector.magnitude(Matter.Vector.sub(b.position, {x, y}));
+                if (dist < radius + b.roleInfo.radius) {
+                    targets.push(b);
+                }
+            }
+        });
+
+        if (targets.length > 1) {
+            // 提取坐标并洗牌
+            const positions = targets.map(b => ({ x: b.position.x, y: b.position.y }));
+            for (let i = positions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [positions[i], positions[j]] = [positions[j], positions[i]];
+            }
+            // 重新赋予新坐标，并重置速度防止乱弹
+            targets.forEach((b, i) => {
+                Matter.Body.setPosition(b, positions[i]);
+                Matter.Body.setVelocity(b, {x: 0, y: 0});
+                Matter.Body.setAngularVelocity(b, 0);
+            });
+        }
+        
+        playSoundEffect('reorganize');
+
+        // 蓝色魔力波纹
+        const wave = document.createElement('div');
+        wave.style.position = 'absolute';
+        wave.style.left = `${x}px`;
+        wave.style.top = `${y}px`;
+        wave.style.width = '0px';
+        wave.style.height = '0px';
+        wave.style.borderRadius = '50%';
+        wave.style.background = 'radial-gradient(circle, rgba(65,105,225,0.8) 0%, rgba(65,105,225,0) 70%)';
+        wave.style.transform = 'translate(-50%, -50%)';
+        wave.style.zIndex = '20';
+        wave.style.pointerEvents = 'none';
+        wave.style.transition = 'all 0.3s cubic-bezier(0.1, 0.8, 0.3, 1)';
+        wrapper.appendChild(wave);
+
+        requestAnimationFrame(() => {
+            wave.style.width = `${radius * 2.2}px`;
+            wave.style.height = `${radius * 2.2}px`;
+            wave.style.opacity = '0';
+        });
+
+        setTimeout(() => { wave.remove(); }, 300);
+    }
+
     function updateBombUI() {
         if (bombCount > 0) {
             bombContainer.style.display = 'flex';
             bombCountEl.innerText = `炸弹 × ${bombCount}`;
         } else {
             bombContainer.style.display = 'none';
+        }
+    }
+
+    function updateShakeUI() {
+        shakeCountEl.innerText = `重组 × ${shakeCount}`;
+        if (shakeCount <= 0) {
+            shakeContainer.classList.add('tool-disabled');
+        } else {
+            shakeContainer.classList.remove('tool-disabled');
         }
     }
 
@@ -1019,6 +1122,14 @@
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
             oscillator.start(audioCtx.currentTime);
             oscillator.stop(audioCtx.currentTime + 0.5);
+        } else if (type === 'reorganize') {
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.3);
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
         }
     }
 
@@ -1045,69 +1156,6 @@
         }
     }
 
-    // ========== 传感器逻辑 ==========
-    function startBGMAndMotion() {
-        if (!bgmStarted && !userToggledBgm) {
-            bgm.volume = 0.25; 
-            bgm.play().then(() => {
-                bgmToggle.innerText = '🎵';
-                bgmToggle.classList.remove('bgm-paused');
-                bgmToggle.classList.add('bgm-playing');
-            }).catch(e => console.log("等待用户交互以播放BGM", e));
-            bgmStarted = true;
-        }
-        if (!motionInitialized) {
-            motionInitialized = true;
-            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission().then(state => {
-                    if (state === 'granted') {
-                        window.addEventListener('deviceorientation', handleOrientation);
-                        window.addEventListener('devicemotion', handleMotion);
-                    }
-                }).catch(console.error);
-            } else {
-                window.addEventListener('deviceorientation', handleOrientation);
-                window.addEventListener('devicemotion', handleMotion);
-            }
-        }
-    }
-
-    function handleOrientation(event) {
-        if (isPaused || isGameOver) return;
-        let gamma = event.gamma; 
-        if (gamma === null) return;
-        if (gamma > 40) gamma = 40;
-        if (gamma < -40) gamma = -40;
-        engine.gravity.x = gamma / 40; 
-    }
-
-    function handleMotion(event) {
-        if (isPaused || isGameOver || !event.accelerationIncludingGravity) return;
-        const ax = event.accelerationIncludingGravity.x || 0;
-        const ay = event.accelerationIncludingGravity.y || 0;
-        const az = event.accelerationIncludingGravity.z || 0;
-
-        const magnitude = Math.sqrt(ax * ax + ay * ay + az * az);
-        if (magnitude > 18) {
-            const now = Date.now();
-            if (now - lastShakeTime > 500) { 
-                lastShakeTime = now;
-                shakeBalls();
-            }
-        }
-    }
-
-    function shakeBalls() {
-        const bodies = Composite.allBodies(engine.world);
-        bodies.forEach(b => {
-            if (b.roleInfo && !b.isStatic) {
-                const forceX = (Math.random() - 0.5) * 0.05 * b.mass;
-                const forceY = -(0.04 + Math.random() * 0.06) * b.mass;
-                Matter.Body.applyForce(b, b.position, { x: forceX, y: forceY });
-            }
-        });
-    }
-
     // ========== 物理与核心游戏逻辑 ==========
     const wrapper = document.getElementById('game-wrapper');
     const previewEl = document.getElementById('dropper-preview');
@@ -1120,7 +1168,8 @@
     let width = rect.width;
     let height = rect.height;
 
-    const scaleFactor = Math.min(0.95, Math.max(0.75, width / 400));
+    // 难度进一步下降：体积比例缩小至 0.65-0.9 之间
+    const scaleFactor = Math.min(0.9, Math.max(0.65, width / 400));
 
     const RAW_ROLES = [
         { level: 0,  name: "洪文定", year: "1994", baseR: 20 },
@@ -1181,7 +1230,8 @@
 
     const { Engine, Render, Runner, Bodies, Composite, Events } = Matter;
     const engine = Engine.create({ enableSleeping: false });
-    engine.gravity.y = 1.6;
+    // 加大重力以便球体容易挤压和滑动
+    engine.gravity.y = 1.8;
 
     const render = Render.create({
         element: wrapper,
@@ -1251,12 +1301,14 @@
     });
 
     function setupNextDrop() {
+        // 降低难度：大幅度提升后期掉落大球的概率
         let maxDropLevel = 3; 
-        if (score > 600) maxDropLevel = 4;
-        if (highestLevel >= 6) maxDropLevel = 5;
-        if (highestLevel >= 8) maxDropLevel = 6;
-        if (highestLevel >= 10) maxDropLevel = 7;
-        if (highestLevel >= 12) maxDropLevel = 8; 
+        if (score > 300) maxDropLevel = 4;
+        if (highestLevel >= 5) maxDropLevel = 5;
+        if (highestLevel >= 7) maxDropLevel = 6;
+        if (highestLevel >= 9) maxDropLevel = 7;
+        if (highestLevel >= 11) maxDropLevel = 8; 
+        if (highestLevel >= 13) maxDropLevel = 9; 
 
         currentDropLevel = Math.floor(Math.random() * maxDropLevel);
         const info = ROLES[currentDropLevel];
@@ -1287,13 +1339,13 @@
     }
 
     function dropRole() {
-        if (!canDrop || isGameOver || isPaused || isDraggingBomb) return;
+        if (!canDrop || isGameOver || isPaused || currentDragTool) return;
         canDrop = false;
 
         const info = ROLES[currentDropLevel];
         const circle = Bodies.circle(currentX, height * 0.05, info.radius, {
-            restitution: 0.05,
-            friction: 0.02,
+            restitution: 0.02, // 极低的弹力，防乱弹
+            friction: 0.005,   // 极低的摩擦力，极其丝滑
             density: 0.005,
             render: { visible: false }
         });
@@ -1331,8 +1383,8 @@
                         Composite.remove(engine.world, [bodyA, bodyB]);
 
                         const newCircle = Bodies.circle(midX, midY, nextInfo.radius, {
-                            restitution: 0.05,
-                            friction: 0.02,
+                            restitution: 0.02,
+                            friction: 0.005,
                             density: 0.005,
                             render: { visible: false }
                         });
@@ -1363,13 +1415,14 @@
         });
     });
 
-    const DANGER_Y = height * 0.10;
+    // 降低警戒线判定（留出更多顶部道具操作空间）
+    const DANGER_Y = height * 0.08; 
     setInterval(() => {
         if (isGameOver || isPaused) return;
         const bodies = Composite.allBodies(engine.world);
         bodies.forEach(b => {
             if (b.roleInfo && (b.position.y - b.roleInfo.radius < DANGER_Y)) {
-                if (Math.abs(b.velocity.y) < 0.2 && Math.abs(b.velocity.x) < 0.2 && b.position.y > (height * 0.08)) {
+                if (Math.abs(b.velocity.y) < 0.2 && Math.abs(b.velocity.x) < 0.2 && b.position.y > (height * 0.06)) {
                     triggerGameOver();
                 }
             }
@@ -1379,7 +1432,7 @@
     function triggerGameOver() {
         isGameOver = true;
         previewEl.style.display = 'none';
-        bombContainer.style.display = 'none';
+        document.getElementById('tools-container').style.display = 'none';
         finalScoreEl.innerText = score;
         maxRoleTag.innerText = `解锁最高形态：${ROLES[highestLevel].year} · ${ROLES[highestLevel].name}`;
         gameOverMask.style.display = 'flex';
@@ -1407,30 +1460,30 @@
     }
 
     function handlePointerCoord(e) {
-        if (isPaused || isDraggingBomb) return;
+        if (isPaused || currentDragTool) return;
         const box = wrapper.getBoundingClientRect();
         const clientX = e.touches ? e.touches[0].clientX : e.clientX;
         updatePreviewPos(clientX - box.left);
     }
 
     wrapper.addEventListener('touchstart', (e) => { 
-        if(!isDraggingBomb) { startBGMAndMotion(); handlePointerCoord(e); }
+        if(!currentDragTool) { startBGMAndMotion(); handlePointerCoord(e); }
     }, { passive: true });
     wrapper.addEventListener('touchmove', (e) => { 
-        if (canDrop && !isPaused && !isDraggingBomb) handlePointerCoord(e); 
+        if (canDrop && !isPaused && !currentDragTool) handlePointerCoord(e); 
     }, { passive: true });
     wrapper.addEventListener('touchend', () => { 
-        if(!isDraggingBomb) dropRole(); 
+        if(!currentDragTool) dropRole(); 
     });
 
     wrapper.addEventListener('mousedown', (e) => { 
-        if(!isDraggingBomb) { startBGMAndMotion(); handlePointerCoord(e); }
+        if(!currentDragTool) { startBGMAndMotion(); handlePointerCoord(e); }
     });
     wrapper.addEventListener('mousemove', (e) => { 
-        if (canDrop && !isPaused && !isDraggingBomb) handlePointerCoord(e); 
+        if (canDrop && !isPaused && !currentDragTool) handlePointerCoord(e); 
     });
     wrapper.addEventListener('mouseup', () => { 
-        if(!isDraggingBomb) dropRole(); 
+        if(!currentDragTool) dropRole(); 
     });
 
     setupNextDrop();
