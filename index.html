@@ -506,13 +506,40 @@
             z-index: 100;
         }
         .toast-show { top: 30px !important; opacity: 1 !important; }
+
+        /* 全局统一读档面板：层级最高，可在初始页和暂停页弹出 */
+        #global-load-menu {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #FFF5E1;
+            padding: 20px;
+            border-radius: 15px;
+            width: 85%;
+            max-width: 300px;
+            border: 3px solid #FAD6A5;
+            z-index: 100001; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        #global-save-list button { position: relative; }
     </style>
 </head>
 <body>
 
 <audio id="bgm" src="./my-bgm.mp3" loop preload="auto"></audio>
 
-<!-- 启动授权页 - 难度选择 -->
+<!-- ★ 全局通用读档弹窗 ★ -->
+<div id="global-load-menu">
+    <h3 style="color:#D2691E; text-align:center; margin-bottom:5px;">读取存档</h3>
+    <div style="text-align:center; font-size:12px; color:#D2691E; margin-bottom:15px; font-weight:bold;">(长按存档条目可删除)</div>
+    <div id="global-save-list" style="max-height: 250px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
+        <!-- 存档列表动态生成 -->
+    </div>
+    <button class="btn-core btn-pink" style="width:100%;" onclick="closeLoadMenu()">返回</button>
+</div>
+
+<!-- 启动授权页 - 难度选择与读档 -->
 <div id="init-mask">
     <div class="init-title">合成大苗哥</div>
     <div class="init-desc">请选择适合你的挑战模式</div>
@@ -525,6 +552,10 @@
         </button>
         <button class="btn-core btn-pink" onclick="startGame('hard')">
             🔴 高级模式<br><span style="font-size:12px;font-weight:normal;">无任何道具，关闭物理体感</span>
+        </button>
+        <!-- ★ 首页读档按钮 ★ -->
+        <button class="btn-core" style="background-color: #CD853F; box-shadow: 0 4px 0 #8B4513; margin-top: 10px;" id="init-load-btn" onclick="openLoadMenu()">
+            📂 读取本地存档
         </button>
     </div>
 </div>
@@ -564,6 +595,7 @@
             </div>
         </div>
 
+        <!-- 暂停与存档蒙层 -->
         <div id="pause-mask">
             <div id="save-toast">✨ 进度已成功保存 ✨</div>
             <div class="pause-title">游戏暂停</div>
@@ -571,8 +603,7 @@
             <div id="pause-main-btns" class="btn-group" style="width: 220px; gap: 15px;">
                 <button class="btn-core btn-orange" onclick="togglePause()">继续游戏 ▶️</button>
                 <button class="btn-core btn-blue" onclick="showSaveMenu()">保存进度 💾</button>
-                <button class="btn-core btn-green" id="load-btn" onclick="showLoadMenu()">读取进度 📂</button>
-                <!-- ★ 新增：重选模式按钮 ★ -->
+                <button class="btn-core btn-green" id="load-btn" onclick="openLoadMenu()">读取进度 📂</button>
                 <button class="btn-core btn-pink" onclick="reselectMode()">重选模式 🔄</button>
             </div>
 
@@ -584,13 +615,6 @@
                     <button class="btn-core btn-pink" style="flex:1;" onclick="backToPause()">取消</button>
                 </div>
             </div>
-
-            <div id="load-menu" style="display:none; background:#FFF5E1; padding: 20px; border-radius:15px; width: 85%; max-width: 300px; border: 3px solid #FAD6A5;">
-                <h3 style="color:#D2691E; text-align:center; margin-bottom:15px;">读取存档</h3>
-                <div id="save-list" style="max-height: 200px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
-                </div>
-                <button class="btn-core btn-pink" style="width:100%;" onclick="backToPause()">返回</button>
-            </div>
         </div>
 
         <div id="game-over-mask">
@@ -601,7 +625,6 @@
                     <img src="xiemiao.png" alt="谢苗" style="width: 32px; height: 32px; object-fit: contain; mix-blend-mode: multiply;">
                 </div>
                 
-                <!-- 带有难度标识的成绩单标题 -->
                 <div style="display: flex; align-items: flex-start; justify-content: center; margin: 6px 0 12px 0;">
                     <div class="poster-title">合成大苗哥</div>
                     <div id="poster-mode-badge" style="font-size: 12px; color: white; background-color: #FF9800; padding: 2px 6px; border-radius: 8px; margin-left: 6px; font-weight: bold; margin-top: 4px;">初级</div>
@@ -680,6 +703,7 @@
     const ghostInd = document.getElementById('ghost-tool-indicator');
     
     const loadBtn = document.getElementById('load-btn');
+    const initLoadBtn = document.getElementById('init-load-btn');
     const saveToast = document.getElementById('save-toast');
 
     function startGame(mode) {
@@ -754,7 +778,7 @@
         }
     });
 
-    // ========== 存档与读档系统 ==========
+    // ========== ★ 存档读档与长按删除系统 ★ ==========
     function getSaves() {
         let saves = localStorage.getItem('miaoGeSaves');
         return saves ? JSON.parse(saves) : {};
@@ -762,14 +786,103 @@
 
     function updateLoadButtonState() {
         const saves = getSaves();
-        if (Object.keys(saves).length > 0) {
-            loadBtn.style.opacity = '1';
-            loadBtn.style.pointerEvents = 'auto';
-            loadBtn.innerText = '读取进度 📂';
+        const hasSaves = Object.keys(saves).length > 0;
+        
+        if (loadBtn) {
+            if (hasSaves) {
+                loadBtn.style.opacity = '1';
+                loadBtn.style.pointerEvents = 'auto';
+                loadBtn.innerText = '读取进度 📂';
+            } else {
+                loadBtn.style.opacity = '0.5';
+                loadBtn.style.pointerEvents = 'none';
+                loadBtn.innerText = '暂无存档 📂';
+            }
+        }
+        
+        if (initLoadBtn) {
+            if (hasSaves) {
+                initLoadBtn.style.opacity = '1';
+                initLoadBtn.style.pointerEvents = 'auto';
+                initLoadBtn.innerText = '📂 读取本地存档';
+            } else {
+                initLoadBtn.style.opacity = '0.5';
+                initLoadBtn.style.pointerEvents = 'none';
+                initLoadBtn.innerText = '📂 暂无本地存档';
+            }
+        }
+    }
+
+    // 初始化按钮状态
+    updateLoadButtonState();
+
+    function openLoadMenu() {
+        updateLoadList();
+        document.getElementById('global-load-menu').style.display = 'block';
+    }
+
+    function closeLoadMenu() {
+        document.getElementById('global-load-menu').style.display = 'none';
+    }
+
+    function updateLoadList() {
+        const saves = getSaves();
+        const list = document.getElementById('global-save-list');
+        list.innerHTML = '';
+        const keys = Object.keys(saves).reverse(); 
+        
+        if (keys.length === 0) {
+            list.innerHTML = '<div style="text-align:center; color:#888;">暂无存档</div>';
+            updateLoadButtonState();
         } else {
-            loadBtn.style.opacity = '0.5';
-            loadBtn.style.pointerEvents = 'none';
-            loadBtn.innerText = '暂无存档 📂';
+            keys.forEach(k => {
+                const b = document.createElement('button');
+                b.className = 'btn-core btn-orange';
+                b.style.padding = '8px';
+                b.innerText = k;
+
+                // ★ 长按删除与防误触逻辑 ★
+                let pressTimer;
+                let isLongPress = false;
+
+                const startPress = (e) => {
+                    isLongPress = false;
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        deleteSave(k);
+                    }, 800);
+                };
+                const cancelPress = () => clearTimeout(pressTimer);
+
+                b.addEventListener('touchstart', startPress, {passive: true});
+                b.addEventListener('touchend', cancelPress);
+                b.addEventListener('touchmove', cancelPress, {passive: true});
+                b.addEventListener('touchcancel', cancelPress);
+
+                b.addEventListener('mousedown', startPress);
+                b.addEventListener('mouseup', cancelPress);
+                b.addEventListener('mouseleave', cancelPress);
+
+                b.onclick = (e) => {
+                    if (isLongPress) {
+                        e.preventDefault();
+                        return; // 防误触阻断读取
+                    }
+                    confirmLoad(k);
+                };
+
+                list.appendChild(b);
+            });
+        }
+    }
+
+    function deleteSave(name) {
+        if (confirm(`确定要彻底删除存档 [${name}] 吗？`)) {
+            const saves = getSaves();
+            delete saves[name];
+            localStorage.setItem('miaoGeSaves', JSON.stringify(saves));
+            updateLoadList();
+            updateLoadButtonState();
         }
     }
 
@@ -790,14 +903,11 @@
     }
     pauseToggle.addEventListener('click', (e) => { e.stopPropagation(); togglePause(); });
 
-    // ★ 重选模式逻辑 ★
     function reselectMode() {
         if (score > 0) {
-            if (!confirm("重新选择模式将放弃当前未保存的局内进度，是否确定？")) {
-                return;
-            }
+            if (!confirm("重新选择模式将放弃当前未保存的局内进度，是否确定？")) return;
         }
-        location.reload(); // 直接重新加载网页，完美重置游戏回到初始难度选择菜单
+        location.reload(); 
     }
 
     function showSaveMenu() {
@@ -808,30 +918,8 @@
         document.getElementById('save-name-input').value = `存档_${timeStr}`;
     }
 
-    function showLoadMenu() {
-        document.getElementById('pause-main-btns').style.display = 'none';
-        document.getElementById('load-menu').style.display = 'block';
-        const saves = getSaves();
-        const list = document.getElementById('save-list');
-        list.innerHTML = '';
-        const keys = Object.keys(saves).reverse(); 
-        if (keys.length === 0) {
-            list.innerHTML = '<div style="text-align:center; color:#888;">暂无存档</div>';
-        } else {
-            keys.forEach(k => {
-                const b = document.createElement('button');
-                b.className = 'btn-core btn-orange';
-                b.style.padding = '8px';
-                b.innerText = k;
-                b.onclick = () => confirmLoad(k);
-                list.appendChild(b);
-            });
-        }
-    }
-
     function backToPause() {
         document.getElementById('save-menu').style.display = 'none';
-        document.getElementById('load-menu').style.display = 'none';
         document.getElementById('pause-main-btns').style.display = 'flex';
         updateLoadButtonState();
     }
@@ -855,10 +943,23 @@
         backToPause();
     }
 
+    // ★ 统一读取逻辑（兼容首页读档与暂停页读档）★
     function confirmLoad(name) {
         const saves = getSaves();
         const data = saves[name];
         if(!data) return;
+
+        // 如果从首页进入，需要启动音频
+        if (!bgmStarted) {
+            initAudio();
+            bgm.volume = 0.25;
+            bgm.play().then(() => {
+                bgmToggle.innerText = '🎵';
+                bgmToggle.classList.remove('bgm-paused');
+                bgmToggle.classList.add('bgm-playing');
+                bgmStarted = true;
+            }).catch(e => console.log(e));
+        }
 
         const activeBodies = Composite.allBodies(engine.world).filter(b => b.roleInfo && !b.isStatic);
         Composite.remove(engine.world, activeBodies);
@@ -911,8 +1012,13 @@
         });
         Composite.add(engine.world, restoredBodies);
         
-        backToPause();
-        togglePause();
+        closeLoadMenu();
+        if (initMask.style.display !== 'none') {
+            initMask.style.display = 'none'; // 隐藏首页
+        }
+        if (isPaused) {
+            togglePause(); // 取消暂停恢复游戏
+        }
     }
 
     // ========== 统一道具拖拽与蓄力循环逻辑 ==========
