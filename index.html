@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>合成大苗哥·消消乐版</title>
+    <title>开心苗苗乐·演员谢苗超话制作</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         * { box-sizing: border-box; user-select: none; margin: 0; padding: 0; touch-action: none; }
@@ -20,23 +20,24 @@
             box-shadow: 0 10px 25px rgba(200, 180, 160, 0.5); position: relative; overflow: hidden;
         }
 
-        /* 顶部看板 */
+        /* 顶部看板：严格还原左右 gonggu / xiemiao 布局 */
         .top-bar {
-            width: 100%; padding: 10px 8px; display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center;
             background: #FFEFD5; border-bottom: 3px solid #DEB887; z-index: 20;
         }
-        .header-layout { display: flex; align-items: center; gap: 6px; }
-        .title-group h1 { font-size: 17px; color: #D2691E; font-weight: 900; margin: 0; white-space: nowrap;}
-        .subtitle { font-size: 11px; color: #8B5A2B; font-weight: bold; margin-top: 2px; }
+        .header-layout { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .logo-img { width: 38px; height: 38px; object-fit: contain; mix-blend-mode: multiply; }
+        .title-group h1 { font-size: 16px; color: #D2691E; font-weight: 900; margin: 0; line-height: 1.2; }
+        .subtitle { font-size: 10px; color: #8B5A2B; font-weight: bold; margin-top: 1px; }
         
         .icon-btn {
-            width: 32px; height: 32px; background: rgba(255, 255, 255, 0.9); border: 2px solid #DEB887; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; font-size: 14px; cursor: pointer; box-shadow: 0 2px 5px rgba(210, 105, 30, 0.15); flex-shrink: 0;
+            width: 30px; height: 30px; background: rgba(255, 255, 255, 0.9); border: 2px solid #DEB887; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(210, 105, 30, 0.15); flex-shrink: 0;
         }
         .icon-btn:active { transform: scale(0.9); }
-        .score-board { text-align: right; background: #FFFFFF; padding: 4px 8px; border-radius: 15px; border: 2px dashed #DEB887; flex-shrink: 0; }
-        .score-label { font-size: 12px; color: #FF9800; font-weight: 900; }
-        .score-val { font-size: 20px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
+        .score-board { text-align: right; background: #FFFFFF; padding: 3px 8px; border-radius: 12px; border: 2px dashed #DEB887; flex-shrink: 0; }
+        .score-label { font-size: 11px; color: #FF9800; font-weight: 900; }
+        .score-val { font-size: 18px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
         /* 舞台区 */
         #top-stage {
@@ -48,9 +49,6 @@
             width: 120px; height: 120px; z-index: 2; transform-origin: bottom center; margin-bottom: -15px; 
             background-size: contain; background-repeat: no-repeat; background-position: bottom center; font-size: 80px; display: flex; justify-content: center; align-items: flex-end; transition: transform 0.3s;
         }
-        /* 当有了图片素材后，用透明字体隐藏占位的 Emoji */
-        .img-ready #character-avatar { color: transparent; }
-
         #character-name {
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
             color: #D2691E; font-size: 13px; font-weight: 900; background: #FFEFD5; padding: 4px 16px; border-radius: 20px; border: 2px dashed #DEB887; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
@@ -60,7 +58,6 @@
             background-color: #DEB887; background-image: url('images/desk_bar.png'); background-size: cover; background-position: center; border-top: 3px solid #CD853F;
         }
         #desk-prop { width: 45px; height: 45px; margin-top: -22px; font-size: 24px; display: flex; justify-content: center; align-items: center; background-size: contain; background-repeat: no-repeat; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .img-ready #desk-prop { color: transparent; }
 
         /* 消除区 */
         #game-wrapper {
@@ -78,9 +75,6 @@
             transition: top 0.25s cubic-bezier(0.17, 0.88, 0.32, 1.1), left 0.2s; cursor: pointer; z-index: 10; 
             background-size: contain; background-repeat: no-repeat; background-position: center;
         }
-        /* 如果放入了 tile_x.png 素材，请在 body 标签上加上 class="img-ready"，自动隐藏表情文字 */
-        .img-ready .tile { color: transparent; }
-
         .tile::after { content: ''; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; opacity: 0.9; z-index: 12; background-size: cover;}
         .tile.effect-row::after { background-image: url('images/eff_row.png'); background-color: rgba(210,105,30,0.3); }
         .tile.effect-col::after { background-image: url('images/eff_col.png'); background-color: rgba(210,105,30,0.3); }
@@ -130,30 +124,42 @@
         .save-item { background: #FFEFD5; border: 1px solid #DEB887; padding: 8px; margin-bottom: 8px; border-radius: 8px; font-size: 13px; color: #D2691E; font-weight: bold; cursor: pointer; }
         .save-item:active { background: #FFE4C4; } .save-hint { font-size: 11px; color: #CD853F; margin-top: -5px; margin-bottom: 10px; font-weight: bold; }
 
+        /* 成绩单海报完美还原 */
         #capture-area { width: 90%; max-width: 360px; background: #FFF5E1; border: 4px solid #FAD6A5; border-radius: 20px; display: flex; flex-direction: column; align-items: center; padding: 20px 12px; box-shadow: 0 10px 25px rgba(200, 180, 160, 0.4); }
-        .poster-header-pill { display: flex; align-items: center; background: #FFFFFF; border-radius: 30px; padding: 4px 12px; border: 2px solid #FAD6A5; margin-bottom: 12px; }
-        .poster-badge { font-size: 14px; color: #8B5A2B; font-weight: 900; margin: 0 10px; }
-        .poster-score-box { background: #FFFFFF; border: 2px dashed #DEB887; padding: 10px 20px; border-radius: 12px; text-align: center; margin: 10px 0; width: 100%; }
-        .poster-score-num { font-size: 36px; color: #D2691E; font-weight: 900; line-height: 1; margin-top: 5px; }
-        .poster-role-tag { font-size: 14px; font-weight: 900; color: #D2691E; margin-top: 8px; padding: 6px 16px; background: #FFF0F5; border-radius: 15px; border: 2px dotted #FFB6C1; }
+        .poster-header-pill { display: flex; align-items: center; justify-content: center; background: #FFFFFF; border-radius: 30px; padding: 4px 10px; border: 2px solid #FAD6A5; margin-bottom: 10px; width: 100%; }
+        .poster-badge { font-size: 13px; color: #8B5A2B; font-weight: 900; margin: 0 8px; white-space: nowrap; }
+        .poster-title { font-size: 22px; font-weight: 900; color: #D2691E; margin-bottom: 8px; letter-spacing: 1px; }
+        .poster-score-box { background: #FFFFFF; border: 2px dashed #DEB887; padding: 8px 15px; border-radius: 12px; text-align: center; margin: 8px 0; width: 100%; }
+        .poster-score-num { font-size: 32px; color: #D2691E; font-weight: 900; line-height: 1; margin-top: 4px; }
+        .poster-role-tag { font-size: 13px; font-weight: 900; color: #D2691E; margin-top: 6px; padding: 5px 14px; background: #FFF0F5; border-radius: 15px; border: 2px dotted #FFB6C1; }
         .save-tip { font-size: 13px; color: #D2691E; font-weight: 900; margin-top: 15px; background: #FFEFD5; padding: 6px 16px; border-radius: 15px; border: 2px dashed #DEB887; }
         #final-poster-img { width: 90%; max-width: 360px; border-radius: 20px; border: 4px solid #FAD6A5; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: none; }
         .btn-close-poster { margin-top: 15px; padding: 10px 30px; background: #FFB6C1; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; color: white; box-shadow: 0 4px 0 #FF69B4; cursor: pointer; } .btn-close-poster:active { transform: translateY(4px); box-shadow: none; }
         #toast { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); background: rgba(210,105,30,0.9); color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
     </style>
 </head>
-<!-- 若美工图片已备好，在 body 上添加 class="img-ready" 即可隐藏占位 Emoji -->
 <body>
 <div id="toast">提示信息</div>
 
 <div id="arcade-container">
+    <!-- 顶部看板：恢复左右 gonggu / xiemiao，标题改为 开心苗苗乐 -->
     <div class="top-bar">
-        <div class="header-layout"><div class="title-group"><h1>合成大苗哥</h1><div class="subtitle">消除排练场</div></div></div>
+        <div class="header-layout">
+            <img src="images/gonggu.png" alt="巩固" class="logo-img" onerror="this.style.display='none'">
+            <div class="title-group">
+                <h1>开心苗苗乐</h1>
+                <div class="subtitle">演员谢苗超话制作</div>
+            </div>
+        </div>
         <div class="header-layout">
             <div id="bgm-toggle" class="icon-btn">🔇</div>
             <div id="settings-toggle" class="icon-btn">⚙️</div>
             <div id="camera-toggle" class="icon-btn" style="background:#FFE4E1; border-color:#FFB6C1;">📸</div>
-            <div class="score-board"><div class="score-label">总战力</div><div class="score-val" id="score">0</div></div>
+            <div class="score-board">
+                <div class="score-label">总战力</div>
+                <div class="score-val" id="score">0</div>
+            </div>
+            <img src="images/xiemiao.png" alt="谢苗" class="logo-img" onerror="this.style.display='none'">
         </div>
     </div>
 
@@ -183,19 +189,24 @@
         </div>
     </div>
 
+    <!-- 成绩单海报：完美还原两边 gonggu/xiemiao 以及底部的超话 Logo -->
     <div id="poster-mask">
         <div id="capture-area">
             <div class="poster-header-pill">
-                <img src="images/gonggu.png" alt="" style="width: 24px; mix-blend-mode: multiply;" onerror="this.style.display='none'">
+                <img src="images/gonggu.png" alt="" style="width: 28px; height: 28px; object-fit: contain; mix-blend-mode: multiply;" onerror="this.style.display='none'">
                 <div class="poster-badge">✨ 苗友成绩单 ✨</div>
-                <img src="images/xiemiao.png" alt="" style="width: 24px; mix-blend-mode: multiply;" onerror="this.style.display='none'">
+                <img src="images/xiemiao.png" alt="" style="width: 28px; height: 28px; object-fit: contain; mix-blend-mode: multiply;" onerror="this.style.display='none'">
             </div>
-            <div style="font-size: 24px; font-weight: 900; color: #D2691E; margin-bottom: 10px;">合成大苗哥</div>
-            <div id="poster-avatar-preview" style="width: 100px; height: 100px; background-size: contain; background-repeat: no-repeat; background-position: center; font-size: 70px; text-align: center; line-height: 100px;">👦</div>
+            <div class="poster-title">开心苗苗乐</div>
+            <div id="poster-avatar-preview" style="width: 90px; height: 90px; background-size: contain; background-repeat: no-repeat; background-position: center; font-size: 60px; text-align: center; line-height: 90px;">👦</div>
             <div class="poster-role-tag" id="poster-role-text">已解锁：第一阶段·洪文定</div>
-            <div class="poster-score-box"><div style="font-size: 14px; color: #8B5A2B; font-weight: bold;">历史最高战力</div><div class="poster-score-num" id="poster-score">0</div></div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px; font-size: 12px; color: #CD853F; font-weight: bold;">
-                <img src="images/avatar-logo.png" style="width: 20px; border-radius: 50%;" onerror="this.style.display='none'"> 演员谢苗超话制作
+            <div class="poster-score-box">
+                <div style="font-size: 13px; color: #8B5A2B; font-weight: bold;">历史最高战力</div>
+                <div class="poster-score-num" id="poster-score">0</div>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 4px; font-size: 12px; color: #CD853F; font-weight: bold;">
+                <img src="images/avatar-logo.png" style="width: 22px; height: 22px; object-fit: contain; border-radius: 50%; border: 1px solid #FAD6A5;" onerror="this.style.display='none'"> 
+                <span>演员谢苗超话制作</span>
             </div>
         </div>
         <img id="final-poster-img" src="">
@@ -204,7 +215,6 @@
     </div>
 </div>
 
-<!-- 添加音乐占位 -->
 <audio id="bgm" src="audio/bgm.mp3" loop preload="auto"></audio>
 
 <script>
@@ -346,7 +356,8 @@
     function swapDataAndDOM(r1, c1, r2, c2) {
         const temp = board[r1][c1]; board[r1][c1] = board[r2][c2]; board[r2][c2] = temp;
         const dTemp = domTiles[r1][c1]; domTiles[r1][c1] = domTiles[r2][c2]; domTiles[r2][c2] = dTemp;
-        domTiles[r1][c1].style.top = `${r1 * TILE_SIZE}px`; domTiles[r1][c1].style.left = `${c1 * TILE_SIZE}px`; domTiles[r2][c2].style.top = `${r2 * TILE_SIZE}px`; domTiles[r2][c2].style.left = `${c2 * TILE_SIZE}px`;
+        domTiles[r1][c1].style.top = `${r1 * TILE_SIZE}px`; domTiles[r1][c1].style.left = `${c1 * TILE_SIZE}px`;
+        domTiles[r2][c2].style.top = `${r2 * TILE_SIZE}px`; domTiles[r2][c2].style.left = `${c2 * TILE_SIZE}px`;
         domTiles[r1][c1].onclick = null; domTiles[r2][c2].onclick = null; domTiles[r1][c1].addEventListener('pointerdown', () => handleTileClick(r1, c1), {once: true}); domTiles[r2][c2].addEventListener('pointerdown', () => handleTileClick(r2, c2), {once: true});
     }
 
@@ -419,7 +430,7 @@
         const checkSwap = (r1, c1, r2, c2) => { const temp = board[r1][c1]; board[r1][c1] = board[r2][c2]; board[r2][c2] = temp; const match = analyzeMatches().toRemove.size > 0; board[r2][c2] = board[r1][c1]; board[r1][c1] = temp; return match; };
         for (let r = 0; r < ROWS && !hasMove; r++) { for (let c = 0; c < COLS && !hasMove; c++) { if (c < COLS - 1) if (checkSwap(r, c, r, c + 1)) hasMove = true; if (r < ROWS - 1) if (checkSwap(r, c, r + 1, c)) hasMove = true; } }
         if (!hasMove) {
-            if (props.refresh > 0) { gridContainer.style.filter = 'grayscale(80%) brightness(0.6)'; showToast('陷入僵局，请使用风车刷新！'); } 
+            if (props.refresh > 0) { gridContainer.style.filter = 'grayscale(80%) brightness(0.6);'; showToast('陷入僵局，请使用风车刷新！'); } 
             else { showToast('死局！游戏结束！'); setTimeout(() => generatePoster(), 1500); }
         } else { gridContainer.style.filter = 'none'; }
     }
