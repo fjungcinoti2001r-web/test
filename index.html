@@ -9,7 +9,7 @@
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; }
         
         html, body {
-            width: 100%; height: 100%; height: 100dvh; overflow: auto;
+            width: 100%; height: 100%; height: 100dvh; overflow: hidden; /* 锁死根页面滚动，防止拖拽道具时整个页面乱动 */
             background-color: #FFF8EA; color: #5C4033; font-family: 'PingFang SC', sans-serif;
             display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(#FAD6A5 10%, transparent 11%); background-size: 30px 30px;
@@ -81,9 +81,9 @@
         @keyframes popOut { 50% { transform: scale(1.3); opacity: 0.8; } 100% { transform: scale(0); opacity: 0; } }
         .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.3s ease-out; }
 
-        /* 拖动道具时的跟随预览框（锤子或炸弹） */
+        /* 拖动道具跟随层与指示器 */
         #ghost-tool { display: none; position: fixed; font-size: 32px; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); }
-        #ghost-tool-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed #3CB371; width: 50px; height: 50px; z-index: -1; }
+        #ghost-tool-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed; z-index: -1; }
 
         /* Combo 飘字动画 */
         .combo-text {
@@ -376,6 +376,7 @@
         });
     }
 
+    // 绑定锤子和炸弹的拖拽逻辑
     setupToolDrag('hammer-tool', 'hammer');
     setupToolDrag('bomb-tool', 'bomb');
 
@@ -394,6 +395,7 @@
             e.preventDefault(); activeDragTool = type;
             
             ghostIcon.innerText = type === 'hammer' ? '🔨' : '💣';
+            
             if (type === 'bomb') {
                 currentBombRadius = TILE_SIZE * 1.5;
                 let growing = true;
@@ -407,6 +409,7 @@
                 ghostInd.style.borderColor = '#FF334B';
                 ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.3) 0%, rgba(255,51,75,0.1) 100%)';
             } else {
+                // 锤子为固定单格大小
                 ghostInd.style.width = `${TILE_SIZE}px`;
                 ghostInd.style.height = `${TILE_SIZE}px`;
                 ghostInd.style.borderColor = '#3CB371';
@@ -414,8 +417,10 @@
             }
 
             ghostTool.style.display = 'block'; updateGhostPos(e);
-            document.addEventListener('pointermove', moveDrag);
-            document.addEventListener('pointerup', endDrag);
+            
+            // 使用全局监听并加入 passive: false 彻底阻止屏幕乱动
+            document.addEventListener('pointermove', moveDrag, { passive: false });
+            document.addEventListener('pointerup', endDrag, { passive: false });
         };
         btn.addEventListener('pointerdown', startDrag);
     }
@@ -426,7 +431,12 @@
         ghostTool.style.left = `${x}px`; ghostTool.style.top = `${y}px`;
     }
 
-    function moveDrag(e) { if (activeDragTool) updateGhostPos(e); }
+    function moveDrag(e) { 
+        if (activeDragTool) {
+            e.preventDefault(); // 锁死默认滚动，让画面不会跟着拖拽乱动
+            updateGhostPos(e); 
+        }
+    }
 
     async function endDrag(e) {
         if (!activeDragTool) return;
@@ -468,7 +478,6 @@
         }
     }
 
-    // 采用最稳定的标准 Click 交互，彻底解决点错、无响应、错乱问题
     async function handleTileClick(r, c) {
         if (isAnimating) return;
         playCuteSFX('select');
