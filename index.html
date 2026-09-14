@@ -2,15 +2,14 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 开放用户缩放，允许双指捏合 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>开心苗苗乐·演员谢苗超话制作</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; }
         
         html, body {
-            width: 100%; height: 100%; height: 100dvh; overflow: auto; /* 允许滚动和缩放 */
+            width: 100%; height: 100%; height: 100dvh; overflow: auto;
             background-color: #FFF8EA; color: #5C4033; font-family: 'PingFang SC', sans-serif;
             display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(#FAD6A5 10%, transparent 11%); background-size: 30px 30px;
@@ -82,9 +81,9 @@
         @keyframes popOut { 50% { transform: scale(1.3); opacity: 0.8; } 100% { transform: scale(0); opacity: 0; } }
         .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.3s ease-out; }
 
-        /* 拖动炸弹时的动态蓄力圈 */
+        /* 拖动道具时的跟随预览框（锤子或炸弹） */
         #ghost-tool { display: none; position: fixed; font-size: 32px; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); }
-        #ghost-tool-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed #FF334B; background: radial-gradient(circle, rgba(255,51,75,0.3) 0%, rgba(255,51,75,0.1) 100%); width: 100px; height: 100px; z-index: -1; }
+        #ghost-tool-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed #3CB371; width: 50px; height: 50px; z-index: -1; }
 
         /* Combo 飘字动画 */
         .combo-text {
@@ -145,7 +144,7 @@
 
 <div id="ghost-tool">
     <div id="ghost-tool-indicator"></div>
-    <span id="ghost-tool-icon">💣</span>
+    <span id="ghost-tool-icon">🔨</span>
 </div>
 
 <div id="arcade-container">
@@ -237,12 +236,13 @@
         { score: 16000, name: "第十阶段：火遮眼", avatar: "url('images/avatar_10.png')",fallback: "🔥", prop: "url('images/prop_10.png')",propFallback: "🩸" },
         { score: 20000, name: "终极形态：苗哥本人",avatar: "url('images/avatar_11.png')",fallback: "😎", prop: "url('images/prop_11.png')",propFallback: "🎬" }
     ];
-    const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打！真狠！真解恨！", "打爆全球！", "hey hey！"];
+    const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
     let board = [], domTiles = [], score = 0, currentStage = 0, isAnimating = false, lastSwapPos = null, globalCombo = 0;
     let props = { hammer: 5, bomb: 5, refresh: 5 }; let selectedTile = null;
     const gridContainer = document.getElementById('grid-container');
     const ghostTool = document.getElementById('ghost-tool');
+    const ghostIcon = document.getElementById('ghost-tool-icon');
     const ghostInd = document.getElementById('ghost-tool-indicator');
 
     let activeDragTool = null;
@@ -362,7 +362,7 @@
         const tile = document.createElement('div'); tile.className = `tile ${data.effect !== 'none' ? 'effect-'+data.effect : ''}`; tile.innerText = data.type; 
         tile.style.backgroundImage = `url('images/tile_${TYPES.indexOf(data.type) + 1}.png')`;
         tile.style.width = tile.style.height = `${TILE_SIZE}px`; tile.style.top = `${r * TILE_SIZE}px`; tile.style.left = `${c * TILE_SIZE}px`;
-        tile.addEventListener('pointerdown', (e) => handleTilePointerDown(e, r, c));
+        tile.addEventListener('click', () => handleTileClick(r, c));
         gridContainer.appendChild(tile); domTiles[r][c] = tile; return tile;
     }
 
@@ -393,6 +393,7 @@
             if (props[type] <= 0 || isAnimating) return;
             e.preventDefault(); activeDragTool = type;
             
+            ghostIcon.innerText = type === 'hammer' ? '🔨' : '💣';
             if (type === 'bomb') {
                 currentBombRadius = TILE_SIZE * 1.5;
                 let growing = true;
@@ -403,9 +404,13 @@
                     ghostInd.style.width = `${currentBombRadius * 2}px`;
                     ghostInd.style.height = `${currentBombRadius * 2}px`;
                 }, 30);
+                ghostInd.style.borderColor = '#FF334B';
+                ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.3) 0%, rgba(255,51,75,0.1) 100%)';
             } else {
                 ghostInd.style.width = `${TILE_SIZE}px`;
                 ghostInd.style.height = `${TILE_SIZE}px`;
+                ghostInd.style.borderColor = '#3CB371';
+                ghostInd.style.background = 'radial-gradient(circle, rgba(60,179,113,0.3) 0%, rgba(60,179,113,0.1) 100%)';
             }
 
             ghostTool.style.display = 'block'; updateGhostPos(e);
@@ -463,7 +468,8 @@
         }
     }
 
-    async function handleTilePointerDown(e, r, c) {
+    // 采用最稳定的标准 Click 交互，彻底解决点错、无响应、错乱问题
+    async function handleTileClick(r, c) {
         if (isAnimating) return;
         playCuteSFX('select');
         const tile = domTiles[r][c];
@@ -496,9 +502,9 @@
         const dTemp = domTiles[r1][c1]; domTiles[r1][c1] = domTiles[r2][c2]; domTiles[r2][c2] = dTemp;
         domTiles[r1][c1].style.top = `${r1 * TILE_SIZE}px`; domTiles[r1][c1].style.left = `${c1 * TILE_SIZE}px`;
         domTiles[r2][c2].style.top = `${r2 * TILE_SIZE}px`; domTiles[r2][c2].style.left = `${c2 * TILE_SIZE}px`;
-        domTiles[r1][c1].onpointerdown = null; domTiles[r2][c2].onpointerdown = null;
-        domTiles[r1][c1].addEventListener('pointerdown', (e) => handleTilePointerDown(e, r1, c1), {once: true});
-        domTiles[r2][c2].addEventListener('pointerdown', (e) => handleTilePointerDown(e, r2, c2), {once: true});
+        domTiles[r1][c1].onclick = null; domTiles[r2][c2].onclick = null;
+        domTiles[r1][c1].addEventListener('click', () => handleTileClick(r1, c1));
+        domTiles[r2][c2].addEventListener('click', () => handleTileClick(r2, c2));
     }
 
     function analyzeMatches() {
@@ -545,7 +551,7 @@
                 if (!board[r][c]) empty++;
                 else if (empty > 0) {
                     board[r + empty][c] = board[r][c]; domTiles[r + empty][c] = domTiles[r][c]; board[r][c] = null; domTiles[r][c] = null;
-                    domTiles[r + empty][c].style.top = `${(r + empty) * TILE_SIZE}px`; let nr = r + empty; domTiles[nr][c].onpointerdown = null; domTiles[nr][c].addEventListener('pointerdown', (e) => handleTilePointerDown(e, nr, c), {once: true});
+                    domTiles[r + empty][c].style.top = `${(r + empty) * TILE_SIZE}px`; let nr = r + empty; domTiles[nr][c].onclick = null; domTiles[nr][c].addEventListener('click', () => handleTileClick(nr, c));
                 }
             }
             for (let i = 0; i < empty; i++) {
@@ -589,7 +595,6 @@
     function closePoster() { document.getElementById('poster-mask').style.display = 'none'; if(props.refresh <= 0) { localStorage.removeItem('miaoAutoSave'); location.reload(); } }
 
     if (!loadAutoSave()) { initBoard(); updatePropUI(); applyEvolution(0); }
-    // 移除了强行 preventDefault 的 touchmove，恢复正常的自由缩放与滚动
 </script>
 </body>
 </html>
