@@ -7,17 +7,7 @@
     <title>开心苗苗乐·演员谢苗超话制作</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
-        /* 关键修复：加入 manipulation 彻底禁用 iOS 浏览器的双击缩放与智能放大 */
-        * { 
-            box-sizing: border-box; 
-            user-select: none; 
-            -webkit-user-select: none; 
-            -webkit-touch-callout: none; 
-            margin: 0; 
-            padding: 0; 
-            touch-action: manipulation; 
-        }
-        
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: manipulation; }
         html, body {
             width: 100%; height: 100%; height: 100dvh; overflow: hidden;
             background-color: #FFF8EA; color: #5C4033; font-family: 'PingFang SC', sans-serif;
@@ -50,7 +40,7 @@
         .score-label { font-size: 9px; color: #FF9800; font-weight: 900; }
         .score-val { font-size: 15px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
-        /* 顶部舞台区 */
+        /* 顶部舞台区：对齐图2比例 */
         #top-stage {
             height: 18%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
@@ -66,7 +56,7 @@
         }
         #desk-prop { width: 36px; height: 36px; margin-top: -18px; font-size: 20px; display: flex; justify-content: center; align-items: center; background-size: contain; background-repeat: no-repeat; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
-        /* 消除区 */
+        /* 消除区：撑满剩余空间 */
         #game-wrapper {
             position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; padding: 6px; background: #FFFDF9; box-shadow: inset 0 0 15px rgba(222, 184, 135, 0.3);
         }
@@ -591,7 +581,7 @@
         document.getElementById('capture-area').style.display = 'flex'; document.getElementById('final-poster-img').style.display = 'none'; document.getElementById('save-tip-text').innerText = "正在生成海报...";
         setTimeout(() => {
             html2canvas(document.getElementById('capture-area'), { scale: 3, backgroundColor: "#FFF5E1", useCORS: true }).then(canvas => {
-                document.getElementById('final-poster-img'].src = canvas.toDataURL('image/png'); document.getElementById('capture-area').style.display = 'none'; document.getElementById('final-poster-img'].style.display = 'block'; document.getElementById('save-tip-text').innerText = "👇 长按上方图片即可保存到相册 👇";
+                document.getElementById('final-poster-img').src = canvas.toDataURL('image/png'); document.getElementById('capture-area').style.display = 'none'; document.getElementById('final-poster-img').style.display = 'block'; document.getElementById('save-tip-text').innerText = "👇 长按上方图片即可保存到相册 👇";
             });
         }, 500);
     }
