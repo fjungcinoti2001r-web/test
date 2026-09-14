@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>合成大苗哥·雷霆版 (慎点!!!)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            background-color: #08090C;
+            color: #E5E9F0;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #arcade-container {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #0F1015;
+            overflow: hidden;
+        }
+
+        @media (min-width: 500px) {
+            #arcade-container {
+                border-left: 2px solid #D4AF37;
+                border-right: 2px solid #D4AF37;
+                box-shadow: 0 0 40px rgba(0, 0, 0, 0.95);
+            }
+        }
+
+        .top-bar {
+            width: 100%;
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #181A20;
+            border-bottom: 2px solid #D4AF37;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .header-layout {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .title-group h1 {
+            font-size: 22px;
+            color: #D4AF37;
+            letter-spacing: 1px;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            white-space: nowrap;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #FF334B;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            margin-top: 3px;
+            animation: warningBlink 1.2s infinite alternate;
+        }
+        @keyframes warningBlink {
+            0% { opacity: 0.7; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1.02); text-shadow: 0 0 10px #FF334B; }
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            background: #2B2D42;
+            border: 2px solid #D4AF37;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(212, 175, 55, 0.15);
+            transition: transform 0.2s, opacity 0.2s;
+            flex-shrink: 0;
+        }
+        .icon-btn:active { transform: scale(0.9); }
+        .bgm-paused { opacity: 0.6; }
+        @keyframes spinBgm { 100% { transform: rotate(360deg); } }
+        .bgm-playing { animation: spinBgm 4s linear infinite; }
+
+        .score-board {
+            text-align: right;
+        }
+        .score-label {
+            font-size: 13px;
+            color: #8D99AE;
+            font-weight: bold;
+        }
+        .score-val {
+            font-size: 30px;
+            font-weight: 900;
+            color: #FFD166;
+            font-family: 'Arial Black', sans-serif;
+            line-height: 1.1;
+        }
+
+        #game-wrapper {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            margin: 0 auto;
+            overflow: hidden;
+            background: linear-gradient(180deg, #12141A 0%, #090A0D 100%);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            touch-action: none;
+        }
+
+        #danger-line {
+            position: absolute;
+            left: 0;
+            top: 10%; 
+            width: 100%;
+            height: 2px;
+            border-top: 2px dashed #E63946;
+            box-shadow: 0 0 8px #E63946;
+            pointer-events: none;
+            z-index: 5;
+        }
+        #danger-label {
+            position: absolute;
+            right: 12px;
+            top: -24px;
+            font-size: 14px;
+            color: #E63946;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        #tools-container {
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+        }
+        .tool-btn {
+            background: rgba(22, 24, 30, 0.95);
+            border-radius: 8px;
+            padding: 4px 8px;
+            display: flex; 
+            align-items: center;
+            gap: 4px;
+            cursor: grab;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .tool-btn:active { cursor: grabbing; transform: scale(0.95); }
+        .tool-icon { font-size: 14px; pointer-events: none; filter: drop-shadow(0 0 2px rgba(255,255,255,0.3)); }
+        .tool-count { font-size: 12px; font-weight: 900; pointer-events: none; white-space: nowrap;}
+        
+        #bomb-container { border: 2px solid #FF334B; box-shadow: 2px 4px 8px rgba(255, 51, 75, 0.3); display: none; }
+        #bomb-container .tool-count { color: #FF334B; }
+        
+        #shake-container { border: 2px solid #4169E1; box-shadow: 2px 4px 8px rgba(65, 105, 225, 0.3); }
+        #shake-container .tool-count { color: #4169E1; }
+        .tool-disabled { opacity: 0.5; pointer-events: none; border-color: #555 !important; }
+        .tool-disabled .tool-count { color: #888 !important; }
+
+        #ghost-tool {
+            display: none;
+            position: fixed;
+            font-size: 30px;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+        }
+        #ghost-tool-indicator {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 2px dashed;
+            width: 100px; height: 100px;
+            transition: width 0.05s, height 0.05s;
+            z-index: -1;
+        }
+
+        #dropper-preview {
+            position: absolute;
+            top: 4%; 
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 8;
+            background-size: cover;
+            background-position: center;
+            border: 2px solid #D4AF37;
+            box-shadow: 0 0 14px rgba(212, 175, 55, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #FFF;
+            font-weight: 900;
+            text-shadow: 0 0 4px #000;
+            transition: left 0.1s;
+        }
+
+        .combo-text {
+            position: absolute;
+            font-weight: 900;
+            color: #FFD166;
+            text-shadow: 0 0 14px #E63946, 2px 2px 0 #000;
+            pointer-events: none;
+            z-index: 25;
+            animation: comboFly 1s ease-out forwards;
+            white-space: nowrap;
+        }
+        @keyframes comboFly {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+            20% { opacity: 1; transform: translate(-50%, -70%) scale(1.3); }
+            70% { opacity: 1; transform: translate(-50%, -100%) scale(1.1); }
+            100% { opacity: 0; transform: translate(-50%, -130%) scale(0.85); }
+        }
+
+        .shake { animation: screenShake 0.15s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes screenShake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(3px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        #global-load-menu {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #16181E;
+            padding: 20px;
+            border-radius: 15px;
+            width: 85%;
+            max-width: 300px;
+            border: 3px solid #D4AF37;
+            z-index: 100001; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+        #global-save-list button { position: relative; }
+
+        #init-mask {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 15, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+        .init-title {
+            font-size: 36px;
+            font-weight: 900;
+            color: #D4AF37;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            text-align: center;
+        }
+        .init-desc {
+            color: #8D99AE;
+            font-size: 14px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        #pause-mask, #game-over-mask {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 15, 0.92);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 40;
+        }
+        #game-over-mask { z-index: 50; background: rgba(10, 10, 15, 0.98); padding: 18px; overflow-y: auto; }
+        
+        .pause-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #D4AF37;
+            letter-spacing: 4px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        #capture-area {
+            width: 90%;
+            max-width: 360px;
+            aspect-ratio: 1 / 1;
+            background: #16181E;
+            border: 3px solid #D4AF37;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+        }
+
+        .poster-badge {
+            font-size: 12px;
+            color: #E63946;
+            letter-spacing: 2px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+        .poster-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #D4AF37;
+            margin: 0;
+            letter-spacing: 1.5px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .poster-score-box {
+            background: #0D0E12;
+            border: 1px solid #333745;
+            padding: 10px 28px;
+            border-radius: 12px;
+            margin: 8px 0;
+            text-align: center;
+        }
+        .poster-score-num {
+            font-size: 46px;
+            color: #FFD166;
+            font-weight: 900;
+            font-family: 'Arial Black', sans-serif;
+            line-height: 1.1;
+        }
+
+        .poster-role-tag {
+            font-size: 16px;
+            font-weight: 900;
+            color: #E5E9F0;
+            margin-top: 10px;
+            padding: 6px 18px;
+            background: rgba(230, 57, 70, 0.3);
+            border-radius: 20px;
+            border: 1px solid #E63946;
+        }
+
+        .poster-footer {
+            margin-top: 14px;
+            font-size: 13px;
+            color: #8D99AE;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        .mobile-poster-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 14px;
+            width: 100%;
+        }
+        #final-poster-img {
+            width: 85%;
+            max-width: 320px;
+            aspect-ratio: 1 / 1;
+            border-radius: 18px;
+            border: 3px solid #D4AF37;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .save-tip {
+            font-size: 14px;
+            color: #FFD166;
+            font-weight: 900;
+            margin-top: 10px;
+            background: #252834;
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1px solid #3D4254;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+            width: 85%;
+            max-width: 320px;
+        }
+
+        .btn-core {
+            border: none;
+            padding: 14px 0;
+            font-size: 16px;
+            font-weight: 900;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .btn-gold {
+            background: linear-gradient(90deg, #D4AF37 0%, #AA820A 100%);
+            color: #000;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        .btn-dark {
+            background: #2B2D42;
+            color: #E5E9F0;
+            border: 1px solid #4A4E69;
+        }
+        .btn-red {
+            background: #E63946;
+            color: #FFF;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+        }
+        .btn-orange {
+            background: #F77F00;
+            color: #FFF;
+            box-shadow: 0 4px 15px rgba(247, 127, 0, 0.3);
+        }
+        .btn-core:active { transform: scale(0.96); box-shadow: none; }
+        
+        #save-toast {
+            position: absolute;
+            top: -40px;
+            background: #16181E;
+            color: #FFD166;
+            font-weight: 900;
+            padding: 8px 20px;
+            border-radius: 15px;
+            border: 2px dashed #D4AF37;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s, top 0.3s;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .toast-show { top: 30px !important; opacity: 1 !important; }
+
+        #save-name-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #0D0E12;
+            border: 2px solid #D4AF37;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #FFD166;
+            font-size: 14px;
+            text-align: center;
+            outline: none;
+        }
+        #save-name-input::placeholder { color: #8D99AE; }
+    </style>
+</head>
+<body>
+
+<audio id="bgm" src="./bgm.mp3" loop preload="auto"></audio>
+
+<div id="global-load-menu">
+    <h3 style="color:#D4AF37; text-align:center; margin-bottom:5px;">读取存档</h3>
+    <div style="text-align:center; font-size:12px; color:#E63946; margin-bottom:15px; font-weight:bold;">(长按存档条目可删除)</div>
+    <div id="global-save-list" style="max-height: 250px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
+    </div>
+    <button class="btn-core btn-dark" style="width:100%;" onclick="closeLoadMenu()">返回</button>
+</div>
+
+<div id="init-mask">
+    <div class="init-title">合成大苗哥<br><span style="font-size: 24px; color: #FF334B;">雷霆版</span></div>
+    <div class="init-desc">请选择适合你的挑战模式</div>
+    <div class="btn-group" style="width: 250px; gap: 15px;">
+        <button class="btn-core btn-gold" onclick="startGame('easy')">
+            🟢 初级模式<br><span style="font-size:12px;font-weight:normal;color:#333;">含 炸弹+摇晃道具，开启物理体感</span>
+        </button>
+        <button class="btn-core btn-orange" onclick="startGame('medium')">
+            🟠 中级模式<br><span style="font-size:12px;font-weight:normal;color:#FFF;">含 炸弹+摇晃道具，关闭物理体感</span>
+        </button>
+        <button class="btn-core btn-red" onclick="startGame('hard')">
+            🔴 高级模式<br><span style="font-size:12px;font-weight:normal;">无任何道具，关闭物理体感</span>
+        </button>
+        <button class="btn-core btn-dark" style="margin-top: 10px;" id="init-load-btn" onclick="openLoadMenu()">
+            📂 读取本地存档
+        </button>
+    </div>
+</div>
+
+<div id="arcade-container">
+    <div class="top-bar">
+        <div class="title-group">
+            <h1>合成大苗哥·雷霆版</h1>
+            <div class="subtitle">慎点!!! 苗哥真爱战力挑战</div>
+        </div>
+        <div class="header-layout">
+            <div id="bgm-toggle" class="icon-btn bgm-paused">🔇</div>
+            <div id="pause-toggle" class="icon-btn">⏸️</div>
+            <div class="score-board">
+                <div class="score-label" style="margin-right: 4px;">总战力分</div>
+                <div class="score-val" id="score">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-wrapper">
+        <div id="danger-line"><span id="danger-label">极限真爱警戒线 ⚠️</span></div>
+        <div id="dropper-preview"></div>
+
+        <div id="tools-container">
+            <div id="bomb-container" class="tool-btn">
+                <span class="tool-icon">💣</span>
+                <span id="bomb-count" class="tool-count">炸弹 × 0</span>
+            </div>
+            <div id="shake-container" class="tool-btn">
+                <span class="tool-icon">🌀</span>
+                <span id="shake-count" class="tool-count">摇晃 × 3</span>
+            </div>
+        </div>
+
+        <div id="pause-mask">
+            <div id="save-toast">✨ 进度已成功保存 ✨</div>
+            <div class="pause-title">游戏暂停</div>
+            
+            <div id="pause-main-btns" class="btn-group" style="width: 220px; gap: 15px;">
+                <button class="btn-core btn-gold" onclick="togglePause()">继续游戏 ▶️</button>
+                <button class="btn-core btn-dark" onclick="showSaveMenu()">保存进度 💾</button>
+                <button class="btn-core btn-dark" id="load-btn" onclick="openLoadMenu()">读取进度 📂</button>
+                <button class="btn-core btn-red" onclick="reselectMode()">重选模式 🔄</button>
+            </div>
+
+            <div id="save-menu" style="display:none; background:#16181E; padding: 20px; border-radius:15px; width: 85%; max-width: 300px; border: 3px solid #D4AF37;">
+                <h3 style="color:#D4AF37; text-align:center; margin-bottom:15px;">新建存档</h3>
+                <input type="text" id="save-name-input" placeholder="请输入存档名称...">
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-core btn-gold" style="flex:1;" onclick="confirmSave()">确认保存</button>
+                    <button class="btn-core btn-dark" style="flex:1;" onclick="backToPause()">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-over-mask">
+            <div id="capture-area">
+                <div class="poster-badge">⚡ 终局战报 · 战损认证 ⚡</div>
+                
+                <div style="display: flex; align-items: flex-start; justify-content: center; margin-bottom: 12px;">
+                    <div class="poster-title">合成大苗哥<br>雷霆版</div>
+                    <div id="poster-mode-badge" style="font-size: 11px; padding: 2px 6px; border-radius: 6px; margin-left: 6px; font-weight: bold; margin-top: 4px; background:#D4AF37; color:#000;">初级</div>
+                </div>
+
+                <div class="poster-score-box">
+                    <div style="font-size: 14px; color:#8D99AE; font-weight: bold;">最终武力值</div>
+                    <div class="poster-score-num" id="final-score">0</div>
+                </div>
+                <div class="poster-role-tag" id="max-role-tag">最高形态：-</div>
+                <div class="poster-footer">© 演员谢苗超话 · 雷霆出击认证</div>
+            </div>
+
+            <div class="mobile-poster-box" id="mobile-poster-box">
+                <img id="final-poster-img" src="" alt="专属战绩卡">
+                <div class="save-tip">👆 长按上方图片即可保存到相册 👆</div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-core btn-gold" id="gen-poster-btn" onclick="generatePoster()">📸 生成 1:1 专属战报</button>
+                <button class="btn-core btn-dark" onclick="location.reload()">重燃战火 🔁</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ghost-tool">
+    <div id="ghost-tool-indicator"></div>
+    <span id="ghost-tool-icon"></span>
+</div>
+
+<script>
+    // ========== ★ 雷霆版原生音效系统 100% 还原 ★ ==========
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    
+    function initAudio() {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playWhooshSound() {
+        initAudio();
+        const bufferSize = audioCtx.sampleRate * 0.12;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
+        }
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(320, audioCtx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.12);
+
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        noise.start();
+    }
+
+    function playHeavyPunchSound(level = 6) {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        const startFreq = 180 + (level * 10);
+        osc.frequency.setValueAtTime(startFreq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.2);
+
+        gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+    }
+
+    function playSwordSound() {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(2400, audioCtx.currentTime + 0.08);
+        osc.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.35);
+
+        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+    }
+
+    function playGrandTriumphSound() {
+        initAudio();
+        const notes = [261.63, 329.63, 392.00, 523.25];
+        notes.forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.08 + 0.4);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(audioCtx.currentTime + idx * 0.08);
+            osc.stop(audioCtx.currentTime + idx * 0.08 + 0.4);
+        });
+    }
+
+    function playSoundByLevel(level) {
+        if (level === 10) playSwordSound();
+        else if (level >= 11) playGrandTriumphSound();
+        else if (level >= 6) playHeavyPunchSound(level);
+        else playWhooshSound();
+    }
+
+    // 道具专属音效
+    function playBombSound() {
+        initAudio();
+        const bufferSize = audioCtx.sampleRate * 0.5;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+        const noiseFilter = audioCtx.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.setValueAtTime(1000, audioCtx.currentTime);
+        noiseFilter.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.5);
+
+        const nGain = audioCtx.createGain();
+        nGain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+        nGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+        noise.connect(noiseFilter);
+        noiseFilter.connect(nGain);
+        nGain.connect(audioCtx.destination);
+        noise.start();
+
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.5);
+        gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.5);
+    }
+
+    function playShakeSound() {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
+        gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.3);
+    }
+
+    let bgmStarted = false;
+    let sensorsStarted = false;
+    let lastAcc = { x: 0, y: 0, z: 0 };
+    let lastShakeTime = 0;
+    
+    let gameMode = 'easy'; 
+    const modeNames = { 'easy': '初级', 'medium': '中级', 'hard': '高级' };
+    let isPaused = false;
+    let bombCount = 0;
+    let shakeCount = 3;
+    let currentDragTool = null; 
+    
+    let minBlastRadius = 20; 
+    let maxBlastRadius = 60; 
+    let currentBlastRadius = 20;
+    let growTimer = null;
+
+    const bgmToggle = document.getElementById('bgm-toggle');
+    const pauseToggle = document.getElementById('pause-toggle');
+    const bgm = document.getElementById('bgm');
+    const pauseMask = document.getElementById('pause-mask');
+    const initMask = document.getElementById('init-mask');
+    
+    const toolsContainer = document.getElementById('tools-container');
+    const bombContainer = document.getElementById('bomb-container');
+    const bombCountEl = document.getElementById('bomb-count');
+    const shakeContainer = document.getElementById('shake-container');
+    const shakeCountEl = document.getElementById('shake-count');
+    
+    const ghostTool = document.getElementById('ghost-tool');
+    const ghostIcon = document.getElementById('ghost-tool-icon');
+    const ghostInd = document.getElementById('ghost-tool-indicator');
+    
+    const loadBtn = document.getElementById('load-btn');
+    const initLoadBtn = document.getElementById('init-load-btn');
+    const saveToast = document.getElementById('save-toast');
+
+    function startGame(mode) {
+        initMask.style.display = 'none';
+        gameMode = mode;
+        
+        if (mode === 'hard') {
+            toolsContainer.style.display = 'none';
+            shakeCount = 0; 
+            bombCount = 0;
+        } else {
+            toolsContainer.style.display = 'flex';
+            updateShakeUI();
+        }
+
+        if (mode === 'easy') {
+            try { startMotionSensors(); } catch(e) { console.log(e); }
+        }
+
+        try {
+            initAudio();
+            if (bgm) {
+                bgm.volume = 0.25;
+                let playPromise = bgm.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        bgmToggle.innerText = '🎵';
+                        bgmToggle.classList.remove('bgm-paused');
+                        bgmToggle.classList.add('bgm-playing');
+                        bgmStarted = true;
+                    }).catch(e => console.log("BGM 自动播放被拦截"));
+                }
+            }
+        } catch(e) { console.log(e); }
+    }
+
+    function startMotionSensors() {
+        if (sensorsStarted) return;
+        sensorsStarted = true;
+
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+            DeviceMotionEvent.requestPermission().then(state => {
+                if (state === 'granted') window.addEventListener('devicemotion', handleMotion);
+            }).catch(console.error);
+        } else {
+            window.addEventListener('devicemotion', handleMotion);
+        }
+
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission().then(state => {
+                if (state === 'granted') window.addEventListener('deviceorientation', handleOrientation);
+            }).catch(console.error);
+        } else {
+            window.addEventListener('deviceorientation', handleOrientation);
+        }
+    }
+
+    function stopMotionSensors() {
+        if (!sensorsStarted) return;
+        window.removeEventListener('devicemotion', handleMotion);
+        window.removeEventListener('deviceorientation', handleOrientation);
+        sensorsStarted = false;
+        engine.gravity.x = 0; 
+    }
+
+    bgmToggle.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        if (bgm.paused) {
+            bgm.play();
+            bgmToggle.innerText = '🎵';
+            bgmToggle.classList.remove('bgm-paused');
+            bgmToggle.classList.add('bgm-playing');
+        } else {
+            bgm.pause();
+            bgmToggle.innerText = '🔇';
+            bgmToggle.classList.add('bgm-paused');
+            bgmToggle.classList.remove('bgm-playing');
+        }
+    });
+
+    function getSaves() {
+        try {
+            let saves = localStorage.getItem('miaoGeThunderSaves');
+            return saves ? JSON.parse(saves) : {};
+        } catch(e) { return {}; }
+    }
+
+    function updateLoadButtonState() {
+        const saves = getSaves();
+        const hasSaves = Object.keys(saves).length > 0;
+        
+        if (loadBtn) {
+            if (hasSaves) {
+                loadBtn.style.opacity = '1';
+                loadBtn.style.pointerEvents = 'auto';
+                loadBtn.innerText = '读取进度 📂';
+            } else {
+                loadBtn.style.opacity = '0.5';
+                loadBtn.style.pointerEvents = 'none';
+                loadBtn.innerText = '暂无存档 📂';
+            }
+        }
+        
+        if (initLoadBtn) {
+            if (hasSaves) {
+                initLoadBtn.style.opacity = '1';
+                initLoadBtn.style.pointerEvents = 'auto';
+                initLoadBtn.innerText = '📂 读取本地存档';
+            } else {
+                initLoadBtn.style.opacity = '0.5';
+                initLoadBtn.style.pointerEvents = 'none';
+                initLoadBtn.innerText = '📂 暂无本地存档';
+            }
+        }
+    }
+
+    updateLoadButtonState();
+
+    function openLoadMenu() {
+        updateLoadList();
+        document.getElementById('global-load-menu').style.display = 'block';
+    }
+
+    function closeLoadMenu() {
+        document.getElementById('global-load-menu').style.display = 'none';
+    }
+
+    function updateLoadList() {
+        const saves = getSaves();
+        const list = document.getElementById('global-save-list');
+        list.innerHTML = '';
+        const keys = Object.keys(saves).reverse(); 
+        
+        if (keys.length === 0) {
+            list.innerHTML = '<div style="text-align:center; color:#8D99AE;">暂无存档</div>';
+            updateLoadButtonState();
+        } else {
+            keys.forEach(k => {
+                const b = document.createElement('button');
+                b.className = 'btn-core btn-gold';
+                b.style.padding = '8px';
+                b.innerText = k;
+
+                let pressTimer;
+                let isLongPress = false;
+
+                const startPress = (e) => {
+                    isLongPress = false;
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        deleteSave(k);
+                    }, 800);
+                };
+                const cancelPress = () => clearTimeout(pressTimer);
+
+                b.addEventListener('touchstart', startPress, {passive: true});
+                b.addEventListener('touchend', cancelPress);
+                b.addEventListener('touchmove', cancelPress, {passive: true});
+                b.addEventListener('touchcancel', cancelPress);
+
+                b.addEventListener('mousedown', startPress);
+                b.addEventListener('mouseup', cancelPress);
+                b.addEventListener('mouseleave', cancelPress);
+
+                b.onclick = (e) => {
+                    if (isLongPress) {
+                        e.preventDefault();
+                        return; 
+                    }
+                    confirmLoad(k);
+                };
+
+                list.appendChild(b);
+            });
+        }
+    }
+
+    function deleteSave(name) {
+        if (confirm(`确定要彻底删除雷霆版存档 [${name}] 吗？`)) {
+            const saves = getSaves();
+            delete saves[name];
+            try { localStorage.setItem('miaoGeThunderSaves', JSON.stringify(saves)); } catch(e){}
+            updateLoadList();
+            updateLoadButtonState();
+        }
+    }
+
+    function togglePause() {
+        if(isGameOver) return;
+        isPaused = !isPaused;
+        if(isPaused) {
+            Runner.stop(runner);
+            updateLoadButtonState();
+            pauseToggle.innerText = '▶️';
+            pauseMask.style.display = 'flex';
+            backToPause();
+        } else {
+            Runner.run(runner, engine);
+            pauseToggle.innerText = '⏸️';
+            pauseMask.style.display = 'none';
+        }
+    }
+    pauseToggle.addEventListener('click', (e) => { e.stopPropagation(); togglePause(); });
+
+    function reselectMode() {
+        if (score > 0) {
+            if (!confirm("重新选择模式将放弃当前未保存的局内进度，是否确定？")) return;
+        }
+        location.reload(); 
+    }
+
+    function showSaveMenu() {
+        document.getElementById('pause-main-btns').style.display = 'none';
+        document.getElementById('save-menu').style.display = 'block';
+        let d = new Date();
+        let timeStr = `${d.getMonth()+1}月${d.getDate()}日 ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+        document.getElementById('save-name-input').value = `存档_${timeStr}`;
+    }
+
+    function backToPause() {
+        document.getElementById('save-menu').style.display = 'none';
+        document.getElementById('pause-main-btns').style.display = 'flex';
+        updateLoadButtonState();
+    }
+
+    function confirmSave() {
+        const name = document.getElementById('save-name-input').value.trim() || '默认存档';
+        const bodiesData = Composite.allBodies(engine.world)
+            .filter(b => b.roleInfo && !b.isStatic)
+            .map(b => ({
+                x: b.position.x, y: b.position.y, angle: b.angle,
+                vx: b.velocity.x, vy: b.velocity.y, level: b.roleInfo.level
+            }));
+
+        const saves = getSaves();
+        saves[name] = { score, highestLevel, bombCount, shakeCount, currentDropLevel, bodies: bodiesData, mode: gameMode };
+        try { localStorage.setItem('miaoGeThunderSaves', JSON.stringify(saves)); } catch(e){}
+        
+        saveToast.innerText = `✨ [${name}] 保存成功 ✨`;
+        saveToast.classList.add('toast-show');
+        setTimeout(() => saveToast.classList.remove('toast-show'), 2000);
+        backToPause();
+    }
+
+    function confirmLoad(name) {
+        const saves = getSaves();
+        const data = saves[name];
+        if(!data) return;
+
+        if (!bgmStarted && bgm) {
+            try {
+                initAudio();
+                bgm.volume = 0.25;
+                let playPromise = bgm.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        bgmToggle.innerText = '🎵';
+                        bgmToggle.classList.remove('bgm-paused');
+                        bgmToggle.classList.add('bgm-playing');
+                        bgmStarted = true;
+                    }).catch(e => console.log(e));
+                }
+            } catch(e){}
+        }
+
+        const activeBodies = Composite.allBodies(engine.world).filter(b => b.roleInfo && !b.isStatic);
+        Composite.remove(engine.world, activeBodies);
+        
+        score = data.score || 0;
+        highestLevel = data.highestLevel || 0;
+        bombCount = data.bombCount || 0;
+        shakeCount = (data.shakeCount !== undefined) ? data.shakeCount : 3;
+        currentDropLevel = data.currentDropLevel || 0;
+        gameMode = data.mode || 'easy'; 
+
+        if (gameMode === 'hard') {
+            toolsContainer.style.display = 'none';
+        } else {
+            toolsContainer.style.display = 'flex';
+            updateBombUI();
+            updateShakeUI();
+        }
+
+        if (gameMode === 'easy') {
+            try { startMotionSensors(); } catch(e){}
+        } else {
+            stopMotionSensors();
+        }
+        
+        scoreEl.innerText = score;
+        
+        const info = ROLES[currentDropLevel];
+        previewEl.style.width = (info.radius * 2) + 'px';
+        previewEl.style.height = (info.radius * 2) + 'px';
+        const img = roleImages[currentDropLevel];
+        if (img && img.src && img.complete && img.naturalWidth !== 0) {
+            previewEl.style.backgroundImage = `url('${img.src}')`;
+            previewEl.innerText = "";
+        } else {
+            previewEl.style.backgroundImage = "none";
+            previewEl.innerText = info.name;
+            previewEl.style.fontSize = Math.max(15, Math.round(info.radius * 0.38)) + 'px';
+        }
+        updatePreviewPos(width / 2);
+        
+        const restoredBodies = data.bodies.map(d => {
+            const rInfo = ROLES[d.level];
+            const circle = Bodies.circle(d.x, d.y, rInfo.radius, {
+                angle: d.angle, restitution: 0.15, friction: 0.15, density: 0.003, render: { visible: false }
+            });
+            Matter.Body.setVelocity(circle, { x: d.vx, y: d.vy });
+            circle.roleInfo = rInfo;
+            return circle;
+        });
+        Composite.add(engine.world, restoredBodies);
+        
+        closeLoadMenu();
+        if (initMask.style.display !== 'none') {
+            initMask.style.display = 'none'; 
+        }
+        if (isPaused) {
+            togglePause(); 
+        }
+    }
+
+    bombContainer.addEventListener('mousedown', (e) => startDragTool('bomb', e));
+    bombContainer.addEventListener('touchstart', (e) => startDragTool('bomb', e), {passive: false});
+    
+    shakeContainer.addEventListener('mousedown', (e) => startDragTool('shake', e));
+    shakeContainer.addEventListener('touchstart', (e) => startDragTool('shake', e), {passive: false});
+
+    function updateToolIndicator() {
+        ghostInd.style.width = (currentBlastRadius * 2) + 'px';
+        ghostInd.style.height = (currentBlastRadius * 2) + 'px';
+    }
+
+    function startDragTool(type, e) {
+        if (isGameOver || isPaused || gameMode === 'hard') return;
+        if (type === 'bomb' && bombCount <= 0) return;
+        if (type === 'shake' && shakeCount <= 0) return;
+        
+        e.preventDefault(); e.stopPropagation();
+        currentDragTool = type;
+        
+        minBlastRadius = ROLES[0].radius;
+        maxBlastRadius = ROLES[12].radius * 1.5; 
+        
+        if (type === 'bomb') {
+            ghostIcon.innerText = '💣';
+            ghostInd.style.borderColor = '#FF334B';
+            ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.4) 0%, rgba(255,51,75,0.1) 100%)';
+        } else {
+            ghostIcon.innerText = '🌀';
+            ghostInd.style.borderColor = '#4169E1';
+            ghostInd.style.background = 'radial-gradient(circle, rgba(65,105,225,0.4) 0%, rgba(65,105,225,0.1) 100%)';
+        }
+        currentBlastRadius = minBlastRadius; 
+        
+        ghostTool.style.display = 'block';
+        updateGhostToolPos(e);
+        updateToolIndicator();
+
+        try { playSwordSound(); } catch(e){}
+
+        growTimer = setInterval(() => {
+            currentBlastRadius += 1.5; 
+            if (currentBlastRadius > maxBlastRadius) {
+                currentBlastRadius = minBlastRadius; 
+            }
+            updateToolIndicator();
+        }, 20);
+
+        document.addEventListener('mousemove', moveDragTool);
+        document.addEventListener('touchmove', moveDragTool, {passive: false});
+        document.addEventListener('mouseup', endDragTool);
+        document.addEventListener('touchend', endDragTool);
+    }
+
+    function updateGhostToolPos(e) {
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        ghostTool.style.left = x + 'px';
+        ghostTool.style.top = y + 'px';
+    }
+
+    function moveDragTool(e) {
+        if (!currentDragTool) return;
+        e.preventDefault(); e.stopPropagation();
+        updateGhostToolPos(e);
+    }
+
+    function endDragTool(e) {
+        if (!currentDragTool) return;
+        const toolType = currentDragTool;
+        currentDragTool = null;
+        ghostTool.style.display = 'none';
+        
+        clearInterval(growTimer);
+
+        document.removeEventListener('mousemove', moveDragTool);
+        document.removeEventListener('touchmove', moveDragTool);
+        document.removeEventListener('mouseup', endDragTool);
+        document.removeEventListener('touchend', endDragTool);
+
+        let x, y;
+        if (e.changedTouches) {
+            x = e.changedTouches[0].clientX;
+            y = e.changedTouches[0].clientY;
+        } else {
+            x = e.clientX;
+            y = e.clientY;
+        }
+
+        const box = wrapper.getBoundingClientRect();
+        if (x >= box.left && x <= box.right && y >= box.top && y <= box.bottom) {
+            const localX = x - box.left;
+            const localY = y - box.top;
+            if (toolType === 'bomb') {
+                executeBomb(localX, localY, currentBlastRadius);
+            } else if (toolType === 'shake') {
+                executeShake(localX, localY, currentBlastRadius);
+            }
+        }
+    }
+
+    function executeBomb(x, y, radius) {
+        bombCount--;
+        updateBombUI();
+        
+        const bodies = Composite.allBodies(engine.world);
+        const toRemove = [];
+        
+        bodies.forEach(b => {
+            if (b.roleInfo && !b.isStatic) {
+                const dist = Matter.Vector.magnitude(Matter.Vector.sub(b.position, {x, y}));
+                if (dist < radius + b.roleInfo.radius) {
+                    toRemove.push(b);
+                    score += (b.roleInfo.level + 1) * 2; 
+                }
+            }
+        });
+        
+        Composite.remove(engine.world, toRemove);
+        scoreEl.innerText = score;
+        try { playBombSound(); } catch(e){}
+
+        const wave = document.createElement('div');
+        wave.style.position = 'absolute';
+        wave.style.left = `${x}px`;
+        wave.style.top = `${y}px`;
+        wave.style.width = '0px';
+        wave.style.height = '0px';
+        wave.style.borderRadius = '50%';
+        wave.style.background = 'radial-gradient(circle, rgba(255,51,75,0.8) 0%, rgba(255,160,122,0) 70%)';
+        wave.style.transform = 'translate(-50%, -50%)';
+        wave.style.zIndex = '20';
+        wave.style.pointerEvents = 'none';
+        wave.style.transition = 'all 0.3s cubic-bezier(0.1, 0.8, 0.3, 1)';
+        wrapper.appendChild(wave);
+
+        requestAnimationFrame(() => {
+            wave.style.width = `${radius * 2.2}px`;
+            wave.style.height = `${radius * 2.2}px`;
+            wave.style.opacity = '0';
+        });
+
+        wrapper.classList.add('shake');
+        setTimeout(() => { wrapper.classList.remove('shake'); wave.remove(); }, 300);
+    }
+
+    function executeShake(x, y, radius) {
+        shakeCount--;
+        updateShakeUI();
+        
+        const bodies = Composite.allBodies(engine.world);
+        
+        bodies.forEach(b => {
+            if (b.roleInfo && !b.isStatic) {
+                const dist = Matter.Vector.magnitude(Matter.Vector.sub(b.position, {x, y}));
+                if (dist < radius + b.roleInfo.radius) {
+                    const forceMagnitude = (0.05 + Math.random() * 0.05) * b.mass;
+                    let angle = Math.atan2(b.position.y - y, b.position.x - x);
+                    if (dist < 5) angle = Math.random() * Math.PI * 2; 
+                    
+                    const forceX = Math.cos(angle) * forceMagnitude;
+                    const forceY = Math.sin(angle) * forceMagnitude - (0.08 * b.mass); 
+                    
+                    Matter.Body.applyForce(b, b.position, { x: forceX, y: forceY });
+                }
+            }
+        });
+        
+        try { playShakeSound(); } catch(e){}
+
+        const wave = document.createElement('div');
+        wave.style.position = 'absolute';
+        wave.style.left = `${x}px`;
+        wave.style.top = `${y}px`;
+        wave.style.width = '0px';
+        wave.style.height = '0px';
+        wave.style.borderRadius = '50%';
+        wave.style.background = 'radial-gradient(circle, rgba(65,105,225,0.8) 0%, rgba(65,105,225,0) 70%)';
+        wave.style.transform = 'translate(-50%, -50%)';
+        wave.style.zIndex = '20';
+        wave.style.pointerEvents = 'none';
+        wave.style.transition = 'all 0.3s cubic-bezier(0.1, 0.8, 0.3, 1)';
+        wrapper.appendChild(wave);
+
+        requestAnimationFrame(() => {
+            wave.style.width = `${radius * 2.2}px`;
+            wave.style.height = `${radius * 2.2}px`;
+            wave.style.opacity = '0';
+        });
+
+        wrapper.classList.add('shake');
+        setTimeout(() => { wrapper.classList.remove('shake'); wave.remove(); }, 300);
+    }
+
+    function updateBombUI() {
+        if (bombCount > 0 && gameMode !== 'hard') {
+            bombContainer.style.display = 'flex';
+            bombCountEl.innerText = `炸弹 × ${bombCount}`;
+        } else {
+            bombContainer.style.display = 'none';
+        }
+    }
+
+    function updateShakeUI() {
+        if (gameMode === 'hard') return;
+        shakeCountEl.innerText = `摇晃 × ${shakeCount}`;
+        if (shakeCount <= 0) {
+            shakeContainer.classList.add('tool-disabled');
+        } else {
+            shakeContainer.classList.remove('tool-disabled');
+        }
+    }
+
+    let comboCount = 0;
+    let lastMergeTime = 0;
+    const COMBO_WORDS = ["我佛糍粑", "苗哥我错了", "功夫小子", "这谁能顶住", "给大佬递锤子", "目中有人了！", "火遮眼了！"];
+
+    function triggerComboPopup(x, y) {
+        const now = Date.now();
+        if (now - lastMergeTime < 950) { comboCount++; } else { comboCount = 1; }
+        lastMergeTime = now;
+
+        if (comboCount >= 2) {
+            const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
+            const span = document.createElement('div');
+            span.className = 'combo-text';
+            span.innerText = `${word} Combo x${comboCount}!`;
+            span.style.left = `${x}px`;
+            span.style.top = `${y}px`;
+            span.style.fontSize = `${Math.min(28, 18 + comboCount * 2)}px`;
+            wrapper.appendChild(span);
+            setTimeout(() => span.remove(), 850);
+        }
+    }
+
+    function handleOrientation(event) {
+        if (isPaused || isGameOver || gameMode !== 'easy') return;
+        let gamma = event.gamma; 
+        if (gamma === null) return;
+        if (gamma > 45) gamma = 45;
+        if (gamma < -45) gamma = -45;
+        engine.gravity.x = gamma / 60; 
+    }
+
+    function handleMotion(event) {
+        if (isPaused || isGameOver || gameMode !== 'easy' || !event.accelerationIncludingGravity) return;
+        
+        let ax = event.acceleration?.x || event.accelerationIncludingGravity?.x || 0;
+        let ay = event.acceleration?.y || event.accelerationIncludingGravity?.y || 0;
+        let az = event.acceleration?.z || event.accelerationIncludingGravity?.z || 0;
+        
+        let deltaX = Math.abs(ax - lastAcc.x);
+        let deltaY = Math.abs(ay - lastAcc.y);
+        let deltaZ = Math.abs(az - lastAcc.z);
+
+        lastAcc = { x: ax, y: ay, z: az };
+        
+        if (deltaX > 2.0 || deltaY > 2.0 || deltaZ > 2.0) {
+            const bodies = Composite.allBodies(engine.world);
+            bodies.forEach(b => {
+                if (b.roleInfo && !b.isStatic) {
+                    const jiggleX = (Math.random() - 0.5) * 0.002 * b.mass;
+                    const jiggleY = -(Math.random() * 0.002) * b.mass; 
+                    Matter.Body.applyForce(b, b.position, { x: jiggleX, y: jiggleY });
+                }
+            });
+        }
+        
+        if (deltaX > 12 || deltaY > 12 || deltaZ > 12) {
+            const now = Date.now();
+            if (now - lastShakeTime > 800) {
+                lastShakeTime = now;
+                const bodies = Composite.allBodies(engine.world);
+                bodies.forEach(b => {
+                    if (b.roleInfo && !b.isStatic) {
+                        const forceX = (Math.random() - 0.5) * 0.05 * b.mass;
+                        const forceY = -(0.05 + Math.random() * 0.08) * b.mass;
+                        Matter.Body.applyForce(b, b.position, { x: forceX, y: forceY });
+                    }
+                });
+                try { playGrandTriumphSound(); } catch(e){}
+                wrapper.classList.add('shake');
+                setTimeout(() => wrapper.classList.remove('shake'), 300);
+            }
+        }
+    }
+
+    const wrapper = document.getElementById('game-wrapper');
+    const previewEl = document.getElementById('dropper-preview');
+    const scoreEl = document.getElementById('score');
+    const gameOverMask = document.getElementById('game-over-mask');
+    const finalScoreEl = document.getElementById('final-score');
+    const maxRoleTag = document.getElementById('max-role-tag');
+
+    const rect = wrapper.getBoundingClientRect();
+    let width = rect.width;
+    let height = rect.height;
+
+    const scaleFactor = Math.min(1.2, Math.max(0.95, width / 380));
+
+    const RAW_ROLES = [
+        { level: 0,  name: "成瞎子", baseR: 22 },
+        { level: 1,  name: "少林小子",   baseR: 28 },
+        { level: 2,  name: "小飞侠", baseR: 35 },
+        { level: 3,  name: "宰相小甘罗",   baseR: 43 },
+        { level: 4,  name: "体育老师", baseR: 52 },
+        { level: 5,  name: "齐天大圣",   baseR: 62 },
+        { level: 6,  name: "东百阿sir", baseR: 72 },
+        { level: 7,  name: "网大一哥",   baseR: 80 },
+        { level: 8,  name: "好辣好辣",   baseR: 88 },
+        { level: 9,  name: "荧幕巨星", baseR: 97 },
+        { level: 10, name: "英雄母亲", baseR: 106 },
+        { level: 11, name: "华夏第一美胸",   baseR: 116 },
+        { level: 12, name: "苗哥本尊", baseR: 128 }
+    ];
+
+    const ROLES = RAW_ROLES.map(item => ({
+        level: item.level,
+        name: item.name,
+        radius: Math.round(item.baseR * scaleFactor)
+    }));
+
+    const roleImages = [];
+    function initImageAssets() {
+        ROLES.forEach((role, index) => {
+            const num = index + 1;
+            const img = new Image();
+            const candidatePaths = [
+                `./images/role(${num}).png`,`./images/role(${num}).jpg`,`./images/role（${num}）.png`,`./images/role（${num}）.jpg`,`./images/role${num}.png`,`./images/role${num}.jpg`
+            ];
+            let attempt = 0;
+            img.onerror = () => {
+                attempt++;
+                if (attempt < candidatePaths.length) {
+                    img.src = encodeURI(candidatePaths[attempt]);
+                }
+            };
+            img.src = encodeURI(candidatePaths[0]);
+            roleImages.push(img);
+        });
+    }
+    initImageAssets();
+
+    let score = 0;
+    let highestLevel = 0;
+    let isGameOver = false;
+    let canDrop = true;
+    let currentDropLevel = 0;
+    let currentX = width / 2;
+
+    const { Engine, Render, Runner, Bodies, Composite, Events } = Matter;
+    const engine = Engine.create({ enableSleeping: false });
+    engine.gravity.y = 1.6; 
+
+    const render = Render.create({
+        element: wrapper,
+        engine: engine,
+        options: {
+            width: width,
+            height: height,
+            wireframes: false,
+            background: 'transparent'
+        }
+    });
+
+    Render.run(render);
+    const runner = Runner.create();
+    Runner.run(runner, engine);
+
+    const wallThick = 60;
+    const ground = Bodies.rectangle(width / 2, height + wallThick / 2, width * 2, wallThick, { isStatic: true, friction: 0.8, render: { visible: false } });
+    const leftWall = Bodies.rectangle(-wallThick / 2, height / 2, wallThick, height * 2, { isStatic: true, friction: 0.8, render: { visible: false } });
+    const rightWall = Bodies.rectangle(width + wallThick / 2, height / 2, wallThick, height * 2, { isStatic: true, friction: 0.8, render: { visible: false } });
+    Composite.add(engine.world, [ground, leftWall, rightWall]);
+
+    Events.on(render, 'afterRender', () => {
+        const ctx = render.context;
+        const bodies = Composite.allBodies(engine.world);
+
+        bodies.forEach(body => {
+            if (body.roleInfo) {
+                const { x, y } = body.position;
+                const r = body.roleInfo.radius;
+                const img = roleImages[body.roleInfo.level];
+
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(body.angle);
+                ctx.beginPath();
+                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                ctx.clip();
+
+                if (img && img.complete && img.naturalWidth !== 0) {
+                    ctx.drawImage(img, -r, -r, r * 2, r * 2);
+                } else {
+                    ctx.fillStyle = "#1E2028";
+                    ctx.fill();
+                    const calculatedFontSize = Math.max(15, Math.round(r * 0.38));
+                    ctx.fillStyle = "#FFD166";
+                    ctx.font = `900 ${calculatedFontSize}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 3;
+                    ctx.strokeText(body.roleInfo.name, 0, 0);
+                    ctx.fillText(body.roleInfo.name, 0, 0);
+                }
+                ctx.restore();
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.beginPath();
+                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                ctx.lineWidth = body.roleInfo.level >= 10 ? 4 : 2.5;
+                ctx.strokeStyle = body.roleInfo.level >= 10 ? '#FFD166' : '#D4AF37';
+                ctx.stroke();
+                ctx.restore();
+            }
+        });
+    });
+
+    function setupNextDrop() {
+        let maxDropLevel = 3; 
+        if (score > 300) maxDropLevel = 4;
+        if (highestLevel >= 4) maxDropLevel = 5;
+        if (highestLevel >= 6) maxDropLevel = 6;
+        if (highestLevel >= 8) maxDropLevel = 7;
+        if (highestLevel >= 10) maxDropLevel = 8; 
+
+        currentDropLevel = Math.floor(Math.random() * maxDropLevel);
+        const info = ROLES[currentDropLevel];
+        const r = info.radius;
+
+        previewEl.style.width = (r * 2) + 'px';
+        previewEl.style.height = (r * 2) + 'px';
+
+        const img = roleImages[currentDropLevel];
+        if (img && img.src && img.complete && img.naturalWidth !== 0) {
+            previewEl.style.backgroundImage = `url('${img.src}')`;
+            previewEl.innerText = "";
+        } else {
+            previewEl.style.backgroundImage = "none";
+            previewEl.style.backgroundColor = "#2B2D42";
+            previewEl.innerText = info.name;
+            previewEl.style.fontSize = Math.max(15, Math.round(info.radius * 0.38)) + 'px';
+        }
+
+        updatePreviewPos(currentX);
+    }
+
+    function updatePreviewPos(x) {
+        const r = ROLES[currentDropLevel].radius;
+        const clampedX = Math.max(r + 2, Math.min(width - r - 2, x));
+        currentX = clampedX;
+        previewEl.style.left = clampedX + 'px';
+    }
+
+    function dropRole() {
+        if (!canDrop || isGameOver || isPaused || currentDragTool) return;
+        canDrop = false;
+
+        const info = ROLES[currentDropLevel];
+        // ★ 完美还原 4% 的下落高度 ★
+        const dropY = height * 0.04; 
+        const circle = Bodies.circle(currentX, dropY, info.radius, {
+            restitution: 0.05, 
+            friction: 0.01,   
+            density: 0.003,
+            render: { visible: false }
+        });
+        circle.roleInfo = info;
+        Composite.add(engine.world, circle);
+
+        try { playWhooshSound(); } catch(e){}
+        previewEl.style.display = 'none';
+
+        setTimeout(() => {
+            if (!isGameOver && !isPaused) {
+                setupNextDrop();
+                previewEl.style.display = 'flex';
+                canDrop = true;
+            }
+        }, 500);
+    }
+
+    Events.on(engine, 'collisionStart', (event) => {
+        event.pairs.forEach(pair => {
+            const bodyA = pair.bodyA;
+            const bodyB = pair.bodyB;
+
+            if (bodyA.roleInfo && bodyB.roleInfo) {
+                if (bodyA.roleInfo.level === bodyB.roleInfo.level) {
+                    const nextLevel = bodyA.roleInfo.level + 1;
+                    if (nextLevel < ROLES.length && !bodyA.isRemoved && !bodyB.isRemoved) {
+                        bodyA.isRemoved = true;
+                        bodyB.isRemoved = true;
+
+                        const midX = (bodyA.position.x + bodyB.position.x) / 2;
+                        const midY = (bodyA.position.y + bodyB.position.y) / 2;
+                        const nextInfo = ROLES[nextLevel];
+
+                        Composite.remove(engine.world, [bodyA, bodyB]);
+
+                        const newCircle = Bodies.circle(midX, midY, nextInfo.radius, {
+                            restitution: 0.05,
+                            friction: 0.01,
+                            density: 0.003,
+                            render: { visible: false }
+                        });
+                        newCircle.roleInfo = nextInfo;
+                        Composite.add(engine.world, newCircle);
+
+                        if (nextLevel >= 7) {
+                            wrapper.classList.add('shake');
+                            setTimeout(() => wrapper.classList.remove('shake'), 160);
+                        }
+
+                        if (nextLevel > highestLevel) {
+                            highestLevel = nextLevel;
+                            if (gameMode !== 'hard') {
+                                bombCount++;
+                                updateBombUI();
+                            }
+                        }
+
+                        score += (nextLevel + 1) * 3;
+                        scoreEl.innerText = score;
+
+                        playSoundByLevel(nextLevel);
+                        triggerComboPopup(midX, midY);
+                    }
+                }
+            }
+        });
+    });
+
+    // ★ 完美还原 10% 的警戒线判定高度 ★
+    const DANGER_Y = height * 0.10; 
+    setInterval(() => {
+        if (isGameOver || isPaused) return;
+        const bodies = Composite.allBodies(engine.world);
+        bodies.forEach(b => {
+            if (b.roleInfo && (b.position.y - b.roleInfo.radius < DANGER_Y)) {
+                if (Math.abs(b.velocity.y) < 0.2 && Math.abs(b.velocity.x) < 0.2 && b.position.y > (height * 0.08)) {
+                    triggerGameOver();
+                }
+            }
+        });
+    }, 1000);
+
+    function triggerGameOver() {
+        isGameOver = true;
+        previewEl.style.display = 'none';
+        document.getElementById('tools-container').style.display = 'none';
+        
+        const badge = document.getElementById('poster-mode-badge');
+        badge.innerText = modeNames[gameMode];
+        if(gameMode === 'easy') {
+            badge.style.background = '#D4AF37';
+            badge.style.color = '#000';
+        } else if(gameMode === 'medium') {
+            badge.style.background = '#F77F00';
+            badge.style.color = '#FFF';
+        } else {
+            badge.style.background = '#E63946';
+            badge.style.color = '#FFF';
+        }
+
+        finalScoreEl.innerText = score;
+        maxRoleTag.innerText = `最高形态：${ROLES[highestLevel].name}`;
+        gameOverMask.style.display = 'flex';
+    }
+
+    function generatePoster() {
+        const captureArea = document.getElementById('capture-area');
+        const mobilePosterBox = document.getElementById('mobile-poster-box');
+        const finalPosterImg = document.getElementById('final-poster-img');
+        const genBtn = document.getElementById('gen-poster-btn');
+
+        html2canvas(captureArea, {
+            scale: 2,
+            backgroundColor: "#16181E",
+            useCORS: true
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            finalPosterImg.src = imgData;
+            captureArea.style.display = 'none';
+            genBtn.style.display = 'none';
+            mobilePosterBox.style.display = 'flex';
+        });
+    }
+
+    function handlePointerCoord(e) {
+        if (isPaused || currentDragTool) return;
+        const box = wrapper.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        updatePreviewPos(clientX - box.left);
+    }
+
+    wrapper.addEventListener('touchstart', (e) => { 
+        if(!currentDragTool) handlePointerCoord(e);
+    }, { passive: true });
+    wrapper.addEventListener('touchmove', (e) => { 
+        if (canDrop && !isPaused && !currentDragTool) handlePointerCoord(e); 
+    }, { passive: true });
+    wrapper.addEventListener('touchend', () => { 
+        if(!currentDragTool) dropRole(); 
+    });
+
+    wrapper.addEventListener('mousedown', (e) => { 
+        if(!currentDragTool) handlePointerCoord(e);
+    });
+    wrapper.addEventListener('mousemove', (e) => { 
+        if (canDrop && !isPaused && !currentDragTool) handlePointerCoord(e); 
+    });
+    wrapper.addEventListener('mouseup', () => { 
+        if(!currentDragTool) dropRole(); 
+    });
+
+    setupNextDrop();
+</script>
+
+</body>
+</html>
