@@ -50,7 +50,6 @@
             }
         }
 
-        /* 顶部看板大字号增强 */
         .top-bar {
             width: 100%;
             padding: 12px 18px;
@@ -129,7 +128,6 @@
             line-height: 1.1;
         }
 
-        /* 战斗主舞台 */
         #game-wrapper {
             position: relative;
             width: 100%;
@@ -141,7 +139,6 @@
             touch-action: none;
         }
 
-        /* ★ 警戒线绝对像素定位 ★ */
         #danger-line {
             position: absolute;
             left: 0;
@@ -163,7 +160,6 @@
             letter-spacing: 1px;
         }
 
-        /* ★ 道具栏：左上角并排显示（暗黑风格） ★ */
         #tools-container {
             position: absolute;
             left: 10px;
@@ -213,7 +209,6 @@
             z-index: -1;
         }
 
-        /* 下落指示球 */
         #dropper-preview {
             position: absolute;
             top: 15px;
@@ -235,7 +230,6 @@
             transition: left 0.1s;
         }
 
-        /* 连击浮动大字 */
         .combo-text {
             position: absolute;
             font-weight: 900;
@@ -261,7 +255,6 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
 
-        /* ★ 全局通用读档弹窗（暗黑风格） ★ */
         #global-load-menu {
             display: none;
             position: fixed;
@@ -278,7 +271,6 @@
         }
         #global-save-list button { position: relative; }
 
-        /* ★ 授权启动页 - 难度选择 ★ */
         #init-mask {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -432,7 +424,6 @@
             max-width: 320px;
         }
 
-        /* 按钮样式统一 */
         .btn-core {
             border: none;
             padding: 14px 0;
@@ -477,7 +468,6 @@
         }
         .toast-show { top: 30px !important; opacity: 1 !important; }
 
-        /* 输入框暗黑样式 */
         #save-name-input {
             width: 100%;
             padding: 12px;
@@ -496,19 +486,17 @@
 </head>
 <body>
 
-<audio id="bgm" src="./my-bgm.mp3" loop preload="auto"></audio>
+<!-- ★ 在这里配置你的 BGM，将文件命名为 bgm.mp3 放在同一文件夹下 ★ -->
+<audio id="bgm" src="./bgm.mp3" loop preload="auto"></audio>
 
-<!-- ★ 全局通用读档弹窗 ★ -->
 <div id="global-load-menu">
     <h3 style="color:#D4AF37; text-align:center; margin-bottom:5px;">读取存档</h3>
     <div style="text-align:center; font-size:12px; color:#E63946; margin-bottom:15px; font-weight:bold;">(长按存档条目可删除)</div>
     <div id="global-save-list" style="max-height: 250px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; margin-bottom:15px;">
-        <!-- 存档列表动态生成 -->
     </div>
     <button class="btn-core btn-dark" style="width:100%;" onclick="closeLoadMenu()">返回</button>
 </div>
 
-<!-- 启动授权页 - 难度选择与读档 -->
 <div id="init-mask">
     <div class="init-title">合成大苗哥<br><span style="font-size: 24px; color: #FF334B;">雷霆版</span></div>
     <div class="init-desc">请选择适合你的挑战模式</div>
@@ -657,18 +645,13 @@
     const initLoadBtn = document.getElementById('init-load-btn');
     const saveToast = document.getElementById('save-toast');
 
+    // ★ 防卡死核心逻辑：无论底层 API 报什么错，绝对保证界面流程正常进行 ★
     function startGame(mode) {
+        // 第一步：立刻隐藏遮罩，保证玩家能进入游戏
+        initMask.style.display = 'none';
         gameMode = mode;
         
-        initAudio();
-        bgm.volume = 0.25;
-        bgm.play().then(() => {
-            bgmToggle.innerText = '🎵';
-            bgmToggle.classList.remove('bgm-paused');
-            bgmToggle.classList.add('bgm-playing');
-            bgmStarted = true;
-        }).catch(e => console.log(e));
-
+        // 配置工具栏
         if (mode === 'hard') {
             toolsContainer.style.display = 'none';
             shakeCount = 0; 
@@ -678,11 +661,27 @@
             updateShakeUI();
         }
 
+        // 第二步：尝试启动体感
         if (mode === 'easy') {
-            startMotionSensors();
+            try { startMotionSensors(); } catch(e) { console.log(e); }
         }
 
-        initMask.style.display = 'none';
+        // 第三步：尝试播放音频，遇到拦截直接静默跳过
+        try {
+            initAudio();
+            if (bgm) {
+                bgm.volume = 0.25;
+                let playPromise = bgm.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        bgmToggle.innerText = '🎵';
+                        bgmToggle.classList.remove('bgm-paused');
+                        bgmToggle.classList.add('bgm-playing');
+                        bgmStarted = true;
+                    }).catch(e => console.log("BGM 自动播放被拦截，等待用户手动开启"));
+                }
+            }
+        } catch(e) { console.log("Audio Context Error", e); }
     }
 
     function startMotionSensors() {
@@ -729,10 +728,12 @@
         }
     });
 
-    // ========== ★ 存档读档与长按删除系统 (独立命名空间) ★ ==========
+    // ========== 存档与读档系统 ==========
     function getSaves() {
-        let saves = localStorage.getItem('miaoGeThunderSaves');
-        return saves ? JSON.parse(saves) : {};
+        try {
+            let saves = localStorage.getItem('miaoGeThunderSaves');
+            return saves ? JSON.parse(saves) : {};
+        } catch(e) { return {}; }
     }
 
     function updateLoadButtonState() {
@@ -829,7 +830,7 @@
         if (confirm(`确定要彻底删除雷霆版存档 [${name}] 吗？`)) {
             const saves = getSaves();
             delete saves[name];
-            localStorage.setItem('miaoGeThunderSaves', JSON.stringify(saves));
+            try { localStorage.setItem('miaoGeThunderSaves', JSON.stringify(saves)); } catch(e){}
             updateLoadList();
             updateLoadButtonState();
         }
@@ -884,7 +885,7 @@
 
         const saves = getSaves();
         saves[name] = { score, highestLevel, bombCount, shakeCount, currentDropLevel, bodies: bodiesData, mode: gameMode };
-        localStorage.setItem('miaoGeThunderSaves', JSON.stringify(saves));
+        try { localStorage.setItem('miaoGeThunderSaves', JSON.stringify(saves)); } catch(e){}
         
         saveToast.innerText = `✨ [${name}] 保存成功 ✨`;
         saveToast.classList.add('toast-show');
@@ -897,15 +898,20 @@
         const data = saves[name];
         if(!data) return;
 
-        if (!bgmStarted) {
-            initAudio();
-            bgm.volume = 0.25;
-            bgm.play().then(() => {
-                bgmToggle.innerText = '🎵';
-                bgmToggle.classList.remove('bgm-paused');
-                bgmToggle.classList.add('bgm-playing');
-                bgmStarted = true;
-            }).catch(e => console.log(e));
+        if (!bgmStarted && bgm) {
+            try {
+                initAudio();
+                bgm.volume = 0.25;
+                let playPromise = bgm.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        bgmToggle.innerText = '🎵';
+                        bgmToggle.classList.remove('bgm-paused');
+                        bgmToggle.classList.add('bgm-playing');
+                        bgmStarted = true;
+                    }).catch(e => console.log(e));
+                }
+            } catch(e){}
         }
 
         const activeBodies = Composite.allBodies(engine.world).filter(b => b.roleInfo && !b.isStatic);
@@ -927,7 +933,7 @@
         }
 
         if (gameMode === 'easy') {
-            startMotionSensors();
+            try { startMotionSensors(); } catch(e){}
         } else {
             stopMotionSensors();
         }
@@ -1007,9 +1013,7 @@
         updateGhostToolPos(e);
         updateToolIndicator();
 
-        // 蓄力音效（复用雷霆版的剑鸣音效处理为蓄力）
-        initAudio();
-        playSwordSound(); // 这里简单用剑鸣代表蓄力
+        try { initAudio(); playSwordSound(); } catch(e){}
 
         growTimer = setInterval(() => {
             currentBlastRadius += 1.5; 
@@ -1091,7 +1095,7 @@
         
         Composite.remove(engine.world, toRemove);
         scoreEl.innerText = score;
-        playHeavyPunchSound(10); // 炸弹爆炸音效
+        try { playHeavyPunchSound(10); } catch(e){}
 
         const wave = document.createElement('div');
         wave.style.position = 'absolute';
@@ -1139,7 +1143,7 @@
             }
         });
         
-        playGrandTriumphSound();
+        try { playGrandTriumphSound(); } catch(e){}
 
         const wave = document.createElement('div');
         wave.style.position = 'absolute';
@@ -1187,6 +1191,7 @@
     // ========== 雷霆版原有音效 ==========
     function playWhooshSound() {
         initAudio();
+        if(!audioCtx) return;
         const bufferSize = audioCtx.sampleRate * 0.12;
         const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
         const data = buffer.getChannelData(0);
@@ -1213,6 +1218,7 @@
 
     function playHeavyPunchSound(level = 6) {
         initAudio();
+        if(!audioCtx) return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'triangle';
@@ -1231,6 +1237,7 @@
 
     function playSwordSound() {
         initAudio();
+        if(!audioCtx) return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
@@ -1249,6 +1256,7 @@
 
     function playGrandTriumphSound() {
         initAudio();
+        if(!audioCtx) return;
         const notes = [261.63, 329.63, 392.00, 523.25];
         notes.forEach((freq, idx) => {
             const osc = audioCtx.createOscillator();
@@ -1265,10 +1273,12 @@
     }
 
     function playSoundByLevel(level) {
-        if (level === 10) playSwordSound();
-        else if (level >= 11) playGrandTriumphSound();
-        else if (level >= 6) playHeavyPunchSound(level);
-        else playWhooshSound();
+        try {
+            if (level === 10) playSwordSound();
+            else if (level >= 11) playGrandTriumphSound();
+            else if (level >= 6) playHeavyPunchSound(level);
+            else playWhooshSound();
+        } catch(e){}
     }
 
     let comboCount = 0;
@@ -1339,7 +1349,7 @@
                         Matter.Body.applyForce(b, b.position, { x: forceX, y: forceY });
                     }
                 });
-                playGrandTriumphSound();
+                try { playGrandTriumphSound(); } catch(e){}
                 wrapper.classList.add('shake');
                 setTimeout(() => wrapper.classList.remove('shake'), 300);
             }
@@ -1413,7 +1423,7 @@
 
     const { Engine, Render, Runner, Bodies, Composite, Events } = Matter;
     const engine = Engine.create({ enableSleeping: false });
-    engine.gravity.y = 1.6; // 稍微调低增加丝滑感
+    engine.gravity.y = 1.6; 
 
     const render = Render.create({
         element: wrapper,
@@ -1522,7 +1532,6 @@
         canDrop = false;
 
         const info = ROLES[currentDropLevel];
-        // 绝对像素下落保护
         const dropY = 15 + info.radius; 
         const circle = Bodies.circle(currentX, dropY, info.radius, {
             restitution: 0.05, 
@@ -1533,7 +1542,7 @@
         circle.roleInfo = info;
         Composite.add(engine.world, circle);
 
-        playWhooshSound();
+        try { playWhooshSound(); } catch(e){}
         previewEl.style.display = 'none';
 
         setTimeout(() => {
