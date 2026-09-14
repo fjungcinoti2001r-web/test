@@ -2,14 +2,15 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="HandheldFriendly" content="true">
+    <!-- 开放用户缩放，允许双指捏合 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>开心苗苗乐·演员谢苗超话制作</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: manipulation; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; }
+        
         html, body {
-            width: 100%; height: 100%; height: 100dvh; overflow: hidden;
+            width: 100%; height: 100%; height: 100dvh; overflow: auto; /* 允许滚动和缩放 */
             background-color: #FFF8EA; color: #5C4033; font-family: 'PingFang SC', sans-serif;
             display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(#FAD6A5 10%, transparent 11%); background-size: 30px 30px;
@@ -40,7 +41,7 @@
         .score-label { font-size: 9px; color: #FF9800; font-weight: 900; }
         .score-val { font-size: 15px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
-        /* 顶部舞台区：对齐图2比例 */
+        /* 顶部舞台区 */
         #top-stage {
             height: 18%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
@@ -56,7 +57,7 @@
         }
         #desk-prop { width: 36px; height: 36px; margin-top: -18px; font-size: 20px; display: flex; justify-content: center; align-items: center; background-size: contain; background-repeat: no-repeat; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
-        /* 消除区：撑满剩余空间 */
+        /* 消除区 */
         #game-wrapper {
             position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; padding: 6px; background: #FFFDF9; box-shadow: inset 0 0 15px rgba(222, 184, 135, 0.3);
         }
@@ -588,7 +589,7 @@
     function closePoster() { document.getElementById('poster-mask').style.display = 'none'; if(props.refresh <= 0) { localStorage.removeItem('miaoAutoSave'); location.reload(); } }
 
     if (!loadAutoSave()) { initBoard(); updatePropUI(); applyEvolution(0); }
-    document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+    // 移除了强行 preventDefault 的 touchmove，恢复正常的自由缩放与滚动
 </script>
 </body>
 </html>
