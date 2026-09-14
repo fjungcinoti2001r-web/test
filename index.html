@@ -9,10 +9,51 @@
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; }
         
         html, body {
-            width: 100%; height: 100%; height: 100dvh; overflow: hidden; /* 锁死根页面滚动，防止拖拽道具时整个页面乱动 */
+            width: 100%; height: 100%; height: 100dvh; overflow: hidden;
             background-color: #FFF8EA; color: #5C4033; font-family: 'PingFang SC', sans-serif;
             display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(#FAD6A5 10%, transparent 11%); background-size: 30px 30px;
+        }
+
+        /* ===== 动态效果引导页样式 ===== */
+        #intro-mask {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #FFF5E1 0%, #FFEFD5 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 99999; text-align: center; padding: 20px; transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .intro-content {
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+            animation: introBounce 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes introBounce {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .intro-title-1 {
+            font-size: 34px; font-weight: 900; color: #D2691E; letter-spacing: 2px;
+            text-shadow: 0 4px 10px rgba(210, 105, 30, 0.2);
+        }
+        .intro-title-2 {
+            display: flex; align-items: center; gap: 10px; font-size: 16px; color: #8B5A2B; font-weight: bold;
+            background: rgba(255, 255, 255, 0.5); padding: 6px 18px; border-radius: 30px; border: 2px solid #FAD6A5;
+        }
+        .intro-title-2 img { width: 32px; height: 32px; object-fit: contain; border-radius: 50%; border: 1px solid #DEB887; }
+        .intro-title-3 {
+            font-size: 12px; color: #CD853F; font-weight: bold; letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.6); padding: 4px 14px; border-radius: 20px; border: 1px dashed #DEB887;
+        }
+        .intro-enter-btn {
+            margin-top: 15px; padding: 12px 36px; background-color: #3CB371; color: white;
+            font-size: 18px; font-weight: 900; border: none; border-radius: 30px; cursor: pointer;
+            box-shadow: 0 6px 0 #2E8B57, 0 10px 20px rgba(60, 179, 113, 0.3); transition: transform 0.1s, box-shadow 0.1s;
+            animation: pulseBtn 2s infinite;
+        }
+        .intro-enter-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #2E8B57; }
+        @keyframes pulseBtn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         #arcade-container {
@@ -81,7 +122,7 @@
         @keyframes popOut { 50% { transform: scale(1.3); opacity: 0.8; } 100% { transform: scale(0); opacity: 0; } }
         .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.3s ease-out; }
 
-        /* 拖动道具跟随层与指示器 */
+        /* 拖动道具跟随层 */
         #ghost-tool { display: none; position: fixed; font-size: 32px; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); }
         #ghost-tool-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed; z-index: -1; }
 
@@ -141,6 +182,19 @@
 </head>
 <body>
 <div id="toast">提示信息</div>
+
+<!-- ===== 动态效果引导页 ===== -->
+<div id="intro-mask">
+    <div class="intro-content">
+        <div class="intro-title-1">开心苗苗乐</div>
+        <div class="intro-title-2">
+            <img src="images/avatar-logo.png" alt="logo" onerror="this.style.display='none'">
+            <span>演员超话制作</span>
+        </div>
+        <div class="intro-title-3">制作：林科森 | 制图：老周</div>
+        <button class="intro-enter-btn" onclick="enterGame()">点击进入</button>
+    </div>
+</div>
 
 <div id="ghost-tool">
     <div id="ghost-tool-indicator"></div>
@@ -202,7 +256,7 @@
             </div>
             <div class="poster-title">开心苗苗乐</div>
             <div id="poster-avatar-preview" style="width: 90px; height: 90px; background-size: contain; background-repeat: no-repeat; background-position: center; font-size: 60px; text-align: center; line-height: 90px;">👦</div>
-            <div class="poster-role-tag" id="poster-role-text">已解锁：洪文定</div>
+            <div class="poster-role-tag" id="poster-role-text">已解锁：第一阶段·洪文定</div>
             <div class="poster-score-box">
                 <div style="font-size: 13px; color: #8B5A2B; font-weight: bold;">历史最高战力</div>
                 <div class="poster-score-num" id="poster-score">0</div>
@@ -221,20 +275,37 @@
 <audio id="bgm" src="audio/bgm.mp3" loop preload="auto"></audio>
 
 <script>
+    // 点击进入游戏引导页
+    function enterGame() {
+        const mask = document.getElementById('intro-mask');
+        mask.style.opacity = '0';
+        mask.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            mask.style.display = 'none';
+        }, 600);
+        // 尝试自动播放背景音乐
+        const bgm = document.getElementById('bgm');
+        if(bgm.paused) {
+            bgm.play().catch(e => console.log('BGM auto-play blocked'));
+            document.getElementById('bgm-toggle').innerText = '🎵';
+            document.getElementById('bgm-toggle').classList.add('bgm-playing');
+        }
+    }
+
     const ROWS = 9, COLS = 9; let TILE_SIZE = 40;
     const TYPES = ['🥋', '🕶️', '🗡️', '👊', '🧨', '📿', '🍶']; 
     const EVOLUTION = [
-        { score: 0,     name: "洪文定", avatar: "url('images/avatar_1.png')", fallback: "👦", prop: "url('images/prop_1.png')", propFallback: "🍵" },
-        { score: 300,   name: "海远",   avatar: "url('images/avatar_2.png')", fallback: "🧑", prop: "url('images/prop_2.png')", propFallback: "🥢" },
-        { score: 800,   name: "巩固",   avatar: "url('images/avatar_3.png')", fallback: "👨", prop: "url('images/prop_3.png')", propFallback: "🎒" },
-        { score: 1500,  name: "惠忍",   avatar: "url('images/avatar_4.png')", fallback: "🦲", prop: "url('images/prop_4.png')", propFallback: "📿" },
-        { score: 2500,  name: "韩晓峰", avatar: "url('images/avatar_5.png')", fallback: "🧥", prop: "url('images/prop_5.png')", propFallback: "📱" },
-        { score: 4000,  name: "李红旗", avatar: "url('images/avatar_6.png')", fallback: "👮", prop: "url('images/prop_6.png')", propFallback: "🚔" },
-        { score: 6500,  name: "成瞎子", avatar: "url('images/avatar_7.png')", fallback: "🦯", prop: "url('images/prop_7.png')", propFallback: "🍶" },
-        { score: 9500,  name: "张柳成", avatar: "url('images/avatar_8.png')", fallback: "👔", prop: "url('images/prop_8.png')", propFallback: "🪓" },
-        { score: 12500, name: "黄铭金", avatar: "url('images/avatar_9.png')", fallback: "🕶️", prop: "url('images/prop_9.png')", propFallback: "💼" },
-        { score: 16000, name: "王伟", avatar: "url('images/avatar_10.png')",fallback: "🔥", prop: "url('images/prop_10.png')",propFallback: "🩸" },
-        { score: 20000, name: "苗哥本人",avatar: "url('images/avatar_11.png')",fallback: "😎", prop: "url('images/prop_11.png')",propFallback: "🎬" }
+        { score: 0,     name: "第一阶段：洪文定", avatar: "url('images/avatar_1.png')", fallback: "👦", prop: "url('images/prop_1.png')", propFallback: "🍵" },
+        { score: 300,   name: "第二阶段：海远",   avatar: "url('images/avatar_2.png')", fallback: "🧑", prop: "url('images/prop_2.png')", propFallback: "🥢" },
+        { score: 800,   name: "第三阶段：巩固",   avatar: "url('images/avatar_3.png')", fallback: "👨", prop: "url('images/prop_3.png')", propFallback: "🎒" },
+        { score: 1500,  name: "第四阶段：惠忍",   avatar: "url('images/avatar_4.png')", fallback: "🦲", prop: "url('images/prop_4.png')", propFallback: "📿" },
+        { score: 2500,  name: "第五阶段：韩晓峰", avatar: "url('images/avatar_5.png')", fallback: "🧥", prop: "url('images/prop_5.png')", propFallback: "📱" },
+        { score: 4000,  name: "第六阶段：李红旗", avatar: "url('images/avatar_6.png')", fallback: "👮", prop: "url('images/prop_6.png')", propFallback: "🚔" },
+        { score: 6500,  name: "第七阶段：成瞎子", avatar: "url('images/avatar_7.png')", fallback: "🦯", prop: "url('images/prop_7.png')", propFallback: "🍶" },
+        { score: 9500,  name: "第八阶段：张柳成", avatar: "url('images/avatar_8.png')", fallback: "👔", prop: "url('images/prop_8.png')", propFallback: "🪓" },
+        { score: 12500, name: "第九阶段：黄铭金", avatar: "url('images/avatar_9.png')", fallback: "🕶️", prop: "url('images/prop_9.png')", propFallback: "💼" },
+        { score: 16000, name: "第十阶段：火遮眼", avatar: "url('images/avatar_10.png')",fallback: "🔥", prop: "url('images/prop_10.png')",propFallback: "🩸" },
+        { score: 20000, name: "终极形态：苗哥本人",avatar: "url('images/avatar_11.png')",fallback: "😎", prop: "url('images/prop_11.png')",propFallback: "🎬" }
     ];
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
@@ -376,7 +447,6 @@
         });
     }
 
-    // 绑定锤子和炸弹的拖拽逻辑
     setupToolDrag('hammer-tool', 'hammer');
     setupToolDrag('bomb-tool', 'bomb');
 
@@ -409,7 +479,7 @@
                 ghostInd.style.borderColor = '#FF334B';
                 ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.3) 0%, rgba(255,51,75,0.1) 100%)';
             } else {
-                // 锤子为固定单格大小
+                // 锤子固定单格大小
                 ghostInd.style.width = `${TILE_SIZE}px`;
                 ghostInd.style.height = `${TILE_SIZE}px`;
                 ghostInd.style.borderColor = '#3CB371';
@@ -417,8 +487,6 @@
             }
 
             ghostTool.style.display = 'block'; updateGhostPos(e);
-            
-            // 使用全局监听并加入 passive: false 彻底阻止屏幕乱动
             document.addEventListener('pointermove', moveDrag, { passive: false });
             document.addEventListener('pointerup', endDrag, { passive: false });
         };
@@ -433,7 +501,7 @@
 
     function moveDrag(e) { 
         if (activeDragTool) {
-            e.preventDefault(); // 锁死默认滚动，让画面不会跟着拖拽乱动
+            e.preventDefault(); 
             updateGhostPos(e); 
         }
     }
@@ -597,7 +665,7 @@
         document.getElementById('capture-area').style.display = 'flex'; document.getElementById('final-poster-img').style.display = 'none'; document.getElementById('save-tip-text').innerText = "正在生成海报...";
         setTimeout(() => {
             html2canvas(document.getElementById('capture-area'), { scale: 3, backgroundColor: "#FFF5E1", useCORS: true }).then(canvas => {
-                document.getElementById('final-poster-img').src = canvas.toDataURL('image/png'); document.getElementById('capture-area').style.display = 'none'; document.getElementById('final-poster-img').style.display = 'block'; document.getElementById('save-tip-text').innerText = "👇 长按上方图片即可保存到相册 👇";
+                document.getElementById('final-poster-img').src = canvas.toDataURL('image/png'); document.getElementById('capture-area').style.display = 'none'; document.getElementById('final-poster-img'].style.display = 'block'; document.getElementById('save-tip-text').innerText = "👇 长按上方图片即可保存到相册 👇";
             });
         }, 500);
     }
