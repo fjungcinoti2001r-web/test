@@ -70,6 +70,13 @@
             white-space: nowrap;
         }
 
+        .logo-img {
+            width: 45px; 
+            height: 45px;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
         .title-group h1 {
             font-size: 22px;
             color: #D4AF37;
@@ -139,10 +146,11 @@
             touch-action: none;
         }
 
+        /* ★ 完美还原 10% 警戒线 ★ */
         #danger-line {
             position: absolute;
             left: 0;
-            top: 180px;
+            top: 10%; 
             width: 100%;
             height: 2px;
             border-top: 2px dashed #E63946;
@@ -209,9 +217,10 @@
             z-index: -1;
         }
 
+        /* ★ 完美还原 4% 下落点 ★ */
         #dropper-preview {
             position: absolute;
-            top: 15px;
+            top: 4%; 
             left: 50%;
             transform: translateX(-50%);
             border-radius: 50%;
@@ -424,7 +433,6 @@
             max-width: 320px;
         }
 
-        /* 按钮样式统一 */
         .btn-core {
             border: none;
             padding: 14px 0;
@@ -450,7 +458,6 @@
             color: #FFF;
             box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
         }
-        /* 新增：橙色按钮用于中级模式 */
         .btn-orange {
             background: #F77F00;
             color: #FFF;
@@ -510,7 +517,6 @@
         <button class="btn-core btn-gold" onclick="startGame('easy')">
             🟢 初级模式<br><span style="font-size:12px;font-weight:normal;color:#333;">含 炸弹+摇晃道具，开启物理体感</span>
         </button>
-        <!-- ★ 改成了橙色按钮与 🟠 图标 ★ -->
         <button class="btn-core btn-orange" onclick="startGame('medium')">
             🟠 中级模式<br><span style="font-size:12px;font-weight:normal;color:#FFF;">含 炸弹+摇晃道具，关闭物理体感</span>
         </button>
@@ -618,15 +624,13 @@
     let lastAcc = { x: 0, y: 0, z: 0 };
     let lastShakeTime = 0;
     
-    // 全局状态控制
-    let gameMode = 'easy'; // 'easy', 'medium', 'hard'
+    let gameMode = 'easy'; 
     const modeNames = { 'easy': '初级', 'medium': '中级', 'hard': '高级' };
     let isPaused = false;
     let bombCount = 0;
     let shakeCount = 3;
     let currentDragTool = null; 
     
-    // 蓄力参数
     let minBlastRadius = 20; 
     let maxBlastRadius = 60; 
     let currentBlastRadius = 20;
@@ -651,6 +655,194 @@
     const loadBtn = document.getElementById('load-btn');
     const initLoadBtn = document.getElementById('init-load-btn');
     const saveToast = document.getElementById('save-toast');
+
+    // ★ 修复雷霆版专属音效库：补充了所有道具专属发声逻辑 ★
+    function initAudio() {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playSoundEffect(type, comboLevel = 1) {
+        try {
+            initAudio();
+            if(!audioCtx) return;
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'combo') {
+                oscillator.type = 'square';
+                const baseFreq = 800 + (comboLevel * 100); 
+                oscillator.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(baseFreq * 1.5, audioCtx.currentTime + 0.1);
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'bombExplode') {
+                const bufferSize = audioCtx.sampleRate * 0.5;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const noiseFilter = audioCtx.createBiquadFilter();
+                noiseFilter.type = 'lowpass';
+                noiseFilter.frequency.setValueAtTime(1000, audioCtx.currentTime);
+                noiseFilter.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.5);
+
+                const nGain = audioCtx.createGain();
+                nGain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+                nGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+                noise.connect(noiseFilter);
+                noiseFilter.connect(nGain);
+                nGain.connect(audioCtx.destination);
+                noise.start();
+
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.5);
+                gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.5);
+            } else if (type === 'reorganize') {
+                oscillator.type = 'sawtooth';
+                oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.3);
+            }
+        } catch(e) {}
+    }
+
+    function playWhooshSound() {
+        try {
+            initAudio();
+            if(!audioCtx) return;
+            const bufferSize = audioCtx.sampleRate * 0.12;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(320, audioCtx.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.12);
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+            noise.start();
+        } catch(e){}
+    }
+
+    function playHeavyPunchSound(level = 6) {
+        try {
+            initAudio();
+            if(!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            const startFreq = 180 + (level * 10);
+            osc.frequency.setValueAtTime(startFreq, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.2);
+
+            gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.2);
+        } catch(e){}
+    }
+
+    function playSwordSound() {
+        try {
+            initAudio();
+            if(!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(2400, audioCtx.currentTime + 0.08);
+            osc.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.35);
+
+            gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.35);
+        } catch(e){}
+    }
+
+    function playGrandTriumphSound() {
+        try {
+            initAudio();
+            if(!audioCtx) return;
+            const notes = [261.63, 329.63, 392.00, 523.25];
+            notes.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
+                gain.gain.setValueAtTime(0.4, audioCtx.currentTime + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.08 + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(audioCtx.currentTime + idx * 0.08);
+                osc.stop(audioCtx.currentTime + idx * 0.08 + 0.4);
+            });
+        } catch(e){}
+    }
+
+    function playSoundByLevel(level) {
+        try {
+            if (level === 10) playSwordSound();
+            else if (level >= 11) playGrandTriumphSound();
+            else if (level >= 6) playHeavyPunchSound(level);
+            else playWhooshSound();
+        } catch(e){}
+    }
+
+    let comboCount = 0;
+    let lastMergeTime = 0;
+    const COMBO_WORDS = ["我佛糍粑", "苗哥我错了", "功夫小子", "这谁能顶住", "给大佬递锤子", "目中有人了！", "火遮眼了！"];
+
+    function triggerComboPopup(x, y) {
+        const now = Date.now();
+        if (now - lastMergeTime < 950) { comboCount++; } else { comboCount = 1; }
+        lastMergeTime = now;
+
+        if (comboCount >= 2) {
+            playSoundEffect('combo', comboCount); // 修复：调用新合成的连击音效
+            const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
+            const span = document.createElement('div');
+            span.className = 'combo-text';
+            span.innerText = `${word} Combo x${comboCount}!`;
+            span.style.left = `${x}px`;
+            span.style.top = `${y}px`;
+            span.style.fontSize = `${Math.min(28, 18 + comboCount * 2)}px`;
+            wrapper.appendChild(span);
+            setTimeout(() => span.remove(), 850);
+        }
+    }
 
     function startGame(mode) {
         initMask.style.display = 'none';
@@ -680,10 +872,10 @@
                         bgmToggle.classList.remove('bgm-paused');
                         bgmToggle.classList.add('bgm-playing');
                         bgmStarted = true;
-                    }).catch(e => console.log("BGM 自动播放被拦截，等待用户手动开启"));
+                    }).catch(e => console.log("BGM 被拦截"));
                 }
             }
-        } catch(e) { console.log("Audio Context Error", e); }
+        } catch(e) {}
     }
 
     function startMotionSensors() {
@@ -975,6 +1167,7 @@
         }
     }
 
+    // ========== 统一道具拖拽与蓄力循环逻辑 ==========
     bombContainer.addEventListener('mousedown', (e) => startDragTool('bomb', e));
     bombContainer.addEventListener('touchstart', (e) => startDragTool('bomb', e), {passive: false});
     
@@ -1012,7 +1205,7 @@
         updateGhostToolPos(e);
         updateToolIndicator();
 
-        try { initAudio(); playSwordSound(); } catch(e){}
+        try { playSwordSound(); } catch(e){}
 
         growTimer = setInterval(() => {
             currentBlastRadius += 1.5; 
@@ -1094,7 +1287,7 @@
         
         Composite.remove(engine.world, toRemove);
         scoreEl.innerText = score;
-        try { playHeavyPunchSound(10); } catch(e){}
+        playSoundEffect('bombExplode'); // 修复：调用新合成的爆炸音效
 
         const wave = document.createElement('div');
         wave.style.position = 'absolute';
@@ -1142,7 +1335,7 @@
             }
         });
         
-        try { playGrandTriumphSound(); } catch(e){}
+        playSoundEffect('reorganize'); // 修复：调用新合成的重组音效
 
         const wave = document.createElement('div');
         wave.style.position = 'absolute';
@@ -1184,121 +1377,6 @@
             shakeContainer.classList.add('tool-disabled');
         } else {
             shakeContainer.classList.remove('tool-disabled');
-        }
-    }
-
-    // ========== 雷霆版原有音效 ==========
-    function playWhooshSound() {
-        initAudio();
-        if(!audioCtx) return;
-        const bufferSize = audioCtx.sampleRate * 0.12;
-        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
-        }
-        const noise = audioCtx.createBufferSource();
-        noise.buffer = buffer;
-
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(320, audioCtx.currentTime);
-        filter.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.12);
-
-        const gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-
-        noise.connect(filter);
-        filter.connect(gain);
-        gain.connect(audioCtx.destination);
-        noise.start();
-    }
-
-    function playHeavyPunchSound(level = 6) {
-        initAudio();
-        if(!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        const startFreq = 180 + (level * 10);
-        osc.frequency.setValueAtTime(startFreq, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.2);
-
-        gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.2);
-    }
-
-    function playSwordSound() {
-        initAudio();
-        if(!audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(2400, audioCtx.currentTime + 0.08);
-        osc.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.35);
-
-        gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.35);
-    }
-
-    function playGrandTriumphSound() {
-        initAudio();
-        if(!audioCtx) return;
-        const notes = [261.63, 329.63, 392.00, 523.25];
-        notes.forEach((freq, idx) => {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.08);
-            gain.gain.setValueAtTime(0.4, audioCtx.currentTime + idx * 0.08);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.08 + 0.4);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(audioCtx.currentTime + idx * 0.08);
-            osc.stop(audioCtx.currentTime + idx * 0.08 + 0.4);
-        });
-    }
-
-    function playSoundByLevel(level) {
-        try {
-            if (level === 10) playSwordSound();
-            else if (level >= 11) playGrandTriumphSound();
-            else if (level >= 6) playHeavyPunchSound(level);
-            else playWhooshSound();
-        } catch(e){}
-    }
-
-    let comboCount = 0;
-    let lastMergeTime = 0;
-    const COMBO_WORDS = ["我佛糍粑", "苗哥我错了", "功夫小子", "这谁能顶住", "给大佬递锤子", "目中有人了！", "火遮眼了！"];
-
-    function triggerComboPopup(x, y) {
-        const now = Date.now();
-        if (now - lastMergeTime < 950) { comboCount++; } else { comboCount = 1; }
-        lastMergeTime = now;
-
-        if (comboCount >= 2) {
-            const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
-            const span = document.createElement('div');
-            span.className = 'combo-text';
-            span.innerText = `${word} Combo x${comboCount}!`;
-            span.style.left = `${x}px`;
-            span.style.top = `${y}px`;
-            span.style.fontSize = `${Math.min(28, 18 + comboCount * 2)}px`;
-            wrapper.appendChild(span);
-            setTimeout(() => span.remove(), 850);
         }
     }
 
@@ -1528,7 +1606,8 @@
         canDrop = false;
 
         const info = ROLES[currentDropLevel];
-        const dropY = 15 + info.radius; 
+        // ★ 完美还原 4% 的下落高度 ★
+        const dropY = height * 0.04; 
         const circle = Bodies.circle(currentX, dropY, info.radius, {
             restitution: 0.05, 
             friction: 0.01,   
@@ -1601,13 +1680,14 @@
         });
     });
 
-    const DANGER_Y = 180; 
+    // ★ 完美还原 10% 的警戒线判定高度 ★
+    const DANGER_Y = height * 0.10; 
     setInterval(() => {
         if (isGameOver || isPaused) return;
         const bodies = Composite.allBodies(engine.world);
         bodies.forEach(b => {
             if (b.roleInfo && (b.position.y - b.roleInfo.radius < DANGER_Y)) {
-                if (Math.abs(b.velocity.y) < 0.2 && Math.abs(b.velocity.x) < 0.2 && b.position.y > 60) {
+                if (Math.abs(b.velocity.y) < 0.2 && Math.abs(b.velocity.x) < 0.2 && b.position.y > (height * 0.08)) {
                     triggerGameOver();
                 }
             }
@@ -1619,7 +1699,6 @@
         previewEl.style.display = 'none';
         document.getElementById('tools-container').style.display = 'none';
         
-        // ★ 更新结束成绩单的难度角标 ★
         const badge = document.getElementById('poster-mode-badge');
         badge.innerText = modeNames[gameMode];
         if(gameMode === 'easy') {
