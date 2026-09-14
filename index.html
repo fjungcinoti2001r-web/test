@@ -21,6 +21,7 @@
             background: linear-gradient(135deg, #FFF5E1 0%, #FFEFD5 100%);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 99999; text-align: center; padding: 20px; transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            cursor: pointer;
         }
         .intro-content {
             display: flex; flex-direction: column; align-items: center; gap: 20px;
@@ -278,6 +279,7 @@
     // 点击进入游戏引导页
     function enterGame() {
         const mask = document.getElementById('intro-mask');
+        if (!mask) return;
         mask.style.opacity = '0';
         mask.style.transform = 'scale(1.1)';
         setTimeout(() => {
@@ -285,12 +287,23 @@
         }, 600);
         // 尝试自动播放背景音乐
         const bgm = document.getElementById('bgm');
-        if(bgm.paused) {
+        if(bgm && bgm.paused) {
             bgm.play().catch(e => console.log('BGM auto-play blocked'));
-            document.getElementById('bgm-toggle').innerText = '🎵';
-            document.getElementById('bgm-toggle').classList.add('bgm-playing');
+            const btn = document.getElementById('bgm-toggle');
+            if(btn) {
+                btn.innerText = '🎵';
+                btn.classList.add('bgm-playing');
+            }
         }
     }
+
+    // 给整个引导页加上全局点击监听，确保点击任意地方都能直接进入
+    document.addEventListener('DOMContentLoaded', () => {
+        const mask = document.getElementById('intro-mask');
+        if (mask) {
+            mask.addEventListener('click', enterGame);
+        }
+    });
 
     const ROWS = 9, COLS = 9; let TILE_SIZE = 40;
     const TYPES = ['🥋', '🕶️', '🗡️', '👊', '🧨', '📿', '🍶']; 
@@ -479,7 +492,6 @@
                 ghostInd.style.borderColor = '#FF334B';
                 ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.3) 0%, rgba(255,51,75,0.1) 100%)';
             } else {
-                // 锤子固定单格大小
                 ghostInd.style.width = `${TILE_SIZE}px`;
                 ghostInd.style.height = `${TILE_SIZE}px`;
                 ghostInd.style.borderColor = '#3CB371';
