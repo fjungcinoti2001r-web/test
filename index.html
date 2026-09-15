@@ -74,19 +74,19 @@
             width: 100%; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;
             background: #FFEFD5; border-bottom: 3px solid #DEB887; z-index: 20; flex-shrink: 0;
         }
-        .header-layout { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-        .logo-img { width: 32px; height: 32px; object-fit: contain; mix-blend-mode: multiply; }
-        .title-group h1 { font-size: 14px; color: #D2691E; font-weight: 900; margin: 0; line-height: 1.2; }
-        .subtitle { font-size: 9px; color: #8B5A2B; font-weight: bold; margin-top: 1px; }
+        .header-layout { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+        .logo-img { width: 30px; height: 30px; object-fit: contain; mix-blend-mode: multiply; }
+        .title-group h1 { font-size: 13px; color: #D2691E; font-weight: 900; margin: 0; line-height: 1.2; }
+        .subtitle { font-size: 8px; color: #8B5A2B; font-weight: bold; margin-top: 1px; }
         
         .icon-btn {
-            width: 26px; height: 26px; background: rgba(255, 255, 255, 0.9); border: 2px solid #DEB887; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; font-size: 11px; cursor: pointer; box-shadow: 0 2px 4px rgba(210, 105, 30, 0.15); flex-shrink: 0;
+            width: 25px; height: 25px; background: rgba(255, 255, 255, 0.9); border: 2px solid #DEB887; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 10px; cursor: pointer; box-shadow: 0 2px 4px rgba(210, 105, 30, 0.15); flex-shrink: 0;
         }
         .icon-btn:active { transform: scale(0.9); }
         .score-board { text-align: right; background: #FFFFFF; padding: 2px 6px; border-radius: 8px; border: 2px dashed #DEB887; flex-shrink: 0; }
         .score-label { font-size: 8px; color: #FF9800; font-weight: 900; }
-        .score-val { font-size: 14px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
+        .score-val { font-size: 13px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
         #top-stage {
             height: 19%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
@@ -124,10 +124,20 @@
             display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 2px 10px; z-index: 15;
         }
         #role-badge {
-            font-size: 10px; background: rgba(255,255,255,0.9); color: #D2691E; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #DEB887; white-space: nowrap;
+            font-size: 10px; background: rgba(255,255,255,0.9); color: #D2691E; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #DEB887; white-space: nowrap; cursor: pointer;
         }
+        #role-badge:active { transform: scale(0.95); background: #FFF5E1; }
+        
+        /* 友军就绪状态：绿色高亮闪烁 */
         #ally-status {
-            font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap;
+            font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap; cursor: pointer; transition: all 0.3s;
+        }
+        #ally-status.ready-glow {
+            background: #3CB371 !important; color: white !important; animation: allyPulse 0.8s infinite alternate; border-color: #FFD700; box-shadow: 0 0 10px #3CB371;
+        }
+        @keyframes allyPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
         }
 
         #game-wrapper {
@@ -150,12 +160,18 @@
             transition: top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.2s;
         }
         
-        .tile.villain-tile {
-            border: 3px solid #FF334B !important; animation: villainPulse 0.8s infinite alternate; background-color: #FFE4E1 !important; z-index: 15;
+        .tile.is-villain {
+            background-image: none !important;
+            font-size: 24px;
+            z-index: 25 !important;
         }
-        @keyframes villainPulse {
-            0% { filter: drop-shadow(0 0 2px #FF334B); transform: scale(1); }
-            100% { filter: drop-shadow(0 0 10px #FF334B); transform: scale(1.08); }
+        .tile.villain-da { border: 3px solid #1E90FF !important; background-color: #E0FFFF !important; }
+        .tile.villain-ade { border: 3px solid #9932CC !important; background-color: #E6E6FA !important; }
+        .tile.villain-bailong { border: 3px solid #FF8C00 !important; animation: bailongHop 0.5s infinite alternate; background-color: #FFFACD !important; }
+
+        @keyframes bailongHop {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-4px) scale(1.05); }
         }
 
         .tile.hint-pulse {
@@ -203,18 +219,23 @@
         #bomb-tool { border-color: #FF334B; }
         #refresh-tool { border-color: #4169E1; }
 
-        #settings-mask, #poster-mask {
+        #settings-mask, #poster-mask, #ally-select-mask {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 248, 234, 0.95); backdrop-filter: blur(4px); flex-direction: column; justify-content: center; align-items: center; z-index: 100;
         }
-        .settings-box { background: #FFF5E1; border: 4px solid #FAD6A5; border-radius: 20px; padding: 20px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(200, 180, 160, 0.4); max-height: 85%; overflow-y: auto; }
-        .settings-title { font-size: 20px; font-weight: 900; color: #D2691E; margin-bottom: 15px; }
+        .settings-box { background: #FFF5E1; border: 4px solid #FAD6A5; border-radius: 20px; padding: 20px; width: 88%; max-width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(200, 180, 160, 0.4); max-height: 85%; overflow-y: auto; }
+        .settings-title { font-size: 20px; font-weight: 900; color: #D2691E; margin-bottom: 12px; }
         .settings-btn { width: 100%; padding: 10px; margin-bottom: 10px; border: none; border-radius: 20px; font-size: 15px; font-weight: bold; color: white; cursor: pointer; transition: transform 0.2s; }
         .settings-btn:active { transform: translateY(2px); }
         .btn-green { background-color: #3CB371; box-shadow: 0 4px 0 #2E8B57; } .btn-blue { background-color: #4169E1; box-shadow: 0 4px 0 #27408B; } .btn-pink { background-color: #FFB6C1; box-shadow: 0 4px 0 #FF69B4; }
-        #save-list-container { margin: 15px 0; border: 2px dashed #DEB887; border-radius: 10px; padding: 10px; background: #FFFFFF; min-height: 80px; max-height: 200px; overflow-y: auto; }
-        .save-item { background: #FFEFD5; border: 1px solid #DEB887; padding: 8px; margin-bottom: 8px; border-radius: 8px; font-size: 13px; color: #D2691E; font-weight: bold; cursor: pointer; }
-        .save-item:active { background: #FFE4C4; } .save-hint { font-size: 11px; color: #CD853F; margin-top: -5px; margin-bottom: 10px; font-weight: bold; }
+        
+        .ally-card { background: #FFFFFF; border: 2px solid #DEB887; border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; cursor: pointer; transition: transform 0.1s; box-shadow: 0 3px 6px rgba(0,0,0,0.05); }
+        .ally-card:active { transform: scale(0.97); background: #FFF0F5; }
+        .ally-card.used { opacity: 0.5; filter: grayscale(100%); pointer-events: none; background: #E0E0E0; }
+
+        #save-list-container { margin: 12px 0; border: 2px dashed #DEB887; border-radius: 10px; padding: 8px; background: #FFFFFF; min-height: 70px; max-height: 160px; overflow-y: auto; }
+        .save-item { background: #FFEFD5; border: 1px solid #DEB887; padding: 7px; margin-bottom: 6px; border-radius: 8px; font-size: 12px; color: #D2691E; font-weight: bold; cursor: pointer; }
+        .save-item:active { background: #FFE4C4; } .save-hint { font-size: 10px; color: #CD853F; margin-top: -3px; margin-bottom: 8px; font-weight: bold; }
 
         #capture-area { width: 90%; max-width: 360px; background: #FFF5E1; border: 4px solid #FAD6A5; border-radius: 20px; display: flex; flex-direction: column; align-items: center; padding: 20px 12px; box-shadow: 0 10px 25px rgba(200, 180, 160, 0.4); }
         .poster-header-pill { display: flex; align-items: center; justify-content: center; background: #FFFFFF; border-radius: 30px; padding: 4px 10px; border: 2px solid #FAD6A5; margin-bottom: 10px; width: 100%; }
@@ -259,6 +280,7 @@
             </div>
         </div>
         <div class="header-layout">
+            <div id="bgm-toggle" class="icon-btn" title="音效开关">🎵</div>
             <div id="settings-toggle" class="icon-btn" title="系统设置">⚙️</div>
             <div id="camera-toggle" class="icon-btn" style="background:#FFE4E1; border-color:#FFB6C1;" title="战绩海报">📸</div>
             <div class="score-board">
@@ -271,8 +293,9 @@
 
     <div id="top-stage">
         <div class="header-info-row">
-            <div id="role-badge">✨ 洪文定 《新少林五祖》</div>
-            <div id="ally-status">🤝 友军待命</div>
+            <div id="role-badge" title="点击切换阶数">✨ 洪文定 《新少林五祖》</div>
+            <!-- 友军状态栏：蓄能满时变成绿色并可点击选择和释放 -->
+            <div id="ally-status" title="点击选择并释放友军技能">🤝 友军待命</div>
         </div>
         <div id="avatar-container" onclick="triggerCharacterUltimate()">
             <div id="ultimate-ring"></div>
@@ -289,6 +312,17 @@
         <div class="tool-btn" id="refresh-tool"><span class="tool-icon">🌀</span><span class="tool-count" id="count-refresh">刷新×2</span></div>
     </div>
 
+    <!-- 友军选择弹窗：巩伟(父子同心) vs 纳文(JUDO冠军) -->
+    <div id="ally-select-mask">
+        <div class="settings-box">
+            <div class="settings-title">选择出战友军大招</div>
+            <div style="font-size: 11px; color: #8B5A2B; margin-bottom: 12px; font-weight: bold;">※ 每位友军在当前阶段仅限出战 1 次！</div>
+            <div id="ally-cards-container"></div>
+            <button class="settings-btn btn-pink" onclick="closeAllyModal()" style="margin-top: 10px;">返回游戏</button>
+        </div>
+    </div>
+
+    <!-- 系统设置弹窗 -->
     <div id="settings-mask">
         <div class="settings-box">
             <div class="settings-title">系统菜单</div>
@@ -301,6 +335,7 @@
         </div>
     </div>
 
+    <!-- 战绩海报弹窗 -->
     <div id="poster-mask">
         <div id="capture-area">
             <div class="poster-header-pill">
@@ -326,14 +361,20 @@
     </div>
 </div>
 
-<audio id="bgm" src="audio/bgm.mp3" loop preload="auto"></audio>
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const enterBtn = document.getElementById('enter-game-btn');
         if (enterBtn) enterBtn.addEventListener('click', enterGame);
         const introMask = document.getElementById('intro-mask');
         if (introMask) introMask.addEventListener('click', enterGame);
+    });
+
+    let soundEnabled = true;
+    const bgmToggle = document.getElementById('bgm-toggle');
+    bgmToggle.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        bgmToggle.innerText = soundEnabled ? '🎵' : '🔇';
+        showToast(soundEnabled ? '🔊 音效与特效已开启' : '🔇 音效与特效已关闭');
     });
 
     function enterGame(e) {
@@ -343,10 +384,7 @@
         mask.style.opacity = '0';
         setTimeout(() => { mask.style.display = 'none'; }, 500);
         
-        const bgm = document.getElementById('bgm');
-        if(bgm && bgm.paused) {
-            bgm.play().catch(err => console.log('BGM auto-play blocked'));
-        }
+        initAudio();
 
         if (!loadAutoSave()) { 
             initBoard(); 
@@ -366,25 +404,35 @@
 
     const EVOLUTION = [
         { score: 0,     name: "洪文定", movie: "新少林五祖", avatar: "images/avatar_1.png", fallback: "👦", prop: "images/prop_1.png", propFallback: "🍵", ultText: "少林正宗，刚柔并济！" },
-        { score: 300,   name: "海远",   movie: "赌神2",       avatar: "images/avatar_2.png", fallback: "🧑", prop: "images/prop_2.png", propFallback: "🥢", ultText: "眼神锁定，牌局由我！" },
-        { score: 800,   name: "巩固",   movie: "给爸爸的信",   avatar: "images/avatar_3.png", fallback: "👨", prop: "images/prop_3.png", propFallback: "🎒", ultText: "父子同心，硬桥硬马！" },
-        { score: 1500,  name: "惠忍",   movie: "少林寺传奇",   avatar: "images/avatar_4.png", fallback: "🦲", prop: "images/prop_4.png", propFallback: "📿", ultText: "金刚怒目，佛门武学！" },
-        { score: 2500,  name: "韩晓峰", movie: "我的杀手女友", avatar: "images/avatar_5.png", fallback: "🧥", prop: "images/prop_5.png", propFallback: "📱", ultText: "凌厉出击，制暴专家！" },
-        { score: 4000,  name: "李红旗", movie: "东北警察故事", avatar: "images/avatar_6.png", fallback: "👮", prop: "images/prop_6.png", propFallback: "🚔", ultText: "红旗所指，悍匪莫近！" },
-        { score: 6500,  name: "成瞎子", movie: "目中无人",     avatar: "images/avatar_7.png", fallback: "🦯", prop: "images/prop_7.png", propFallback: "🍶", ultText: "听风辨位，拔刀居合！" },
-        { score: 9500,  name: "张柳成", movie: "狂虎危城",     avatar: "images/avatar_8.png", fallback: "👔", prop: "images/prop_8.png", propFallback: "🪓", ultText: "危城血战，生死无憾！" },
-        { score: 12500, name: "黄铭金", movie: "缉恶",         avatar: "images/avatar_9.png", fallback: "🕶️", prop: "images/prop_9.png", propFallback: "💼", ultText: "雷霆缉凶，目中无人！" },
-        { score: 16000, name: "王伟",   movie: "火遮眼",       avatar: "images/avatar_10.png",fallback: "🔥", prop: "images/prop_10.png",propFallback: "🩸", ultText: "绝命生死搏，火遮眼！" },
-        { score: 20000, name: "苗哥本人",movie: "演员谢苗宇宙",avatar: "images/avatar_11.png",fallback: "😎", prop: "images/prop_11.png",propFallback: "🎬", ultText: "真打！真狠！真解恨！动作宇宙主宰！" }
+        { score: 8000,  name: "海远",   movie: "赌神2",       avatar: "images/avatar_2.png", fallback: "🧑", prop: "images/prop_2.png", propFallback: "🥢", ultText: "眼神锁定，牌局由我！" },
+        { score: 16000, name: "巩固",   movie: "给爸爸的信",   avatar: "images/avatar_3.png", fallback: "👨", prop: "images/prop_3.png", propFallback: "🎒", ultText: "父子同心，硬桥硬马！" },
+        { score: 24000, name: "惠忍",   movie: "少林寺传奇",   avatar: "images/avatar_4.png", fallback: "🦲", prop: "images/prop_4.png", propFallback: "📿", ultText: "金刚怒目，佛门武学！" },
+        { score: 32000, name: "韩晓峰", movie: "我的杀手女友", avatar: "images/avatar_5.png", fallback: "🧥", prop: "images/prop_5.png", propFallback: "📱", ultText: "凌厉出击，制暴专家！" },
+        { score: 40000, name: "李红旗", movie: "东北警察故事", avatar: "images/avatar_6.png", fallback: "👮", prop: "images/prop_6.png", propFallback: "🚔", ultText: "红旗所指，悍匪莫近！" },
+        { score: 48000, name: "成瞎子", movie: "目中无人",     avatar: "images/avatar_7.png", fallback: "🦯", prop: "images/prop_7.png", propFallback: "🍶", ultText: "听风辨位，拔刀居合！" },
+        { score: 56000, name: "张柳成", movie: "狂虎危城",     avatar: "images/avatar_8.png", fallback: "👔", prop: "images/prop_8.png", propFallback: "🪓", ultText: "危城血战，生死无憾！" },
+        { score: 64000, name: "黄铭金", movie: "缉恶",         avatar: "images/avatar_9.png", fallback: "🕶️", prop: "images/prop_9.png", propFallback: "💼", ultText: "雷霆缉凶，目中无人！" },
+        { score: 72000, name: "王伟",   movie: "火遮眼",       avatar: "images/avatar_10.png",fallback: "🔥", prop: "images/prop_10.png",propFallback: "🩸", ultText: "绝命生死搏，火遮眼！" },
+        { score: 80000, name: "苗哥本人",movie: "演员谢苗宇宙",avatar: "images/avatar_11.png",fallback: "😎", prop: "images/prop_11.png",propFallback: "🎬", ultText: "真打！真狠！真解恨！动作宇宙主宰！" }
     ];
 
     const VILLAINS = [
-        { name: "悍匪头目", icon: "👺" },
-        { name: "地头恶霸", icon: "🦹" },
-        { name: "幕后黑手", icon: "👤" }
+        { type: 'da', name: "大块头", icon: "🧊", skillDesc: "【冰块阻碍】需在其周围相邻消除或特效波及2次方可碎裂！", hp: 2 },
+        { type: 'ade', name: "阿德", icon: "🟣", skillDesc: "【毒液蔓延】回合不清理会向周围吞噬有效空间！", hp: 1 },
+        { type: 'bailong', name: "柏龙", icon: "🥎", skillDesc: "【乱跑毛球】覆盖棋子且每步随机乱跑！", hp: 1 }
     ];
     let activeVillains = []; 
-    let allyCharge = 0; 
+
+    // 两大友军池
+    const ALLIES_POOL = [
+        { id: 'gongwei', name: "巩伟（《给爸爸的信》）", skillName: "父子同心", desc: "技能：瞬间点名清除场上的 2 个敌对反派目标！" },
+        { id: 'nawen', name: "纳文（《火遮眼》）", skillName: "JUDO冠军", desc: "技能：关节技压制，10秒内不再刷新新敌人且战力暴涨！" }
+    ];
+    let stageAlliesSelection = {}; 
+    let allyCharge = 0;            // 蓄能计数 (0 - 3)
+    let allyReady = false;         // 蓄能满3次后标记为准备就绪
+    let currentStageAlly = null;   // 当前选中的友军
+    let noNewVillainUntil = 0;     // 纳文控制时间戳
 
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
@@ -404,10 +452,16 @@
     let currentBombRadius = 45;
     let bombRadiusTimer = null;
 
-    const AudioCtx = window.AudioContext || window.webkitAudioContext; let audioCtx = null;
-    function initAudio() { if (!audioCtx) audioCtx = new AudioCtx(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+    const AudioCtx = window.AudioContext || window.webkitAudioContext; 
+    let audioCtx = null;
+    
+    function initAudio() { 
+        if (!audioCtx) { audioCtx = new AudioCtx(); }
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); } 
+    }
     
     function triggerVibration(pattern) {
+        if (!soundEnabled) return;
         if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch(e){} }
     }
 
@@ -419,42 +473,49 @@
     }
 
     function playCuteSFX(type, level = 1) {
-        initAudio(); const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
-        osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-        const t = audioCtx.currentTime;
+        if (!soundEnabled) return;
+        try {
+            initAudio();
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator(); 
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode); 
+            gainNode.connect(audioCtx.destination);
+            const t = audioCtx.currentTime;
 
-        if (type === 'select') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, t); osc.frequency.exponentialRampToValueAtTime(659.25, t + 0.08);
-            gainNode.gain.setValueAtTime(0.08, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-            osc.start(t); osc.stop(t + 0.08);
-        } else if (type === 'swap') {
-            osc.type = 'triangle'; osc.frequency.setValueAtTime(350, t); osc.frequency.exponentialRampToValueAtTime(700, t + 0.1);
-            gainNode.gain.setValueAtTime(0.1, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
-            osc.start(t); osc.stop(t + 0.1);
-        } else if (type === 'match') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(440, t); osc.frequency.exponentialRampToValueAtTime(880, t + 0.12);
-            gainNode.gain.setValueAtTime(0.12, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-            osc.start(t); osc.stop(t + 0.12);
-            triggerVibration(25);
-        } else if (type === 'explode') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(180, t); osc.frequency.exponentialRampToValueAtTime(30, t + 0.3);
-            gainNode.gain.setValueAtTime(0.2, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-            osc.start(t); osc.stop(t + 0.3);
-            triggerVibration([60, 40, 60]);
-            triggerScreenShake();
-        } else if (type === 'ultimate') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, t); osc.frequency.exponentialRampToValueAtTime(450, t + 0.5);
-            gainNode.gain.setValueAtTime(0.3, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-            osc.start(t); osc.stop(t + 0.5);
-            triggerVibration([100, 50, 100, 50, 150]);
-            triggerScreenShake();
-        } else if (type === 'combo') {
-            osc.type = 'sine'; const freq = 500 + (level * 90);
-            osc.frequency.setValueAtTime(freq, t); osc.frequency.exponentialRampToValueAtTime(freq * 1.4, t + 0.08);
-            gainNode.gain.setValueAtTime(0.15, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-            osc.start(t); osc.stop(t + 0.08);
-            triggerVibration(30);
-        }
+            if (type === 'select') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, t); osc.frequency.exponentialRampToValueAtTime(659.25, t + 0.08);
+                gainNode.gain.setValueAtTime(0.08, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+                osc.start(t); osc.stop(t + 0.08);
+            } else if (type === 'swap') {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(350, t); osc.frequency.exponentialRampToValueAtTime(700, t + 0.1);
+                gainNode.gain.setValueAtTime(0.1, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+                osc.start(t); osc.stop(t + 0.1);
+            } else if (type === 'match') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(440, t); osc.frequency.exponentialRampToValueAtTime(880, t + 0.12);
+                gainNode.gain.setValueAtTime(0.12, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+                osc.start(t); osc.stop(t + 0.12);
+                triggerVibration(25);
+            } else if (type === 'explode') {
+                osc.type = 'square'; osc.frequency.setValueAtTime(180, t); osc.frequency.exponentialRampToValueAtTime(30, t + 0.3);
+                gainNode.gain.setValueAtTime(0.2, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+                osc.start(t); osc.stop(t + 0.3);
+                triggerVibration([60, 40, 60]);
+                triggerScreenShake();
+            } else if (type === 'ultimate') {
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, t); osc.frequency.exponentialRampToValueAtTime(450, t + 0.5);
+                gainNode.gain.setValueAtTime(0.3, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                osc.start(t); osc.stop(t + 0.5);
+                triggerVibration([100, 50, 100, 50, 150]);
+                triggerScreenShake();
+            } else if (type === 'combo') {
+                osc.type = 'sine'; const freq = 500 + (level * 90);
+                osc.frequency.setValueAtTime(freq, t); osc.frequency.exponentialRampToValueAtTime(freq * 1.4, t + 0.08);
+                gainNode.gain.setValueAtTime(0.15, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+                osc.start(t); osc.stop(t + 0.08);
+                triggerVibration(30);
+            }
+        } catch(e) {}
     }
     
     function showComboPopup(r, c, comboLevel) {
@@ -482,6 +543,70 @@
             domTiles[hint.r2][hint.c2]?.classList.add('hint-pulse');
             showToast('💡 提示：这里可以消除哦！');
         }
+    }
+
+    // 🌟 友军状态栏点击交互：只有当蓄能满3次（allyReady=true）时，点击才能弹出选择弹窗
+    document.getElementById('ally-status').onclick = () => {
+        if (!allyReady) {
+            showToast('⏳ 友军正在蓄能中，请通过攻击反派积攒能量 (当前 ' + allyCharge + '/3)');
+            return;
+        }
+        openAllyModal();
+    };
+
+    function openAllyModal() {
+        const container = document.getElementById('ally-cards-container');
+        container.innerHTML = '';
+        const usedAllyId = stageAlliesSelection[currentStage];
+
+        ALLIES_POOL.forEach(ally => {
+            const card = document.createElement('div');
+            card.className = `ally-card ${usedAllyId === ally.id ? 'used' : ''}`;
+            card.innerHTML = `
+                <div style="font-weight:900; color:#D2691E; font-size:14px; margin-bottom:4px;">${ally.name}</div>
+                <div style="font-size:12px; color:#2E8B57; font-weight:bold; margin-bottom:2px;">技能：${ally.skillName}</div>
+                <div style="font-size:11px; color:#5C4033;">${ally.desc}</div>
+                ${usedAllyId === ally.id ? '<div style="font-size:10px; color:red; margin-top:4px;">[当前阶段已出战过]</div>' : ''}
+            `;
+            if (usedAllyId !== ally.id) {
+                card.onclick = () => {
+                    stageAlliesSelection[currentStage] = ally.id;
+                    currentStageAlly = ally;
+                    closeAllyModal();
+                    executeAllySkill(ally); // 选择后立刻释放该友军大招
+                };
+            }
+            container.appendChild(card);
+        });
+        document.getElementById('ally-select-mask').style.display = 'flex';
+    }
+
+    function closeAllyModal() {
+        document.getElementById('ally-select-mask').style.display = 'none';
+    }
+
+    // 执行对应友军的主动技能
+    function executeAllySkill(ally) {
+        playCuteSFX('ultimate');
+        allyCharge = 0;
+        allyReady = false;
+        updateAllyUI();
+
+        if (ally.id === 'gongwei') {
+            if (activeVillains.length > 0) {
+                let cleared = activeVillains.slice(0, 2);
+                activeVillains = activeVillains.filter(v => !cleared.includes(v));
+                showToast('🤝【巩伟·父子同心】父子联手，精准双杀场上反派！');
+            } else {
+                showToast('🤝【巩伟·父子同心】场上没有反派，热身完毕！');
+            }
+        } else if (ally.id === 'nawen') {
+            noNewVillainUntil = Date.now() + 10000;
+            showToast('🤝【纳文·JUDO冠军】关节技压制！10秒内反派绝迹，战力暴涨！');
+            score += 1500;
+            document.getElementById('score').innerText = score;
+        }
+        refreshAllDOMVisuals();
     }
 
     async function triggerCharacterUltimate() {
@@ -512,27 +637,65 @@
         await processMatches({ toRemove, newSpecials: [] });
     }
 
+    // 生成反派
     function spawnVillainIfNeeded() {
-        if (activeVillains.length < 2 && Math.random() < 0.35) {
+        if (Date.now() < noNewVillainUntil) return;
+
+        if (activeVillains.length < 3 && Math.random() < 0.4) {
             let emptySpots = [];
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
-                    if (!activeVillains.some(v => v.r === r && v.c === c)) emptySpots.push({r, c});
+                    if (!activeVillains.some(v => v.r === r && v.c === c) && (!board[r][c]?.effect || board[r][c]?.effect === 'none')) {
+                        emptySpots.push({r, c});
+                    }
                 }
             }
             if (emptySpots.length > 0) {
                 let spot = emptySpots[Math.floor(Math.random() * emptySpots.length)];
                 let vTemplate = VILLAINS[Math.floor(Math.random() * VILLAINS.length)];
-                let newVillain = { r: spot.r, c: spot.c, name: vTemplate.name, icon: vTemplate.icon };
+                let newVillain = { 
+                    r: spot.r, 
+                    c: spot.c, 
+                    type: vTemplate.type,
+                    name: vTemplate.name, 
+                    icon: vTemplate.icon,
+                    hp: vTemplate.type === 'da' ? 2 : 1 
+                };
                 activeVillains.push(newVillain);
-                
-                updateTileDOMVisual(spot.r, spot.c, board[spot.r][spot.c]);
+                refreshAllDOMVisuals();
                 triggerScreenShake();
-                showToast(`⚠️ 警报！【${vTemplate.name}】已降临棋盘！`);
+                showToast(`⚠️ 警报！【${vTemplate.name}】降临！${vTemplate.skillDesc}`);
             }
         }
     }
 
+    // 反派主动技能（阿德蔓延、柏龙乱跑）
+    function triggerVillainActiveSkills() {
+        activeVillains.forEach(v => {
+            if (v.type === 'ade') {
+                let dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
+                let dir = dirs[Math.floor(Math.random() * dirs.length)];
+                let nr = v.r + dir.r, nc = v.c + dir.c;
+                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !activeVillains.some(av => av.r === nr && av.c === nc)) {
+                    if (activeVillains.length < 5) {
+                        activeVillains.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', hp: 1 });
+                        showToast('🟣 【阿德毒液蔓延】吞噬了新的格子！');
+                    }
+                }
+            } else if (v.type === 'bailong') {
+                let dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
+                let dir = dirs[Math.floor(Math.random() * dirs.length)];
+                let nr = v.r + dir.r, nc = v.c + dir.c;
+                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !activeVillains.some(av => av.r === nr && av.c === nc)) {
+                    v.r = nr; v.c = nc;
+                    showToast('🥎 【柏龙乱跑】毛球闪现换位！');
+                }
+            }
+        });
+        refreshAllDOMVisuals();
+    }
+
+    // 攻击反派并累计蓄能
     function checkVillainDamage(r, c) {
         let hitList = [];
         activeVillains.forEach(v => {
@@ -541,42 +704,41 @@
 
         if (hitList.length > 0) {
             hitList.forEach(v => {
-                showToast(`⚔️ 一拳击飞反派【${v.name}】！`);
-                playCuteSFX('explode');
+                v.hp--;
+                if (v.hp <= 0) {
+                    showToast(`⚔️ 成功击破反派【${v.name}】！`);
+                    playCuteSFX('explode');
+                } else {
+                    showToast(`🛡️ 【${v.name}】冰块护甲减弱！`);
+                    playCuteSFX('select');
+                }
             });
-            let defeatedNames = hitList.map(v => v.name);
-            activeVillains = activeVillains.filter(v => !defeatedNames.includes(v.name));
-            score += 200;
+            
+            activeVillains = activeVillains.filter(v => v.hp > 0);
+            score += 400;
             document.getElementById('score').innerText = score;
 
-            allyCharge++;
-            if (allyCharge >= 3) {
-                triggerAllySupport();
-                allyCharge = 0;
+            if (!allyReady) {
+                allyCharge++;
+                if (allyCharge >= 3) {
+                    allyReady = true;
+                    showToast('🌟 友军蓄能完毕！点击顶部状态栏选择释放大招！');
+                    playCuteSFX('ultimate');
+                }
+                updateAllyUI();
             }
-            updateAllyUI();
         }
     }
 
     function updateAllyUI() {
         const allyStatus = document.getElementById('ally-status');
-        if (allyCharge > 0) {
-            allyStatus.innerText = `🤝 友军蓄能 (${allyCharge}/3)`;
+        const allyNameText = currentStageAlly ? currentStageAlly.name.split('（')[0] : '友军';
+        if (allyReady) {
+            allyStatus.className = 'ready-glow';
+            allyStatus.innerText = `✨ 点此释放大招！`;
         } else {
-            allyStatus.innerText = `🤝 友军待命`;
-        }
-    }
-
-    function triggerAllySupport() {
-        showToast('🤝 友军神兵天降！瞬间清空所有反派阻碍！');
-        playCuteSFX('ultimate');
-        activeVillains = [];
-        for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) {
-                if (domTiles[r][c] && board[r][c]) {
-                    updateTileDOMVisual(r, c, board[r][c]);
-                }
-            }
+            allyStatus.className = '';
+            allyStatus.innerText = `🤝 [${allyNameText}] 蓄能 (${allyCharge}/3)`;
         }
     }
 
@@ -589,7 +751,7 @@
     function saveGame() { 
         let saves = getSaves(); 
         let timeStr = new Date().toLocaleString('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}); 
-        saves[`存档_${timeStr}`] = { score, currentStage, props, activeVillains, allyCharge, board: board.map(r => r.map(c => ({...c}))) }; 
+        saves[`存档_${timeStr}`] = { score, currentStage, props, activeVillains, allyCharge, allyReady, stageAlliesSelection, currentStageAlly, board: board.map(r => r.map(c => ({...c}))) }; 
         setSaves(saves); renderSaveList(); showToast('进度已保存！'); 
     }
     function renderSaveList() {
@@ -603,20 +765,22 @@
             div.addEventListener('mousedown', startPress); div.addEventListener('mouseup', () => { cancelPress(); if(!isLongPress) loadGame(key); }); div.addEventListener('mouseleave', cancelPress);
             container.appendChild(div);
         });
-        if(container.innerHTML === '') container.innerHTML = '<div style="color:#999; font-size:12px; margin-top:20px;">暂无本地存档</div>';
+        if(container.innerHTML === '') container.innerHTML = '<div style="color:#999; font-size:12px; margin-top:15px;">暂无本地存档</div>';
     }
     function loadGame(key) {
         const data = getSaves()[key]; if(!data) return;
-        score = data.score; currentStage = data.currentStage; props = data.props; activeVillains = data.activeVillains || []; allyCharge = data.allyCharge || 0;
+        score = data.score; currentStage = data.currentStage; props = data.props; activeVillains = data.activeVillains || []; allyCharge = data.allyCharge || 0; allyReady = data.allyReady || false;
+        stageAlliesSelection = data.stageAlliesSelection || {}; currentStageAlly = data.currentStageAlly || null;
         document.getElementById('score').innerText = score; applyEvolution(currentStage); updatePropUI(); updateAllyUI();
         board = data.board; initSize(); gridContainer.innerHTML = ''; domTiles = [];
         for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} closeSettings(); checkDeadlock(); showToast('存档读取成功');
     }
-    function autoSave() { localStorage.setItem('miaoAutoSave', JSON.stringify({ score, currentStage, props, activeVillains, allyCharge, board: board.map(r => r.map(c => ({...c}))) })); }
+    function autoSave() { localStorage.setItem('miaoAutoSave', JSON.stringify({ score, currentStage, props, activeVillains, allyCharge, allyReady, stageAlliesSelection, currentStageAlly, board: board.map(r => r.map(c => ({...c}))) })); }
     function loadAutoSave() {
         const saved = localStorage.getItem('miaoAutoSave');
         if (saved) {
-            const data = JSON.parse(saved); score = data.score; currentStage = data.currentStage; props = data.props; activeVillains = data.activeVillains || []; allyCharge = data.allyCharge || 0;
+            const data = JSON.parse(saved); score = data.score; currentStage = data.currentStage; props = data.props; activeVillains = data.activeVillains || []; allyCharge = data.allyCharge || 0; allyReady = data.allyReady || false;
+            stageAlliesSelection = data.stageAlliesSelection || {}; currentStageAlly = data.currentStageAlly || null;
             document.getElementById('score').innerText = score; applyEvolution(currentStage); updatePropUI(); updateAllyUI(); board = data.board; initSize();
             for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} checkDeadlock(); return true;
         } return false;
@@ -624,7 +788,8 @@
 
     function restartGame() {
         localStorage.removeItem('miaoAutoSave');
-        score = 0; currentStage = 0; props = { hammer: 2, bomb: 2, refresh: 2 }; activeVillains = []; allyCharge = 0;
+        score = 0; currentStage = 0; props = { hammer: 2, bomb: 2, refresh: 2 }; activeVillains = []; allyCharge = 0; allyReady = false;
+        stageAlliesSelection = {}; currentStageAlly = null;
         document.getElementById('avatar-container').classList.remove('ready');
         document.getElementById('score').innerText = score;
         applyEvolution(0); updatePropUI(); updateAllyUI();
@@ -661,26 +826,41 @@
         resetIdleTimer();
     }
     
+    function refreshAllDOMVisuals() {
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                updateTileDOMVisual(r, c, board[r][c]);
+            }
+        }
+    }
+
     function updateTileDOMVisual(r, c, data) {
         const tile = domTiles[r][c];
         if (!tile) return;
-        tile.className = `tile ${data.effect !== 'none' ? 'effect-'+data.effect : ''}`; 
+        
         let villain = activeVillains.find(v => v.r === r && v.c === c);
         if (villain) {
-            tile.classList.add('villain-tile');
+            tile.className = `tile is-villain villain-${villain.type}`;
             tile.style.backgroundImage = 'none';
             tile.innerText = villain.icon;
         } else {
-            tile.classList.remove('villain-tile');
-            tile.innerText = data.type;
-            const imgPath = getTileImageUrl(data.type);
-            if (imgPath) {
-                const imgTest = new Image();
-                imgTest.src = imgPath;
-                imgTest.onload = () => { if(!activeVillains.some(v => v.r === r && v.c === c)) { tile.style.backgroundImage = `url('${imgPath}')`; tile.innerText = ''; } };
-                imgTest.onerror = () => { tile.style.backgroundImage = 'none'; tile.innerText = data.type; };
-            } else {
-                tile.style.backgroundImage = 'none';
+            tile.className = `tile ${data && data.effect !== 'none' ? 'effect-'+data.effect : ''}`;
+            if (data && data.type) {
+                tile.innerText = data.type;
+                const imgPath = getTileImageUrl(data.type);
+                if (imgPath) {
+                    const imgTest = new Image();
+                    imgTest.src = imgPath;
+                    imgTest.onload = () => { 
+                        if (!activeVillains.some(v => v.r === r && v.c === c)) { 
+                            tile.style.backgroundImage = `url('${imgPath}')`; 
+                            tile.innerText = ''; 
+                        } 
+                    };
+                    imgTest.onerror = () => { tile.style.backgroundImage = 'none'; tile.innerText = data.type; };
+                } else {
+                    tile.style.backgroundImage = 'none';
+                }
             }
         }
     }
@@ -805,7 +985,6 @@
                 setTimeout(() => tile.style.transform = 'scale(1)', 40);
             }} await sleep(250); isAnimating = false; gridContainer.style.filter = 'none'; autoSave(); checkDeadlock(); resetIdleTimer();
         } catch(err) {
-            console.error("Refresh error:", err);
             isAnimating = false;
         }
     };
@@ -960,7 +1139,7 @@
             if (domTiles[r][c]) { domTiles[r][c].classList.add('matched'); board[r][c] = null; } 
         });
         
-        score += toRemove.size * 10; 
+        score += toRemove.size * 20; 
         document.getElementById('score').innerText = score;
         
         if (currentStage < EVOLUTION.length - 1 && score >= EVOLUTION[currentStage + 1].score) {
@@ -981,7 +1160,10 @@
             board[sp.r][sp.c] = { type: sp.type, effect: sp.effect }; createTileDOM(sp.r, sp.c, board[sp.r][sp.c]); 
         });
         
-        await applyGravity(); lastSwapPos = null; const nextInfo = analyzeMatches();
+        await applyGravity(); 
+        triggerVillainActiveSkills(); // 触发反派动态机制
+
+        lastSwapPos = null; const nextInfo = analyzeMatches();
         if (nextInfo.toRemove.size > 0) { await processMatches(nextInfo); } else { 
             spawnVillainIfNeeded();
             autoSave(); checkDeadlock(); isAnimating = false; resetIdleTimer();
@@ -1085,7 +1267,6 @@
                 document.getElementById('final-poster-img').style.display = 'block';
                 document.getElementById('save-tip-text').innerText = "👇 长按上方战绩卡片即可保存到相册 👇";
             } catch(e) {
-                console.error("Poster generation exception:", e);
                 showToast("海报生成异常");
                 document.getElementById('poster-mask').style.display = 'none';
             }
