@@ -14,7 +14,6 @@
             background-image: radial-gradient(#FAD6A5 10%, transparent 11%); background-size: 30px 30px;
         }
 
-        /* 🌟 开场引导页 */
         #intro-mask {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #FFF5E1 0%, #FFEFD5 100%);
@@ -79,7 +78,6 @@
         .score-label { font-size: 8px; color: #FF9800; font-weight: 900; }
         .score-val { font-size: 13px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
-        /* 🌟 舞台与吧台背景 */
         #top-stage {
             height: 19%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
@@ -94,8 +92,8 @@
             width: 80px; height: 80px; z-index: 2; transform-origin: bottom center; 
             background-size: contain; background-repeat: no-repeat; background-position: bottom center; font-size: 55px; display: flex; justify-content: center; align-items: flex-end; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        /* 🌟 友军伴随立绘：左侧巩伟，右侧纳文 */
+        
+        /* 友军伴随立绘：左侧巩伟，右侧纳文 */
         .ally-side-avatar {
             position: absolute; width: 50px; height: 50px; bottom: 4px; z-index: 4;
             background-size: contain; background-repeat: no-repeat; background-position: bottom center;
@@ -104,9 +102,12 @@
         }
         #left-ally-avatar { left: 15px; }
         #right-ally-avatar { right: 15px; }
-        @keyframes allyHover { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
+        @keyframes allyHover {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-4px); }
+        }
 
-        /* 🌟 友军大招演出动画层 */
+        /* 友军大招演出动画层 */
         #ally-ultimate-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75); z-index: 9999; display: flex; flex-direction: column;
@@ -118,21 +119,33 @@
             display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
             animation: ultPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
-        @keyframes ultPop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes ultPop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
         .ally-ult-avatar {
             width: 110px; height: 110px; border-radius: 50%; border: 4px solid #FFD700;
             background-size: contain; background-repeat: no-repeat; background-position: center;
             box-shadow: 0 0 25px #FFD700; background-color: #FFF5E1;
         }
-        .ally-ult-title { font-size: 26px; font-weight: 900; color: #FFF; text-shadow: 0 0 10px #FF4500, 0 0 20px #FFD700; letter-spacing: 2px; }
-        .ally-ult-speech { font-size: 16px; font-weight: bold; color: #FFF8EA; background: rgba(210, 105, 30, 0.85); padding: 6px 18px; border-radius: 20px; border: 2px solid #FFD700; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-        
+        .ally-ult-title {
+            font-size: 26px; font-weight: 900; color: #FFF; text-shadow: 0 0 10px #FF4500, 0 0 20px #FFD700;
+            letter-spacing: 2px;
+        }
+        .ally-ult-speech {
+            font-size: 16px; font-weight: bold; color: #FFF8EA; background: rgba(210, 105, 30, 0.85);
+            padding: 6px 18px; border-radius: 20px; border: 2px solid #FFD700; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
         #ultimate-ring {
             position: absolute; top: -4px; left: calc(50% - 42px); width: 84px; height: 84px; border-radius: 50%;
             border: 4px solid #FFD700; opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         #avatar-container.ready #ultimate-ring { opacity: 1; animation: ultimateGlow 1.2s infinite alternate; }
-        @keyframes ultimateGlow { 0% { box-shadow: 0 0 5px #FF4500, inset 0 0 5px #FF4500; transform: scale(1); } 100% { box-shadow: 0 0 16px #FFD700, inset 0 0 12px #FFD700; transform: scale(1.04); } }
+        @keyframes ultimateGlow {
+            0% { box-shadow: 0 0 5px #FF4500, inset 0 0 5px #FF4500; transform: scale(1); }
+            100% { box-shadow: 0 0 16px #FFD700, inset 0 0 12px #FFD700; transform: scale(1.04); }
+        }
 
         #desk {
             width: 100%; height: 32px; z-index: 3; display: flex; justify-content: center; align-items: flex-start;
@@ -144,7 +157,9 @@
         #role-badge { font-size: 10px; background: rgba(255,255,255,0.9); color: #D2691E; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #DEB887; white-space: nowrap; cursor: pointer; }
         #role-badge:active { transform: scale(0.95); background: #FFF5E1; }
         
-        #ally-status { font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap; cursor: pointer; transition: all 0.3s; }
+        #ally-status {
+            font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap; cursor: pointer; transition: all 0.3s;
+        }
         #ally-status.ready-glow { background: #3CB371 !important; color: white !important; animation: allyPulse 0.8s infinite alternate; border-color: #FFD700; box-shadow: 0 0 10px #3CB371; }
         @keyframes allyPulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
 
@@ -183,7 +198,6 @@
         .tile.selected { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(210, 105, 30, 0.9)); z-index: 20; border-color: #FF4500; }
         .tile.matched { animation: popOut 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes popOut { 50% { transform: scale(1.35); opacity: 0.9; } 100% { transform: scale(0); opacity: 0; } }
-        
         .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.22s ease-out; }
 
         #ghost-tool { display: none; position: fixed; font-size: 32px; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); }
@@ -240,7 +254,7 @@
     </style>
 </head>
 <body>
-<!-- 背景音乐标签 -->
+<!-- BGM 背景音乐标签 -->
 <audio id="bgm" src="audio/bgm.mp3" loop preload="auto"></audio>
 
 <div id="toast">提示信息</div>
@@ -258,7 +272,7 @@
     </div>
 </div>
 
-<!-- 🌟 友军大招演出特效动画层 -->
+<!-- 友军大招演出动画层 -->
 <div id="ally-ultimate-overlay">
     <div class="ally-ult-content">
         <div id="ally-ult-img" class="ally-ult-avatar"></div>
@@ -282,7 +296,7 @@
             </div>
         </div>
         <div class="header-layout">
-            <div id="bgm-toggle" class="icon-btn" title="音效开关">🎵</div>
+            <div id="bgm-toggle" class="icon-btn" title="控制背景音乐">🎵</div>
             <div id="settings-toggle" class="icon-btn" title="系统设置">⚙️</div>
             <div id="camera-toggle" class="icon-btn" style="background:#FFE4E1; border-color:#FFB6C1;" title="战绩海报">📸</div>
             <div class="score-board">
@@ -300,7 +314,7 @@
             <div id="ally-status" title="点击选择并释放友军技能">🤝 友军待命</div>
         </div>
         <div id="avatar-container" onclick="triggerCharacterUltimate()">
-            <!-- 🌟 伴随立绘：左侧巩伟，右侧纳文 -->
+            <!-- 伴随立绘：左侧巩伟，右侧纳文 -->
             <div id="left-ally-avatar" class="ally-side-avatar"></div>
             <div id="right-ally-avatar" class="ally-side-avatar"></div>
 
@@ -322,8 +336,8 @@
     <div id="ally-select-mask">
         <div class="settings-box">
             <div class="settings-title">选择出战友军大招</div>
-            <!-- 🌟 提示：当前形态每人限1次 -->
-            <div style="font-size: 11px; color: #8B5A2B; margin-bottom: 12px; font-weight: bold;">※ 当前形态下，每位友军仅限出战 1 次！</div>
+            <!-- 🌟 提示文本：当前形态每人仅限1次 -->
+            <div style="font-size: 11px; color: #8B5A2B; margin-bottom: 12px; font-weight: bold;">※ 当前阶数下，每位友军仅限出战 1 次！</div>
             <div id="ally-cards-container"></div>
             <button class="settings-btn btn-pink" onclick="closeAllyModal()" style="margin-top: 10px;">返回游戏</button>
         </div>
@@ -399,7 +413,6 @@
         { type: 'bailong', name: "柏龙", icon: "🥎", skillDesc: "【乱跑毛球】覆盖棋子且每步随机乱跑！", hp: 1 }
     ];
 
-    // 🌟 纳文技能修改为 JUDO 冠军
     const ALLIES_POOL = [
         { 
             id: 'gongwei', 
@@ -421,7 +434,7 @@
 
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
-    // 🌟 自定义音效矩阵池 (完全接入)
+    // 🌟 自定义音效矩阵配置
     const AUDIO_POOL = {
         villains: {
             da: ['audio/da_1.mp3', 'audio/da_2.mp3'],
@@ -447,20 +460,20 @@
         activeVillains: [],
         allyCharge: 0,
         allyReady: false,
-        currentStageAlly: null,
-        activeAlliesInStage: [], // 🌟 记录当前阶数召唤过的友军
+        currentStageAlly: null, // 当前页面正在展示的友军
+        usedAlliesInCurrentStage: [], // 当前形态已召唤过的友军记录
         noNewVillainUntil: 0,
         noAdeUntil: 0,
-        soundEnabled: true
+        bgmEnabled: true // 右上角按钮仅控制背景音乐
     };
 
     let board = [], domTiles = [], lastSwapPos = null, idleTimer = null;
     let touchStartCoord = null, activeTileDom = null, activeDragTool = null, currentBombRadius = 45, bombRadiusTimer = null;
     let audioCtx = null;
 
-    // 🌟 自定义音效播放器函数
+    // 🌟 自定义音效播放器（不被右上角按钮屏蔽，保证特效音一直有）
     function playCustomAudio(audioArray) {
-        if (!gameState.soundEnabled || !audioArray || audioArray.length === 0) return;
+        if (!audioArray || audioArray.length === 0) return;
         const randomIndex = Math.floor(Math.random() * audioArray.length);
         const audio = new Audio(audioArray[randomIndex]);
         audio.play().catch(e => console.warn('自定义音频被拦截:', e));
@@ -472,7 +485,7 @@
         
         // 第一次交互激活全局背景音频
         const initAudioPlay = () => {
-            if (gameState.soundEnabled && bgm && bgm.paused) {
+            if (gameState.bgmEnabled && bgm && bgm.paused) {
                 bgm.play().catch(e => console.warn('BGM blocked:', e));
             }
             document.removeEventListener('pointerdown', initAudioPlay);
@@ -483,15 +496,15 @@
 
         bgmToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            gameState.soundEnabled = !gameState.soundEnabled;
-            bgmToggle.innerText = gameState.soundEnabled ? '🎵' : '🔇';
+            gameState.bgmEnabled = !gameState.bgmEnabled;
+            bgmToggle.innerText = gameState.bgmEnabled ? '🎵' : '🔇';
             if (bgm) {
-                if (gameState.soundEnabled) {
+                if (gameState.bgmEnabled) {
                     bgm.play().catch(e => {});
-                    showToast('🔊 音效与背景音乐已开启');
+                    showToast('🎵 背景音乐已开启');
                 } else {
                     bgm.pause();
-                    showToast('🔇 音效与背景音乐已关闭');
+                    showToast('🔇 背景音乐已关闭');
                 }
             }
         });
@@ -509,9 +522,7 @@
         
         initAudio();
         const bgm = document.getElementById('bgm');
-        if (bgm && gameState.soundEnabled) {
-            bgm.play().catch(e => {});
-        }
+        if (bgm && gameState.bgmEnabled) { bgm.play().catch(e => {}); }
 
         if (!loadAutoSave()) { 
             initBoard(); 
@@ -877,7 +888,7 @@
                 triggerScreenShake();
                 showToast(`⚠️ 警报！【${vTemplate.name}】降临！`);
                 
-                // 🌟 触发反派专属出场音效
+                // 🌟 反派出场音效
                 if(AUDIO_POOL.villains[vTemplate.type]) {
                     playCustomAudio(AUDIO_POOL.villains[vTemplate.type]);
                 }
@@ -957,15 +968,15 @@
         container.innerHTML = '';
         
         ALLIES_POOL.forEach(ally => {
-            // 🌟 检查当前形态（阶段）内是否已经使用过该友军
-            const isUsedInStage = gameState.activeAlliesInStage.includes(ally.id); 
+            // 🌟 检查当前阶段是否已使用该友军
+            const isUsedInStage = gameState.usedAlliesInCurrentStage.includes(ally.id); 
             const card = document.createElement('div');
             card.className = `ally-card ${isUsedInStage ? 'used' : ''}`;
             card.innerHTML = `
                 <div style="font-weight:900; color:#D2691E; font-size:14px; margin-bottom:4px;">${ally.name}</div>
                 <div style="font-size:12px; color:#2E8B57; font-weight:bold; margin-bottom:2px;">技能：${ally.skillName}</div>
                 <div style="font-size:11px; color:#5C4033;">${ally.desc}</div>
-                ${isUsedInStage ? '<div style="font-size:10px; color:red; margin-top:4px;">[当前形态阶段已出战过]</div>' : ''}
+                ${isUsedInStage ? '<div style="font-size:10px; color:red; margin-top:4px;">[本形态下该友军已出战过]</div>' : ''}
             `;
             
             if (!isUsedInStage) {
@@ -983,22 +994,24 @@
 
     // 🌟 友军大招演出并绑定随机音效
     function executeAllySkill(ally) {
-        playCuteSFX('ultimate');
+        playCuteSFX('ultimate'); // 保留底层电子音作为铺垫
         gameState.allyCharge = 0; 
         gameState.allyReady = false;
         
-        // 标记该友军在当前阶段下已被使用
-        if (!gameState.activeAlliesInStage.includes(ally.id)) {
-            gameState.activeAlliesInStage.push(ally.id);
-        }
+        // 记录本形态已使用过的友军
+        gameState.usedAlliesInCurrentStage.push(ally.id);
         
+        // 🌟 核心修改：记录“当前正在播放演出”的友军
+        gameState.currentStageAlly = ally;
+        
+        // 更新伴随立绘（绝对只显示当前这一位！）
         updateAllySideAvatars();
         updateAllyUI();
 
-        // 触发对应友军大招视觉演出
+        // 触发大招演出
         showAllyUltimateOverlay(ally);
         
-        // 🌟 触发随机友军专属出战语音
+        // 🌟 播放特定的友军外部音频
         if(AUDIO_POOL.allies[ally.id]) {
             playCustomAudio(AUDIO_POOL.allies[ally.id]);
         }
@@ -1016,7 +1029,7 @@
             let adeCount = gameState.activeVillains.filter(v => v.type === 'ade').length;
             gameState.activeVillains = gameState.activeVillains.filter(v => v.type !== 'ade');
             refreshAllDOMVisuals();
-            showToast(`🤝【纳文·JUDO冠军】已清除场上 ${adeCount} 个阿德，本阶段不再出现！`);
+            showToast(`🤝【纳文·JUDO冠军】已清除场上 ${adeCount} 个阿德，本形态不再出现！`);
             gameState.score += 1500;
             document.getElementById('score').innerText = gameState.score;
         }
@@ -1039,23 +1052,27 @@
         }, 1800);
     }
 
+    // 🌟 核心修改：严格控制“每次召唤只能显示一位立绘，不会两人同时出现”
     function updateAllySideAvatars() {
         const leftAvatar = document.getElementById('left-ally-avatar');
         const rightAvatar = document.getElementById('right-ally-avatar');
 
+        // 先把两人全隐藏
         leftAvatar.style.display = 'none';
         rightAvatar.style.display = 'none';
 
-        // 巩伟常驻左侧，纳文常驻右侧
-        if (gameState.activeAlliesInStage.includes('gongwei')) {
-            const gongweiData = ALLIES_POOL.find(a => a.id === 'gongwei');
-            leftAvatar.style.backgroundImage = `url('${gongweiData.avatar}')`;
-            leftAvatar.style.display = 'block';
-        }
-        if (gameState.activeAlliesInStage.includes('nawen')) {
-            const nawenData = ALLIES_POOL.find(a => a.id === 'nawen');
-            rightAvatar.style.backgroundImage = `url('${nawenData.avatar}')`;
-            rightAvatar.style.display = 'block';
+        // 只有当前最新触发的友军才会被显示出来
+        if (gameState.currentStageAlly) {
+            const id = gameState.currentStageAlly.id;
+            const allyData = ALLIES_POOL.find(a => a.id === id);
+            
+            if (id === 'gongwei') {
+                leftAvatar.style.backgroundImage = `url('${allyData.avatar}')`;
+                leftAvatar.style.display = 'block';
+            } else if (id === 'nawen') {
+                rightAvatar.style.backgroundImage = `url('${allyData.avatar}')`;
+                rightAvatar.style.display = 'block';
+            }
         }
     }
 
@@ -1132,8 +1149,18 @@
             
             if (type === 'bomb') {
                 currentBombRadius = TILE_SIZE * 1.5;
-                ghostInd.style.width = `${currentBombRadius * 2}px`;
-                ghostInd.style.height = `${currentBombRadius * 2}px`;
+                let growing = true;
+                
+                // 🌟 完全恢复的炸弹循环缩放动画
+                if(bombRadiusTimer) clearInterval(bombRadiusTimer);
+                bombRadiusTimer = setInterval(() => {
+                    currentBombRadius += growing ? 1.5 : -1.5;
+                    if (currentBombRadius > TILE_SIZE * 3) growing = false;
+                    if (currentBombRadius < TILE_SIZE) growing = true;
+                    ghostInd.style.width = `${currentBombRadius * 2}px`;
+                    ghostInd.style.height = `${currentBombRadius * 2}px`;
+                }, 30);
+                
                 ghostInd.style.borderColor = '#FF334B';
                 ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.3) 0%, rgba(255,51,75,0.1) 100%)';
             } else {
@@ -1158,6 +1185,10 @@
     async function endDrag(e) {
         if (!activeDragTool) return;
         const toolType = activeDragTool; activeDragTool = null; ghostTool.style.display = 'none';
+        
+        // 🌟 清除炸弹循环动画
+        if (bombRadiusTimer) { clearInterval(bombRadiusTimer); bombRadiusTimer = null; }
+        
         document.removeEventListener('pointermove', moveDrag); document.removeEventListener('pointerup', endDrag);
 
         const x = e.clientX !== undefined ? e.clientX : (e.changedTouches ? e.changedTouches[0].clientX : 0);
@@ -1205,7 +1236,7 @@
     function saveGame() { 
         let saves = getSaves(); 
         let timeStr = new Date().toLocaleString('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}); 
-        saves[`存档_${timeStr}`] = { score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, activeAlliesInStage: gameState.activeAlliesInStage, board: board.map(r => r.map(c => ({...c}))) }; 
+        saves[`存档_${timeStr}`] = { score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage, currentStageAlly: gameState.currentStageAlly, board: board.map(r => r.map(c => ({...c}))) }; 
         setSaves(saves); renderSaveList(); showToast('进度保存成功！'); 
     }
 
@@ -1224,18 +1255,20 @@
     function loadGame(key) {
         const data = getSaves()[key]; if(!data) return;
         gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
-        gameState.activeAlliesInStage = data.activeAlliesInStage || [];
+        gameState.usedAlliesInCurrentStage = data.usedAlliesInCurrentStage || [];
+        gameState.currentStageAlly = data.currentStageAlly || null;
         document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); updateAllySideAvatars();
         board = data.board; initSize(); gridContainer.innerHTML = ''; domTiles = [];
         for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} closeSettings(); showToast('存档读取成功');
     }
 
-    function autoSave() { localStorage.setItem('miaoAutoSaveV2', JSON.stringify({ score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, activeAlliesInStage: gameState.activeAlliesInStage, board: board.map(r => r.map(c => ({...c}))) })); }
+    function autoSave() { localStorage.setItem('miaoAutoSaveV2', JSON.stringify({ score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage, currentStageAlly: gameState.currentStageAlly, board: board.map(r => r.map(c => ({...c}))) })); }
     function loadAutoSave() {
         const saved = localStorage.getItem('miaoAutoSaveV2');
         if (saved) {
             const data = JSON.parse(saved); gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
-            gameState.activeAlliesInStage = data.activeAlliesInStage || [];
+            gameState.usedAlliesInCurrentStage = data.usedAlliesInCurrentStage || [];
+            gameState.currentStageAlly = data.currentStageAlly || null;
             document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); updateAllySideAvatars(); board = data.board; initSize();
             for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} return true;
         } return false;
@@ -1244,7 +1277,8 @@
     function restartGame() {
         localStorage.removeItem('miaoAutoSaveV2');
         gameState.score = 0; gameState.currentStage = 0; gameState.props = { hammer: 2, bomb: 2, refresh: 2 }; gameState.activeVillains = [];
-        gameState.activeAlliesInStage = [];
+        gameState.usedAlliesInCurrentStage = [];
+        gameState.currentStageAlly = null;
         document.getElementById('avatar-container').classList.remove('ready');
         document.getElementById('score').innerText = gameState.score;
         applyEvolution(0); updatePropUI(); updateAllySideAvatars();
@@ -1252,10 +1286,11 @@
         initBoard(); closeSettings(); showToast('已开启新一轮游戏！');
     }
 
-    // 🌟 形态阶数突破：清空该形态已使用的友军，重置两侧常驻立绘
+    // 🌟 形态进化（新阶段）：重置友军记录、阿德控制、以及伴随立绘
     function applyEvolution(stageIdx) {
         gameState.currentStage = stageIdx; 
-        gameState.activeAlliesInStage = []; 
+        gameState.usedAlliesInCurrentStage = []; 
+        gameState.currentStageAlly = null; // 清除当前展示立绘
         gameState.noAdeUntil = 0; 
         updateAllySideAvatars();
 
@@ -1324,7 +1359,7 @@
     }
 
     function playCuteSFX(type, level = 1) {
-        if (!gameState.soundEnabled) return;
+        // 游戏交互音效（内部合成）不被 BGM 开关干扰，时刻保证打击感
         try {
             initAudio();
             if (!audioCtx) return;
