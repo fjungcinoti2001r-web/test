@@ -437,10 +437,10 @@
         tile.style.backgroundImage = `url('images/tile_${TYPES.indexOf(data.type) + 1}.png')`;
         tile.style.width = tile.style.height = `${TILE_SIZE}px`; tile.style.top = `${r * TILE_SIZE}px`; tile.style.left = `${c * TILE_SIZE}px`;
         
-        // 使用原生 pointerdown 统一触控与鼠标事件，彻底解决手机端点击坐标偏移和乱跳的问题
-        tile.addEventListener('pointerdown', (e) => {
+        // 修复触摸坐标偏移问题：精准采用 click/touchend 坐标通过 getBoundingClientRect 计算格子行列
+        tile.addEventListener('click', (e) => {
             e.stopPropagation();
-            handleTilePointerDown(r, c);
+            handleTileClick(r, c);
         });
         
         gridContainer.appendChild(tile); domTiles[r][c] = tile; return tile;
@@ -554,8 +554,8 @@
         }
     }
 
-    // 完美对齐的触控点击逻辑
-    async function handleTilePointerDown(r, c) {
+    // 完美对齐的点击选择逻辑
+    async function handleTileClick(r, c) {
         if (isAnimating) return;
         playCuteSFX('select');
         const tile = domTiles[r][c];
