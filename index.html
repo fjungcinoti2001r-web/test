@@ -262,6 +262,9 @@
 <body>
 <div id="toast">提示信息</div>
 
+<!-- 引入背景音乐音频对象 -->
+<audio id="bgm" src="audio/SeaTreasureMatch.mp3" loop preload="auto"></audio>
+
 <!-- 开场引导页 -->
 <div id="intro-mask">
     <div class="intro-content">
@@ -299,7 +302,7 @@
             </div>
         </div>
         <div class="header-layout">
-            <div id="bgm-toggle" class="icon-btn" title="音效开关">🎵</div>
+            <div id="bgm-toggle" class="icon-btn" title="音效与BGM开关">🎵</div>
             <div id="settings-toggle" class="icon-btn" title="系统设置">⚙️</div>
             <div id="camera-toggle" class="icon-btn" style="background:#FFE4E1; border-color:#FFB6C1;" title="战绩海报">📸</div>
             <div class="score-board">
@@ -339,7 +342,7 @@
     <div id="ally-select-mask">
         <div class="settings-box">
             <div class="settings-title">选择出战友军大招</div>
-            <div style="font-size: 11px; color: #8B5A2B; margin-bottom: 12px; font-weight: bold;">※ 每位友军在当前阶段仅限出战 1 次！</div>
+            <div style="font-size: 11px; color: #8B5A2B; margin-bottom: 12px; font-weight: bold;">※ 本形态内蓄能可重复召唤！</div>
             <div id="ally-cards-container"></div>
             <button class="settings-btn btn-pink" onclick="closeAllyModal()" style="margin-top: 10px;">返回游戏</button>
         </div>
@@ -446,7 +449,6 @@
         allyCharge: 0,
         allyReady: false,
         currentStageAlly: null,
-        stageAlliesSelection: {},
         activeAlliesInStage: [], 
         noNewVillainUntil: 0,
         noAdeUntil: 0,
@@ -461,11 +463,21 @@
         document.getElementById('enter-game-btn').addEventListener('click', enterGame);
         document.getElementById('intro-mask').addEventListener('click', enterGame);
         
+        const bgm = document.getElementById('bgm');
         const bgmToggle = document.getElementById('bgm-toggle');
+        
         bgmToggle.addEventListener('click', () => {
             gameState.soundEnabled = !gameState.soundEnabled;
             bgmToggle.innerText = gameState.soundEnabled ? '🎵' : '🔇';
-            showToast(gameState.soundEnabled ? '🔊 音效与特效已开启' : '🔇 音效与特效已关闭');
+            if (bgm) {
+                if (gameState.soundEnabled) {
+                    bgm.play().catch(e => {});
+                    showToast('🔊 音效与背景音乐已开启');
+                } else {
+                    bgm.pause();
+                    showToast('🔇 音效与背景音乐已关闭');
+                }
+            }
         });
     });
 
@@ -477,6 +489,13 @@
         setTimeout(() => { mask.style.display = 'none'; }, 500);
         
         initAudio();
+        
+        // 尝试播放背景音乐
+        const bgm = document.getElementById('bgm');
+        if (bgm && gameState.soundEnabled) {
+            bgm.play().catch(e => { console.log('BGM auto-play blocked', e); });
+        }
+
         if (!loadAutoSave()) { 
             initBoard(); 
             updatePropUI(); 
@@ -885,25 +904,19 @@
     function openAllyModal() {
         const container = document.getElementById('ally-cards-container');
         container.innerHTML = '';
-        const usedAllyId = gameState.stageAlliesSelection[gameState.currentStage];
-
         ALLIES_POOL.forEach(ally => {
             const card = document.createElement('div');
-            card.className = `ally-card ${usedAllyId === ally.id ? 'used' : ''}`;
+            card.className = `ally-card`;
             card.innerHTML = `
                 <div style="font-weight:900; color:#D2691E; font-size:14px; margin-bottom:4px;">${ally.name}</div>
                 <div style="font-size:12px; color:#2E8B57; font-weight:bold; margin-bottom:2px;">技能：${ally.skillName}</div>
                 <div style="font-size:11px; color:#5C4033;">${ally.desc}</div>
-                ${usedAllyId === ally.id ? '<div style="font-size:10px; color:red; margin-top:4px;">[当前阶段已出战过]</div>' : ''}
             `;
-            if (usedAllyId !== ally.id) {
-                card.onclick = () => {
-                    gameState.stageAlliesSelection[gameState.currentStage] = ally.id;
-                    gameState.currentStageAlly = ally;
-                    closeAllyModal();
-                    executeAllySkill(ally); 
-                };
-            }
+            card.onclick = () => {
+                gameState.currentStageAlly = ally;
+                closeAllyModal();
+                executeAllySkill(ally); 
+            };
             container.appendChild(card);
         });
         document.getElementById('ally-select-mask').style.display = 'flex';
@@ -915,14 +928,12 @@
         playCuteSFX('ultimate');
         gameState.allyCharge = 0; gameState.allyReady = false;
         
-        // 确保只激活当前所选的友军
         if (!gameState.activeAlliesInStage.includes(ally.id)) {
             gameState.activeAlliesInStage.push(ally.id);
         }
         updateAllySideAvatars();
         updateAllyUI();
 
-        // 触发对应友军大招演出（独立立绘 + 专属台词）
         showAllyUltimateOverlay(ally);
 
         if (ally.id === 'gongwei') {
@@ -968,18 +979,16 @@
         leftAvatar.style.display = 'none';
         rightAvatar.style.display = 'none';
 
-        gameState.activeAlliesInStage.forEach(id => {
-            const allyData = ALLIES_POOL.find(a => a.id === id);
-            if (allyData) {
-                if (id === 'gongwei') {
-                    leftAvatar.style.backgroundImage = `url('${allyData.avatar}')`;
-                    leftAvatar.style.display = 'block';
-                } else if (id === 'nawen') {
-                    rightAvatar.style.backgroundImage = `url('${allyData.avatar}')`;
-                    rightAvatar.style.display = 'block';
-                }
-            }
-        });
+        if (gameState.activeAlliesInStage.includes('gongwei')) {
+            const gongweiData = ALLIES_POOL.find(a => a.id === 'gongwei');
+            leftAvatar.style.backgroundImage = `url('${gongweiData.avatar}')`;
+            leftAvatar.style.display = 'block';
+        }
+        if (gameState.activeAlliesInStage.includes('nawen')) {
+            const nawenData = ALLIES_POOL.find(a => a.id === 'nawen');
+            rightAvatar.style.backgroundImage = `url('${nawenData.avatar}')`;
+            rightAvatar.style.display = 'block';
+        }
     }
 
     async function triggerCharacterUltimate() {
@@ -1178,7 +1187,7 @@
 
     function applyEvolution(stageIdx) {
         gameState.currentStage = stageIdx; 
-        gameState.activeAlliesInStage = []; // 进入新阶段，重置两侧伴随立绘
+        gameState.activeAlliesInStage = []; // 🌟 进入新形态（阶段），重置两侧伴随立绘
         updateAllySideAvatars();
 
         const currentData = EVOLUTION[gameState.currentStage];
