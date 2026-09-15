@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>开心苗苗乐·演员谢苗超话制作</title>
+    <title>开心苗苗乐·演员谢苗超话</title>
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: none; }
         
@@ -413,7 +413,7 @@
         { score: 56000, name: "张柳成", movie: "狂虎危城",     avatar: "images/avatar_8.png", fallback: "👔", prop: "images/prop_8.png", propFallback: "🪓", ultText: "危城血战，生死无憾！" },
         { score: 64000, name: "黄铭金", movie: "缉恶",         avatar: "images/avatar_9.png", fallback: "🕶️", prop: "images/prop_9.png", propFallback: "💼", ultText: "雷霆缉凶，目中无人！" },
         { score: 72000, name: "王伟",   movie: "火遮眼",       avatar: "images/avatar_10.png",fallback: "🔥", prop: "images/prop_10.png",propFallback: "🩸", ultText: "绝命生死搏，火遮眼！" },
-        { score: 80000, name: "苗哥本人",movie: "演员谢苗宇宙",avatar: "images/avatar_11.png",fallback: "😎", prop: "images/prop_11.png",propFallback: "🎬", ultText: "真打！真狠！真解恨！动作宇宙主宰！" }
+        { score: 80000, name: "苗哥本人",movie: "演员谢苗",avatar: "images/avatar_11.png",fallback: "😎", prop: "images/prop_11.png",propFallback: "🎬", ultText: "真打！真狠！真解恨！动作宇宙主宰！" }
     ];
 
     const VILLAINS = [
@@ -425,8 +425,8 @@
 
     // 两大友军池
     const ALLIES_POOL = [
-        { id: 'gongwei', name: "巩伟（《给爸爸的信》）", skillName: "父子同心", desc: "技能：瞬间点名清除场上的 2 个敌对反派目标！" },
-        { id: 'nawen', name: "纳文（《火遮眼》）", skillName: "JUDO冠军", desc: "技能：关节技压制，10秒内不再刷新新敌人且战力暴涨！" }
+        { id: 'gongwei', name: "巩伟（《给爸爸的信》）", skillName: "父子同心", desc: "技能：随机清除场上的 2 个反派目标！" },
+        { id: 'nawen', name: "纳文（《火遮眼》）", skillName: "JUDO冠军", desc: "技能：关节技压制，10秒内不再刷新新敌人！" }
     ];
     let stageAlliesSelection = {}; 
     let allyCharge = 0;            // 蓄能计数 (0 - 3)
@@ -596,13 +596,13 @@
             if (activeVillains.length > 0) {
                 let cleared = activeVillains.slice(0, 2);
                 activeVillains = activeVillains.filter(v => !cleared.includes(v));
-                showToast('🤝【巩伟·父子同心】父子联手，精准双杀场上反派！');
+                showToast('🤝【巩伟·父子同心】父子联手，双杀反派！');
             } else {
                 showToast('🤝【巩伟·父子同心】场上没有反派，热身完毕！');
             }
         } else if (ally.id === 'nawen') {
             noNewVillainUntil = Date.now() + 10000;
-            showToast('🤝【纳文·JUDO冠军】关节技压制！10秒内反派绝迹，战力暴涨！');
+            showToast('🤝【纳文·JUDO冠军】10秒内反派绝迹！');
             score += 1500;
             document.getElementById('score').innerText = score;
         }
@@ -679,7 +679,7 @@
                 if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !activeVillains.some(av => av.r === nr && av.c === nc)) {
                     if (activeVillains.length < 5) {
                         activeVillains.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', hp: 1 });
-                        showToast('🟣 【阿德毒液蔓延】吞噬了新的格子！');
+                        showToast('🟣 【毒液蔓延】吞噬了新的格子！');
                     }
                 }
             } else if (v.type === 'bailong') {
@@ -688,7 +688,7 @@
                 let nr = v.r + dir.r, nc = v.c + dir.c;
                 if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !activeVillains.some(av => av.r === nr && av.c === nc)) {
                     v.r = nr; v.c = nc;
-                    showToast('🥎 【柏龙乱跑】毛球闪现换位！');
+                    showToast('🥎 【声东击西】闪现换位！');
                 }
             }
         });
@@ -709,7 +709,7 @@
                     showToast(`⚔️ 成功击破反派【${v.name}】！`);
                     playCuteSFX('explode');
                 } else {
-                    showToast(`🛡️ 【${v.name}】冰块护甲减弱！`);
+                    showToast(`🛡️ 【${v.name}】削弱大块头！`);
                     playCuteSFX('select');
                 }
             });
@@ -1146,7 +1146,7 @@
             applyEvolution(currentStage + 1); 
             props.hammer += 1; props.bomb += 1; props.refresh += 1; updatePropUI(); 
             document.getElementById('avatar-container').classList.add('ready');
-            showToast('🔥 战力突破！新形态专属奥义大招已充能完毕！');
+            showToast('🔥 战力突破！');
         }
 
         await sleep(180); 
