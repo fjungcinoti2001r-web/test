@@ -92,11 +92,11 @@
         .score-label { font-size: 9px; color: #FF9800; font-weight: 900; }
         .score-val { font-size: 15px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
-        /* 顶部舞台区 */
+        /* 顶部舞台区（已将背景图修正为 stage_bg.png） */
         #top-stage {
             height: 18%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
-            background-color: #FFFDF9; background-image: url('images/stage_bg.jpg'); background-size: cover; background-position: center; border-bottom: 3px solid #DEB887;
+            background-color: #FFFDF9; background-image: url('images/stage_bg.png'); background-size: cover; background-position: center; border-bottom: 3px solid #DEB887;
         }
         #character-avatar {
             width: 100px; height: 100px; z-index: 2; transform-origin: bottom center; margin-bottom: -10px; 
@@ -307,14 +307,12 @@
 
     const ROWS = 8, COLS = 8; let TILE_SIZE = 48;
     
-    // 保持原来的字符数组，保证消除和匹配核心逻辑 100% 正常运行
     const TYPES = ['🥋', '🕶️', '🗡️', '👊', '🧨', '📿', '🍶']; 
     
-    // 自动兼容所有图片格式的辅助函数：无论传进来什么格式（png/jpg/webp/gif/svg等）都能自动识别
+    // 统一支持所有 .png 图片格式映射，同时自带 Emoji 降级保护
     function getTileImageUrl(typeStr) {
         const idx = TYPES.indexOf(typeStr);
         if (idx !== -1) {
-            // 你只需更换这里的后缀名，比如改成 .jpg、.webp、.gif 等均可支持
             return `images/tile_${idx + 1}.png`;
         }
         return '';
@@ -488,20 +486,19 @@
     function createTileDOM(r, c, data) {
         const tile = document.createElement('div'); 
         tile.className = `tile ${data.effect !== 'none' ? 'effect-'+data.effect : ''}`; 
-        tile.innerText = data.type; // 默认显示 Emoji 备用
+        tile.innerText = data.type; 
         
         const imgPath = getTileImageUrl(data.type);
         if (imgPath) {
-            // 自动加载任意图片格式（支持 png, jpg, webp, gif, svg 等）
             const imgTest = new Image();
             imgTest.src = imgPath;
             imgTest.onload = () => {
                 tile.style.backgroundImage = `url('${imgPath}')`;
-                tile.innerText = ''; // 图片加载成功后隐藏备用文字
+                tile.innerText = ''; 
             };
             imgTest.onerror = () => {
                 tile.style.backgroundImage = 'none';
-                tile.innerText = data.type; // 如果图片加载失败则自动回退显示 Emoji
+                tile.innerText = data.type; 
             };
         }
         
@@ -782,7 +779,6 @@
         setTimeout(() => {
             const currentData = EVOLUTION[currentStage];
             
-            // 头像图片兼容与降级
             av.style.backgroundImage = 'none';
             av.innerText = currentData.fallback;
             const avatarTest = new Image();
@@ -790,7 +786,6 @@
             avatarTest.onload = () => { av.style.backgroundImage = `url('${currentData.avatar}')`; av.innerText = ''; };
             avatarTest.onerror = () => { av.style.backgroundImage = 'none'; av.innerText = currentData.fallback; };
 
-            // 道具图片兼容与降级
             const prop = document.getElementById('desk-prop');
             prop.style.backgroundImage = 'none';
             prop.innerText = currentData.propFallback;
