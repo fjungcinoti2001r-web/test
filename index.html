@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>开心苗苗乐·演员谢苗超话制作</title>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: none; }
         
@@ -22,7 +21,7 @@
             z-index: 99999; text-align: center; padding: 20px; transition: opacity 0.5s ease-out;
         }
         .intro-content {
-            display: flex; flex-direction: column; align-items: center; gap: 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 16px;
             animation: introBounce 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
         @keyframes introBounce {
@@ -30,28 +29,28 @@
             100% { transform: scale(1); opacity: 1; }
         }
         .intro-title-1 {
-            font-size: 34px; font-weight: 900; color: #D2691E; letter-spacing: 2px;
+            font-size: 32px; font-weight: 900; color: #D2691E; letter-spacing: 2px;
             text-shadow: 0 4px 10px rgba(210, 105, 30, 0.2);
         }
         .intro-title-2 {
-            display: flex; align-items: center; gap: 10px; font-size: 16px; color: #8B5A2B; font-weight: bold;
-            background: rgba(255, 255, 255, 0.5); padding: 6px 18px; border-radius: 30px; border: 2px solid #FAD6A5;
+            display: flex; align-items: center; gap: 8px; font-size: 15px; color: #8B5A2B; font-weight: bold;
+            background: rgba(255, 255, 255, 0.5); padding: 5px 16px; border-radius: 30px; border: 2px solid #FAD6A5;
         }
-        .intro-title-2 img { width: 32px; height: 32px; object-fit: contain; border-radius: 50%; border: 1px solid #DEB887; }
+        .intro-title-2 img { width: 28px; height: 28px; object-fit: contain; border-radius: 50%; border: 1px solid #DEB887; }
         .intro-title-3 {
-            font-size: 12px; color: #CD853F; font-weight: bold; letter-spacing: 1px;
-            background: rgba(255, 255, 255, 0.6); padding: 4px 14px; border-radius: 20px; border: 1px dashed #DEB887;
+            font-size: 11px; color: #CD853F; font-weight: bold; letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.6); padding: 3px 12px; border-radius: 20px; border: 1px dashed #DEB887;
         }
         .intro-enter-btn {
-            margin-top: 15px; padding: 12px 36px; background-color: #3CB371; color: white;
-            font-size: 18px; font-weight: 900; border: none; border-radius: 30px; cursor: pointer;
-            box-shadow: 0 6px 0 #2E8B57, 0 10px 20px rgba(60, 179, 113, 0.3); transition: transform 0.1s, box-shadow 0.1s;
+            margin-top: 10px; padding: 10px 32px; background-color: #3CB371; color: white;
+            font-size: 17px; font-weight: 900; border: none; border-radius: 30px; cursor: pointer;
+            box-shadow: 0 5px 0 #2E8B57, 0 8px 16px rgba(60, 179, 113, 0.3); transition: transform 0.1s, box-shadow 0.1s;
             animation: pulseBtn 2s infinite; pointer-events: auto;
         }
-        .intro-enter-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #2E8B57; }
+        .intro-enter-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #2E8B57; }
         @keyframes pulseBtn {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            50% { transform: scale(1.04); }
             100% { transform: scale(1); }
         }
 
@@ -76,32 +75,32 @@
             background: #FFEFD5; border-bottom: 3px solid #DEB887; z-index: 20; flex-shrink: 0;
         }
         .header-layout { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-        .logo-img { width: 34px; height: 34px; object-fit: contain; mix-blend-mode: multiply; }
-        .title-group h1 { font-size: 15px; color: #D2691E; font-weight: 900; margin: 0; line-height: 1.2; }
+        .logo-img { width: 32px; height: 32px; object-fit: contain; mix-blend-mode: multiply; }
+        .title-group h1 { font-size: 14px; color: #D2691E; font-weight: 900; margin: 0; line-height: 1.2; }
         .subtitle { font-size: 9px; color: #8B5A2B; font-weight: bold; margin-top: 1px; }
         
         .icon-btn {
-            width: 28px; height: 28px; background: rgba(255, 255, 255, 0.9); border: 2px solid #DEB887; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer; box-shadow: 0 2px 5px rgba(210, 105, 30, 0.15); flex-shrink: 0;
+            width: 26px; height: 26px; background: rgba(255, 255, 255, 0.9); border: 2px solid #DEB887; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 11px; cursor: pointer; box-shadow: 0 2px 4px rgba(210, 105, 30, 0.15); flex-shrink: 0;
         }
         .icon-btn:active { transform: scale(0.9); }
-        .score-board { text-align: right; background: #FFFFFF; padding: 2px 6px; border-radius: 10px; border: 2px dashed #DEB887; flex-shrink: 0; }
-        .score-label { font-size: 9px; color: #FF9800; font-weight: 900; }
-        .score-val { font-size: 15px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
+        .score-board { text-align: right; background: #FFFFFF; padding: 2px 6px; border-radius: 8px; border: 2px dashed #DEB887; flex-shrink: 0; }
+        .score-label { font-size: 8px; color: #FF9800; font-weight: 900; }
+        .score-val { font-size: 14px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
         #top-stage {
-            height: 20%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
+            height: 19%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
             background-color: #FFFDF9; background-image: url('images/stage_bg.png'); background-size: cover; background-position: center; border-bottom: 3px solid #DEB887;
         }
         
         #avatar-container {
-            position: relative; width: 95px; height: 95px; z-index: 3; margin-bottom: -10px; cursor: pointer;
+            position: relative; width: 85px; height: 85px; z-index: 3; margin-bottom: -8px; cursor: pointer;
             display: flex; justify-content: center; align-items: flex-end;
         }
         #character-avatar {
-            width: 90px; height: 90px; z-index: 2; transform-origin: bottom center; 
-            background-size: contain; background-repeat: no-repeat; background-position: bottom center; font-size: 65px; display: flex; justify-content: center; align-items: flex-end; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 80px; height: 80px; z-index: 2; transform-origin: bottom center; 
+            background-size: contain; background-repeat: no-repeat; background-position: bottom center; font-size: 55px; display: flex; justify-content: center; align-items: flex-end; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #ultimate-ring {
             position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%;
@@ -112,30 +111,30 @@
         }
         @keyframes ultimateGlow {
             0% { box-shadow: 0 0 5px #FF4500, inset 0 0 5px #FF4500; transform: scale(1); }
-            100% { box-shadow: 0 0 18px #FFD700, inset 0 0 12px #FFD700; transform: scale(1.04); }
+            100% { box-shadow: 0 0 16px #FFD700, inset 0 0 10px #FFD700; transform: scale(1.04); }
         }
 
         #desk {
-            width: 100%; height: 36px; z-index: 3; display: flex; justify-content: center; align-items: flex-start;
+            width: 100%; height: 32px; z-index: 3; display: flex; justify-content: center; align-items: flex-start;
             background-color: #DEB887; background-image: url('images/desk_bar.png'); background-size: cover; background-position: center; border-top: 3px solid #CD853F; border-bottom: 2px solid #5C4033;
         }
-        #desk-prop { width: 36px; height: 36px; margin-top: -18px; font-size: 20px; display: flex; justify-content: center; align-items: center; background-size: contain; background-repeat: no-repeat; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        #desk-prop { width: 32px; height: 32px; margin-top: -16px; font-size: 18px; display: flex; justify-content: center; align-items: center; background-size: contain; background-repeat: no-repeat; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
         
         .header-info-row {
             display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 2px 10px; z-index: 15;
         }
         #role-badge {
-            font-size: 11px; background: rgba(255,255,255,0.9); color: #D2691E; font-weight: 900; padding: 2px 8px; border-radius: 12px; border: 1px solid #DEB887; white-space: nowrap;
+            font-size: 10px; background: rgba(255,255,255,0.9); color: #D2691E; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #DEB887; white-space: nowrap;
         }
         #ally-status {
-            font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 8px; border-radius: 12px; border: 1px solid #3CB371; white-space: nowrap;
+            font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap;
         }
 
         #game-wrapper {
-            position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; padding: 6px; background: #FFFDF9; box-shadow: inset 0 0 15px rgba(222, 184, 135, 0.3);
+            position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; padding: 4px; background: #FFFDF9; box-shadow: inset 0 0 15px rgba(222, 184, 135, 0.3);
         }
         #grid-container {
-            position: relative; background: rgba(255, 255, 255, 0.9); border: 4px solid #DEB887; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 20px rgba(200, 180, 160, 0.4); transition: filter 0.3s;
+            position: relative; background: rgba(255, 255, 255, 0.9); border: 4px solid #DEB887; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(200, 180, 160, 0.4); transition: filter 0.3s;
             touch-action: none;
         }
         .bg-cell { position: absolute; border-radius: 50%; border: 1px solid rgba(222, 184, 135, 0.2); margin: 2px; }
@@ -143,20 +142,20 @@
         .bg-cell.dark { background-color: rgba(250, 214, 165, 0.5); }
 
         .tile {
-            position: absolute; display: flex; justify-content: center; align-items: center; font-size: 22px;
+            position: absolute; display: flex; justify-content: center; align-items: center; font-size: 20px;
             border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 8px rgba(210, 105, 30, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 3px 6px rgba(210, 105, 30, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.6);
             will-change: top, left, transform; pointer-events: none; z-index: 10; 
             background-size: cover; background-repeat: no-repeat; background-position: center;
             transition: top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.2s;
         }
         
         .tile.villain-tile {
-            border: 3px solid #FF334B !important; animation: villainPulse 1s infinite alternate; background-color: #FFE4E1 !important; z-index: 15;
+            border: 3px solid #FF334B !important; animation: villainPulse 0.8s infinite alternate; background-color: #FFE4E1 !important; z-index: 15;
         }
         @keyframes villainPulse {
             0% { filter: drop-shadow(0 0 2px #FF334B); transform: scale(1); }
-            100% { filter: drop-shadow(0 0 10px #FF334B); transform: scale(1.06); }
+            100% { filter: drop-shadow(0 0 10px #FF334B); transform: scale(1.08); }
         }
 
         .tile.hint-pulse {
@@ -192,17 +191,17 @@
         }
 
         #bottom-tools {
-            height: 11%; width: 100%; background: #FFEFD5; border-top: 3px solid #DEB887; display: flex; justify-content: space-evenly; align-items: center; padding: 0 8px; flex-shrink: 0;
+            height: 10%; width: 100%; background: #FFEFD5; border-top: 3px solid #DEB887; display: flex; justify-content: space-evenly; align-items: center; padding: 0 6px; flex-shrink: 0;
         }
         .tool-btn {
-            background: rgba(255, 255, 255, 0.95); border-radius: 10px; padding: 4px 10px; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: 2px solid #DEB887; box-shadow: 0 3px 6px rgba(200, 180, 160, 0.3);
+            background: rgba(255, 255, 255, 0.95); border-radius: 8px; padding: 3px 8px; display: flex; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s; border: 2px solid #DEB887; box-shadow: 0 2px 4px rgba(200, 180, 160, 0.3);
         }
         .tool-btn:active { transform: scale(0.95); }
         .tool-btn.disabled { opacity: 0.5; pointer-events: none; filter: grayscale(100%); }
-        .tool-count { font-size: 12px; font-weight: 900; white-space: nowrap; pointer-events: none; }
-        #hammer-tool { border-color: #3CB371; color: #3CB371; }
-        #bomb-tool { border-color: #FF334B; color: #FF334B; }
-        #refresh-tool { border-color: #4169E1; color: #4169E1; }
+        .tool-count { font-size: 11px; font-weight: 900; white-space: nowrap; pointer-events: none; color: #5C4033; }
+        #hammer-tool { border-color: #3CB371; }
+        #bomb-tool { border-color: #FF334B; }
+        #refresh-tool { border-color: #4169E1; }
 
         #settings-mask, #poster-mask {
             display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -260,9 +259,8 @@
             </div>
         </div>
         <div class="header-layout">
-            <div id="bgm-toggle" class="icon-btn">🔇</div>
-            <div id="settings-toggle" class="icon-btn">⚙️</div>
-            <div id="camera-toggle" class="icon-btn" style="background:#FFE4E1; border-color:#FFB6C1;">📸</div>
+            <div id="settings-toggle" class="icon-btn" title="系统设置">⚙️</div>
+            <div id="camera-toggle" class="icon-btn" style="background:#FFE4E1; border-color:#FFB6C1;" title="战绩海报">📸</div>
             <div class="score-board">
                 <div class="score-label">总战力</div>
                 <div class="score-val" id="score">0</div>
@@ -286,9 +284,9 @@
     <div id="game-wrapper"><div id="grid-container"></div></div>
 
     <div id="bottom-tools">
-        <div class="tool-btn" id="hammer-tool"><span class="tool-icon">🔨</span><span class="tool-count" id="count-hammer">单点 × 2</span></div>
-        <div class="tool-btn" id="bomb-tool"><span class="tool-icon">💣</span><span class="tool-count" id="count-bomb">炸弹 × 2</span></div>
-        <div class="tool-btn" id="refresh-tool"><span class="tool-icon">🌀</span><span class="tool-count" id="count-refresh">刷新 × 2</span></div>
+        <div class="tool-btn" id="hammer-tool"><span class="tool-icon">🔨</span><span class="tool-count" id="count-hammer">单点×2</span></div>
+        <div class="tool-btn" id="bomb-tool"><span class="tool-icon">💣</span><span class="tool-count" id="count-bomb">炸弹×2</span></div>
+        <div class="tool-btn" id="refresh-tool"><span class="tool-icon">🌀</span><span class="tool-count" id="count-refresh">刷新×2</span></div>
     </div>
 
     <div id="settings-mask">
@@ -323,7 +321,7 @@
             </div>
         </div>
         <img id="final-poster-img" src="">
-        <div class="save-tip" id="save-tip-text">正在生成海报...</div>
+        <div class="save-tip" id="save-tip-text">战绩卡片生成完毕</div>
         <button class="btn-close-poster" onclick="closePoster()">返回游戏</button>
     </div>
 </div>
@@ -348,8 +346,6 @@
         const bgm = document.getElementById('bgm');
         if(bgm && bgm.paused) {
             bgm.play().catch(err => console.log('BGM auto-play blocked'));
-            const btn = document.getElementById('bgm-toggle');
-            if(btn) { btn.innerText = '🎵'; btn.classList.add('bgm-playing'); }
         }
 
         if (!loadAutoSave()) { 
@@ -368,7 +364,6 @@
         return '';
     }
 
-    // ===== 11 阶经典银幕角色与作品正统对应表 =====
     const EVOLUTION = [
         { score: 0,     name: "洪文定", movie: "新少林五祖", avatar: "images/avatar_1.png", fallback: "👦", prop: "images/prop_1.png", propFallback: "🍵", ultText: "少林正宗，刚柔并济！" },
         { score: 300,   name: "海远",   movie: "赌神2",       avatar: "images/avatar_2.png", fallback: "🧑", prop: "images/prop_2.png", propFallback: "🥢", ultText: "眼神锁定，牌局由我！" },
@@ -389,12 +384,12 @@
         { name: "幕后黑手", icon: "👤" }
     ];
     let activeVillains = []; 
-    let allyCharge = 0; // 友军蓄能 (0 - 3)
+    let allyCharge = 0; 
 
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
     let board = [], domTiles = [], score = 0, currentStage = 0, isAnimating = false, lastSwapPos = null, globalCombo = 0;
-    let props = { hammer: 2, bomb: 2, refresh: 2 }; // 初始各2个
+    let props = { hammer: 2, bomb: 2, refresh: 2 }; 
     let idleTimer = null; 
 
     let touchStartCoord = null;
@@ -461,9 +456,6 @@
             triggerVibration(30);
         }
     }
-
-    const bgmToggle = document.getElementById('bgm-toggle'); const bgm = document.getElementById('bgm');
-    bgmToggle.addEventListener('click', () => { if (bgm.paused) { bgm.play(); bgmToggle.innerText = '🎵'; bgmToggle.classList.add('bgm-playing'); } else { bgm.pause(); bgmToggle.innerText = '🔇'; bgmToggle.classList.remove('bgm-playing'); } });
     
     function showComboPopup(r, c, comboLevel) {
         if (comboLevel < 2) return;
@@ -521,7 +513,6 @@
     }
 
     function spawnVillainIfNeeded() {
-        // 限制棋盘最多同时存在 2 个反派，确保安全生成
         if (activeVillains.length < 2 && Math.random() < 0.35) {
             let emptySpots = [];
             for (let r = 0; r < ROWS; r++) {
@@ -535,8 +526,8 @@
                 let newVillain = { r: spot.r, c: spot.c, name: vTemplate.name, icon: vTemplate.icon };
                 activeVillains.push(newVillain);
                 
-                // 强制立刻刷新该格子的视觉呈现，彻底解决“有警报无反派”的Bug
                 updateTileDOMVisual(spot.r, spot.c, board[spot.r][spot.c]);
+                triggerScreenShake();
                 showToast(`⚠️ 警报！【${vTemplate.name}】已降临棋盘！`);
             }
         }
@@ -558,7 +549,6 @@
             score += 200;
             document.getElementById('score').innerText = score;
 
-            // 友军蓄能 (满3次触发)
             allyCharge++;
             if (allyCharge >= 3) {
                 triggerAllySupport();
@@ -645,8 +635,8 @@
     }
 
     function initSize() { 
-        const maxW = document.getElementById('game-wrapper').clientWidth - 8;
-        const maxH = document.getElementById('game-wrapper').clientHeight - 8;
+        const maxW = document.getElementById('game-wrapper').clientWidth - 6;
+        const maxH = document.getElementById('game-wrapper').clientHeight - 6;
         TILE_SIZE = Math.floor(Math.min(maxW / COLS, maxH / ROWS));
         gridContainer.style.width = `${TILE_SIZE * COLS}px`; 
         gridContainer.style.height = `${TILE_SIZE * ROWS}px`; 
@@ -698,7 +688,7 @@
     function createTileDOM(r, c, data) {
         const tile = document.createElement('div'); 
         tile.className = 'tile'; 
-        const padding = 3;
+        const padding = 2;
         tile.style.width = tile.style.height = `${TILE_SIZE - padding * 2}px`; 
         tile.style.top = `${r * TILE_SIZE + padding}px`; 
         tile.style.left = `${c * TILE_SIZE + padding}px`;
@@ -740,7 +730,7 @@
 
         const diffX = clientX - touchStartCoord.x;
         const diffY = clientY - touchStartCoord.y;
-        const threshold = 18; 
+        const threshold = 16; 
 
         if (Math.abs(diffX) > threshold || Math.abs(diffY) > threshold) {
             let targetR = touchStartCoord.r;
@@ -790,9 +780,9 @@
     }
 
     function updatePropUI() {
-        document.getElementById('count-hammer').innerText = `单点 × ${props.hammer}`;
-        document.getElementById('count-bomb').innerText = `炸弹 × ${props.bomb}`;
-        document.getElementById('count-refresh').innerText = `刷新 × ${props.refresh}`;
+        document.getElementById('count-hammer').innerText = `单点×${props.hammer}`;
+        document.getElementById('count-bomb').innerText = `炸弹×${props.bomb}`;
+        document.getElementById('count-refresh').innerText = `刷新×${props.refresh}`;
         ['hammer', 'bomb', 'refresh'].forEach(p => {
             const el = document.getElementById(p === 'refresh' ? 'refresh-tool' : `${p}-tool`);
             if (props[p] <= 0) el.classList.add('disabled'); else el.classList.remove('disabled');
@@ -803,16 +793,21 @@
     setupToolDrag('bomb-tool', 'bomb');
 
     document.getElementById('refresh-tool').onclick = async () => {
-        if (isAnimating || props.refresh <= 0) return; props.refresh--; updatePropUI(); isAnimating = true; globalCombo = 0; playCuteSFX('explode');
-        for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) {
-            if (activeVillains.some(v => v.r === r && v.c === c)) continue;
-            let type; do { type = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === type && board[r][c-2]?.type === type) || (r >= 2 && board[r-1][c]?.type === type && board[r-2][c]?.type === type));
-            board[r][c] = { type, effect: 'none' }; 
-            updateTileDOMVisual(r, c, board[r][c]);
-            const tile = domTiles[r][c];
-            tile.style.transform = 'scale(0)'; 
-            setTimeout(() => tile.style.transform = 'scale(1)', 40);
-        }} await sleep(250); isAnimating = false; gridContainer.style.filter = 'none'; autoSave(); checkDeadlock(); resetIdleTimer();
+        try {
+            if (isAnimating || props.refresh <= 0) return; props.refresh--; updatePropUI(); isAnimating = true; globalCombo = 0; playCuteSFX('explode');
+            for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) {
+                if (activeVillains.some(v => v.r === r && v.c === c)) continue;
+                let type; do { type = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === type && board[r][c-2]?.type === type) || (r >= 2 && board[r-1][c]?.type === type && board[r-2][c]?.type === type));
+                board[r][c] = { type, effect: 'none' }; 
+                updateTileDOMVisual(r, c, board[r][c]);
+                const tile = domTiles[r][c];
+                tile.style.transform = 'scale(0)'; 
+                setTimeout(() => tile.style.transform = 'scale(1)', 40);
+            }} await sleep(250); isAnimating = false; gridContainer.style.filter = 'none'; autoSave(); checkDeadlock(); resetIdleTimer();
+        } catch(err) {
+            console.error("Refresh error:", err);
+            isAnimating = false;
+        }
     };
 
     function setupToolDrag(btnId, type) {
@@ -901,7 +896,7 @@
     function swapDataAndDOM(r1, c1, r2, c2) {
         const temp = board[r1][c1]; board[r1][c1] = board[r2][c2]; board[r2][c2] = temp;
         const dTemp = domTiles[r1][c1]; domTiles[r1][c1] = domTiles[r2][c2]; domTiles[r2][c2] = dTemp;
-        const padding = 3;
+        const padding = 2;
         domTiles[r1][c1].style.top = `${r1 * TILE_SIZE + padding}px`; domTiles[r1][c1].style.left = `${c1 * TILE_SIZE + padding}px`;
         domTiles[r2][c2].style.top = `${r2 * TILE_SIZE + padding}px`; domTiles[r2][c2].style.left = `${c2 * TILE_SIZE + padding}px`;
     }
@@ -970,7 +965,7 @@
         
         if (currentStage < EVOLUTION.length - 1 && score >= EVOLUTION[currentStage + 1].score) {
             applyEvolution(currentStage + 1); 
-            props.hammer += 1; props.bomb += 1; props.refresh += 1; updatePropUI(); // 晋级每样各加1个
+            props.hammer += 1; props.bomb += 1; props.refresh += 1; updatePropUI(); 
             document.getElementById('avatar-container').classList.add('ready');
             showToast('🔥 战力突破！新形态专属奥义大招已充能完毕！');
         }
@@ -994,7 +989,7 @@
     }
 
     async function applyGravity() {
-        const padding = 3;
+        const padding = 2;
         for (let c = 0; c < COLS; c++) {
             let empty = 0;
             for (let r = ROWS - 1; r >= 0; r--) {
@@ -1066,7 +1061,9 @@
 
     document.getElementById('camera-toggle').onclick = () => generatePoster();
     function generatePoster() {
-        document.getElementById('poster-mask').style.display = 'flex'; document.getElementById('poster-score').innerText = score; document.getElementById('poster-role-text').innerText = `已解锁：${EVOLUTION[currentStage].name} 《${EVOLUTION[currentStage].movie}》`;
+        document.getElementById('poster-mask').style.display = 'flex'; 
+        document.getElementById('poster-score').innerText = score; 
+        document.getElementById('poster-role-text').innerText = `已解锁：${EVOLUTION[currentStage].name} 《${EVOLUTION[currentStage].movie}》`;
         
         const prev = document.getElementById('poster-avatar-preview');
         const currentData = EVOLUTION[currentStage];
@@ -1077,14 +1074,24 @@
         posterImgTest.onload = () => { prev.style.backgroundImage = `url('${currentData.avatar}')`; prev.innerText = ''; };
         posterImgTest.onerror = () => { prev.style.backgroundImage = 'none'; prev.innerText = currentData.fallback; };
 
-        document.getElementById('capture-area').style.display = 'flex'; document.getElementById('final-poster-img').style.display = 'none'; document.getElementById('save-tip-text').innerText = "正在生成海报...";
+        document.getElementById('capture-area').style.display = 'flex'; 
+        document.getElementById('final-poster-img').style.display = 'none'; 
+        document.getElementById('save-tip-text').innerText = "战绩卡片生成完毕";
+        
         setTimeout(() => {
-            html2canvas(document.getElementById('capture-area'), { scale: 3, backgroundColor: "#FFF5E1", useCORS: true }).then(canvas => {
-                document.getElementById('final-poster-img').src = canvas.toDataURL('image/png'); document.getElementById('capture-area').style.display = 'none'; document.getElementById('final-poster-img').style.display = 'block'; document.getElementById('save-tip-text').innerText = "👇 长按上方图片即可保存到相册 👇";
-            });
-        }, 500);
+            try {
+                document.getElementById('capture-area').style.display = 'none';
+                document.getElementById('final-poster-img').src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="260"><rect width="100%" height="100%" fill="#FFF5E1" rx="20" /><text x="160" y="45" font-size="20" font-weight="bold" fill="#D2691E" text-anchor="middle">✨ 苗友战绩卡片 ✨</text><text x="160" y="85" font-size="14" font-weight="bold" fill="#8B5A2B" text-anchor="middle">${EVOLUTION[currentStage].name}《${EVOLUTION[currentStage].movie}》</text><text x="160" y="145" font-size="32" font-weight="bold" fill="#FF9800" text-anchor="middle">战力: ${score}</text><text x="160" y="200" font-size="12" fill="#CD853F" text-anchor="middle">演员谢苗超话制作</text></svg>`);
+                document.getElementById('final-poster-img').style.display = 'block';
+                document.getElementById('save-tip-text').innerText = "👇 长按上方战绩卡片即可保存到相册 👇";
+            } catch(e) {
+                console.error("Poster generation exception:", e);
+                showToast("海报生成异常");
+                document.getElementById('poster-mask').style.display = 'none';
+            }
+        }, 300);
     }
-    function closePoster() { document.getElementById('poster-mask').style.display = 'none'; if(props.refresh <= 0) { localStorage.removeItem('miaoAutoSave'); location.reload(); } }
+    function closePoster() { document.getElementById('poster-mask').style.display = 'none'; }
 </script>
 </body>
 </html>
