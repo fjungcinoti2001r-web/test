@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>开心苗苗乐·演员谢苗超话</title>
+    <title>开心苗苗乐·演员谢苗超话制作</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: none; }
@@ -306,19 +306,30 @@
     }
 
     const ROWS = 8, COLS = 8; let TILE_SIZE = 48;
-    const TYPES = ['🥋', '🕶️', '🗡️', '👊', '🧨', '📿', '🍶']; 
+    
+    // 支持所有图片格式（兼容任意后缀），内置 Emoji 作为加载失败的降级后备
+    const TYPES = [
+        { icon: '🥋', img: 'images/tile_1.png' },
+        { icon: '🕶️', img: 'images/tile_2.png' },
+        { icon: '🗡️', img: 'images/tile_3.png' },
+        { icon: '👊', img: 'images/tile_4.png' },
+        { icon: '🧨', img: 'images/tile_5.png' },
+        { icon: '📿', img: 'images/tile_6.png' },
+        { icon: '🍶', img: 'images/tile_7.png' }
+    ];
+
     const EVOLUTION = [
-        { score: 0,     name: "洪文定", avatar: "url('images/avatar_1.png')", fallback: "👦", prop: "url('images/prop_1.png')", propFallback: "🍵" },
-        { score: 300,   name: "海远",   avatar: "url('images/avatar_2.png')", fallback: "🧑", prop: "url('images/prop_2.png')", propFallback: "🥢" },
-        { score: 800,   name: "巩固",   avatar: "url('images/avatar_3.png')", fallback: "👨", prop: "url('images/prop_3.png')", propFallback: "🎒" },
-        { score: 1500,  name: "惠忍",   avatar: "url('images/avatar_4.png')", fallback: "🦲", prop: "url('images/prop_4.png')", propFallback: "📿" },
-        { score: 2500,  name: "韩晓峰", avatar: "url('images/avatar_5.png')", fallback: "🧥", prop: "url('images/prop_5.png')", propFallback: "📱" },
-        { score: 4000,  name: "李红旗", avatar: "url('images/avatar_6.png')", fallback: "👮", prop: "url('images/prop_6.png')", propFallback: "🚔" },
-        { score: 6500,  name: "成瞎子", avatar: "url('images/avatar_7.png')", fallback: "🦯", prop: "url('images/prop_7.png')", propFallback: "🍶" },
-        { score: 9500,  name: "张柳成", avatar: "url('images/avatar_8.png')", fallback: "👔", prop: "url('images/prop_8.png')", propFallback: "🪓" },
-        { score: 12500, name: "黄铭金", avatar: "url('images/avatar_9.png')", fallback: "🕶️", prop: "url('images/prop_9.png')", propFallback: "💼" },
-        { score: 16000, name: "王伟", avatar: "url('images/avatar_10.png')",fallback: "🔥", prop: "url('images/prop_10.png')",propFallback: "🩸" },
-        { score: 20000, name: "苗哥本人",avatar: "url('images/avatar_11.png')",fallback: "😎", prop: "url('images/prop_11.png')",propFallback: "🎬" }
+        { score: 0,     name: "洪文定", avatar: "images/avatar_1.png", fallback: "👦", prop: "images/prop_1.png", propFallback: "🍵" },
+        { score: 300,   name: "海远",   avatar: "images/avatar_2.png", fallback: "🧑", prop: "images/prop_2.png", propFallback: "🥢" },
+        { score: 800,   name: "巩固",   avatar: "images/avatar_3.png", fallback: "👨", prop: "images/prop_3.png", propFallback: "🎒" },
+        { score: 1500,  name: "惠忍",   avatar: "images/avatar_4.png", fallback: "🦲", prop: "images/prop_4.png", propFallback: "📿" },
+        { score: 2500,  name: "韩晓峰", avatar: "images/avatar_5.png", fallback: "🧥", prop: "images/prop_5.png", propFallback: "📱" },
+        { score: 4000,  name: "李红旗", avatar: "images/avatar_6.png", fallback: "👮", prop: "images/prop_6.png", propFallback: "🚔" },
+        { score: 6500,  name: "成瞎子", avatar: "images/avatar_7.png", fallback: "🦯", prop: "images/prop_7.png", propFallback: "🍶" },
+        { score: 9500,  name: "张柳成", avatar: "images/avatar_8.png", fallback: "👔", prop: "images/prop_8.png", propFallback: "🪓" },
+        { score: 12500, name: "黄铭金", avatar: "images/avatar_9.png", fallback: "🕶️", prop: "images/prop_9.png", propFallback: "💼" },
+        { score: 16000, name: "王伟", avatar: "images/avatar_10.png",fallback: "🔥", prop: "images/prop_10.png",propFallback: "🩸" },
+        { score: 20000, name: "苗哥本人",avatar: "images/avatar_11.png",fallback: "😎", prop: "images/prop_11.png",propFallback: "🎬" }
     ];
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
@@ -467,20 +478,29 @@
     function initBoard() {
         initSize();
         for (let r = 0; r < ROWS; r++) { board[r] = []; domTiles[r] = []; for (let c = 0; c < COLS; c++) {
-            createBgCell(r, c); let type; do { type = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === type && board[r][c-2]?.type === type) || (r >= 2 && board[r-1][c]?.type === type && board[r-2][c]?.type === type));
-            board[r][c] = { type, effect: 'none' }; createTileDOM(r, c, board[r][c]);
+            createBgCell(r, c); let typeObj; do { typeObj = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === typeObj && board[r][c-2]?.type === typeObj) || (r >= 2 && board[r-1][c]?.type === typeObj && board[r-2][c]?.type === typeObj));
+            board[r][c] = { type: typeObj, effect: 'none' }; createTileDOM(r, c, board[r][c]);
         }} autoSave();
     }
     
     function createTileDOM(r, c, data) {
         const tile = document.createElement('div'); 
         tile.className = `tile ${data.effect !== 'none' ? 'effect-'+data.effect : ''}`; 
-        tile.innerText = data.type; 
         
-        const typeIdx = TYPES.indexOf(data.type);
-        if (typeIdx !== -1) {
-            tile.style.backgroundImage = `url('images/tile_${typeIdx + 1}.png')`;
-        }
+        const typeObj = data.type;
+        tile.innerText = typeObj.icon;
+        
+        // 自动兼容并支持所有图片格式，如果图片加载失败则自动降级显示 emoji
+        const imgTest = new Image();
+        imgTest.src = typeObj.img;
+        imgTest.onload = () => {
+            tile.style.backgroundImage = `url('${typeObj.img}')`;
+            tile.innerText = '';
+        };
+        imgTest.onerror = () => {
+            tile.style.backgroundImage = 'none';
+            tile.innerText = typeObj.icon;
+        };
         
         const padding = 3;
         tile.style.width = tile.style.height = `${TILE_SIZE - padding * 2}px`; 
@@ -585,8 +605,20 @@
     document.getElementById('refresh-tool').onclick = async () => {
         if (isAnimating || props.refresh <= 0) return; props.refresh--; updatePropUI(); isAnimating = true; globalCombo = 0; playCuteSFX('explode');
         for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) {
-            let type; do { type = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === type && board[r][c-2]?.type === type) || (r >= 2 && board[r-1][c]?.type === type && board[r-2][c]?.type === type));
-            board[r][c] = { type, effect: 'none' }; domTiles[r][c].className = 'tile'; domTiles[r][c].innerText = type; domTiles[r][c].style.backgroundImage = `url('images/tile_${TYPES.indexOf(type) + 1}.png')`; domTiles[r][c].style.transform = 'scale(0)'; setTimeout(() => domTiles[r][c].style.transform = 'scale(1)', 40);
+            let typeObj; do { typeObj = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === typeObj && board[r][c-2]?.type === typeObj) || (r >= 2 && board[r-1][c]?.type === typeObj && board[r-2][c]?.type === typeObj));
+            board[r][c] = { type: typeObj, effect: 'none' }; 
+            
+            const tile = domTiles[r][c];
+            tile.className = 'tile';
+            tile.innerText = typeObj.icon;
+            
+            const imgTest = new Image();
+            imgTest.src = typeObj.img;
+            imgTest.onload = () => { tile.style.backgroundImage = `url('${typeObj.img}')`; tile.innerText = ''; };
+            imgTest.onerror = () => { tile.style.backgroundImage = 'none'; tile.innerText = typeObj.icon; };
+            
+            tile.style.transform = 'scale(0)'; 
+            setTimeout(() => tile.style.transform = 'scale(1)', 40);
         }} await sleep(250); isAnimating = false; gridContainer.style.filter = 'none'; autoSave(); checkDeadlock();
     };
 
@@ -734,7 +766,7 @@
                 }
             }
             for (let i = 0; i < empty; i++) {
-                const type = TYPES[Math.floor(Math.random() * TYPES.length)]; board[i][c] = { type, effect: 'none' };
+                const typeObj = TYPES[Math.floor(Math.random() * TYPES.length)]; board[i][c] = { type: typeObj, effect: 'none' };
                 const nTile = createTileDOM(i, c, board[i][c]); nTile.style.top = `${(i - empty) * TILE_SIZE + padding}px`; nTile.offsetHeight; nTile.style.top = `${i * TILE_SIZE + padding}px`;
             }
         }
@@ -744,8 +776,23 @@
     function applyEvolution(stageIdx) {
         currentStage = stageIdx; const av = document.getElementById('character-avatar'); av.style.transform = "scale(1.25) translateY(-8px)";
         setTimeout(() => {
-            av.style.backgroundImage = EVOLUTION[currentStage].avatar; av.innerText = EVOLUTION[currentStage].fallback;
-            const prop = document.getElementById('desk-prop'); prop.style.backgroundImage = EVOLUTION[currentStage].prop; prop.innerText = EVOLUTION[currentStage].propFallback;
+            const currentData = EVOLUTION[currentStage];
+            
+            av.style.backgroundImage = 'none';
+            av.innerText = currentData.fallback;
+            const avatarTest = new Image();
+            avatarTest.src = currentData.avatar;
+            avatarTest.onload = () => { av.style.backgroundImage = `url('${currentData.avatar}')`; av.innerText = ''; };
+            avatarTest.onerror = () => { av.style.backgroundImage = 'none'; av.innerText = currentData.fallback; };
+
+            const prop = document.getElementById('desk-prop');
+            prop.style.backgroundImage = 'none';
+            prop.innerText = currentData.propFallback;
+            const propTest = new Image();
+            propTest.src = currentData.prop;
+            propTest.onload = () => { prop.style.backgroundImage = `url('${currentData.prop}')`; prop.innerText = ''; };
+            propTest.onerror = () => { prop.style.backgroundImage = 'none'; prop.innerText = currentData.propFallback; };
+
             av.style.transform = "scale(1) translateY(0)";
         }, 120);
     }
@@ -763,7 +810,16 @@
     document.getElementById('camera-toggle').onclick = () => generatePoster();
     function generatePoster() {
         document.getElementById('poster-mask').style.display = 'flex'; document.getElementById('poster-score').innerText = score; document.getElementById('poster-role-text').innerText = `已解锁：${EVOLUTION[currentStage].name}`;
-        const prev = document.getElementById('poster-avatar-preview'); prev.style.backgroundImage = EVOLUTION[currentStage].avatar; prev.innerText = EVOLUTION[currentStage].fallback;
+        
+        const prev = document.getElementById('poster-avatar-preview');
+        const currentData = EVOLUTION[currentStage];
+        prev.style.backgroundImage = 'none';
+        prev.innerText = currentData.fallback;
+        const posterImgTest = new Image();
+        posterImgTest.src = currentData.avatar;
+        posterImgTest.onload = () => { prev.style.backgroundImage = `url('${currentData.avatar}')`; prev.innerText = ''; };
+        posterImgTest.onerror = () => { prev.style.backgroundImage = 'none'; prev.innerText = currentData.fallback; };
+
         document.getElementById('capture-area').style.display = 'flex'; document.getElementById('final-poster-img').style.display = 'none'; document.getElementById('save-tip-text').innerText = "正在生成海报...";
         setTimeout(() => {
             html2canvas(document.getElementById('capture-area'), { scale: 3, backgroundColor: "#FFF5E1", useCORS: true }).then(canvas => {
