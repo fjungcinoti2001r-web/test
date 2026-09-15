@@ -198,6 +198,7 @@
         .tile.selected { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(210, 105, 30, 0.9)); z-index: 20; border-color: #FF4500; }
         .tile.matched { animation: popOut 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes popOut { 50% { transform: scale(1.35); opacity: 0.9; } 100% { transform: scale(0); opacity: 0; } }
+        
         .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.22s ease-out; }
 
         #ghost-tool { display: none; position: fixed; font-size: 32px; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); }
@@ -254,6 +255,7 @@
     </style>
 </head>
 <body>
+
 <!-- BGM 背景音乐标签 -->
 <audio id="bgm" src="audio/bgm.mp3" loop preload="auto"></audio>
 
@@ -336,7 +338,6 @@
     <div id="ally-select-mask">
         <div class="settings-box">
             <div class="settings-title">选择出战友军大招</div>
-            <!-- 🌟 提示文本：当前形态每人仅限1次 -->
             <div style="font-size: 11px; color: #8B5A2B; margin-bottom: 12px; font-weight: bold;">※ 当前阶数下，每位友军仅限出战 1 次！</div>
             <div id="ally-cards-container"></div>
             <button class="settings-btn btn-pink" onclick="closeAllyModal()" style="margin-top: 10px;">返回游戏</button>
@@ -434,7 +435,7 @@
 
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
-    // 🌟 自定义音效矩阵配置
+    // 自定义音效矩阵
     const AUDIO_POOL = {
         villains: {
             da: ['audio/da_1.mp3', 'audio/da_2.mp3'],
@@ -460,8 +461,7 @@
         activeVillains: [],
         allyCharge: 0,
         allyReady: false,
-        currentStageAlly: null, // 当前页面正在展示的友军
-        usedAlliesInCurrentStage: [], // 当前形态已召唤过的友军记录
+        usedAlliesInCurrentStage: [], // 记录当前阶数召唤过的友军列表 (如: ['gongwei', 'nawen'])
         noNewVillainUntil: 0,
         noAdeUntil: 0,
         bgmEnabled: true // 右上角按钮仅控制背景音乐
@@ -471,7 +471,6 @@
     let touchStartCoord = null, activeTileDom = null, activeDragTool = null, currentBombRadius = 45, bombRadiusTimer = null;
     let audioCtx = null;
 
-    // 🌟 自定义音效播放器（不被右上角按钮屏蔽，保证特效音一直有）
     function playCustomAudio(audioArray) {
         if (!audioArray || audioArray.length === 0) return;
         const randomIndex = Math.floor(Math.random() * audioArray.length);
@@ -483,7 +482,6 @@
         const bgm = document.getElementById('bgm');
         const bgmToggle = document.getElementById('bgm-toggle');
         
-        // 第一次交互激活全局背景音频
         const initAudioPlay = () => {
             if (gameState.bgmEnabled && bgm && bgm.paused) {
                 bgm.play().catch(e => console.warn('BGM blocked:', e));
@@ -888,7 +886,6 @@
                 triggerScreenShake();
                 showToast(`⚠️ 警报！【${vTemplate.name}】降临！`);
                 
-                // 🌟 反派出场音效
                 if(AUDIO_POOL.villains[vTemplate.type]) {
                     playCustomAudio(AUDIO_POOL.villains[vTemplate.type]);
                 }
@@ -963,12 +960,12 @@
         openAllyModal();
     };
 
+    // 🌟 打开选择面板：每位友军在当前阶数限用1次
     function openAllyModal() {
         const container = document.getElementById('ally-cards-container');
         container.innerHTML = '';
         
         ALLIES_POOL.forEach(ally => {
-            // 🌟 检查当前阶段是否已使用该友军
             const isUsedInStage = gameState.usedAlliesInCurrentStage.includes(ally.id); 
             const card = document.createElement('div');
             card.className = `ally-card ${isUsedInStage ? 'used' : ''}`;
@@ -992,26 +989,24 @@
 
     function closeAllyModal() { document.getElementById('ally-select-mask').style.display = 'none'; }
 
-    // 🌟 友军大招演出并绑定随机音效
+    // 🌟 友军大招演出并记录常驻
     function executeAllySkill(ally) {
-        playCuteSFX('ultimate'); // 保留底层电子音作为铺垫
+        playCuteSFX('ultimate');
         gameState.allyCharge = 0; 
         gameState.allyReady = false;
         
-        // 记录本形态已使用过的友军
-        gameState.usedAlliesInCurrentStage.push(ally.id);
+        // 记录本形态已使用过的友军（两人都可以被使用，分别记录）
+        if (!gameState.usedAlliesInCurrentStage.includes(ally.id)) {
+            gameState.usedAlliesInCurrentStage.push(ally.id);
+        }
         
-        // 🌟 核心修改：记录“当前正在播放演出”的友军
-        gameState.currentStageAlly = ally;
-        
-        // 更新伴随立绘（绝对只显示当前这一位！）
+        // 🌟 刷新常驻立绘：用过谁就常驻谁（巩伟左、纳文右），两人都用过就都显示！
         updateAllySideAvatars();
         updateAllyUI();
 
-        // 触发大招演出
+        // 🌟 只单独播放当前召唤的友军大招演出，绝不混淆
         showAllyUltimateOverlay(ally);
         
-        // 🌟 播放特定的友军外部音频
         if(AUDIO_POOL.allies[ally.id]) {
             playCustomAudio(AUDIO_POOL.allies[ally.id]);
         }
@@ -1052,27 +1047,25 @@
         }, 1800);
     }
 
-    // 🌟 核心修改：严格控制“每次召唤只能显示一位立绘，不会两人同时出现”
+    // 🌟 常驻立绘渲染：本形态召唤过谁就显示谁，巩伟在左，纳文在右，两者可同时常驻
     function updateAllySideAvatars() {
         const leftAvatar = document.getElementById('left-ally-avatar');
         const rightAvatar = document.getElementById('right-ally-avatar');
 
-        // 先把两人全隐藏
-        leftAvatar.style.display = 'none';
-        rightAvatar.style.display = 'none';
+        if (gameState.usedAlliesInCurrentStage.includes('gongwei')) {
+            const gongweiData = ALLIES_POOL.find(a => a.id === 'gongwei');
+            leftAvatar.style.backgroundImage = `url('${gongweiData.avatar}')`;
+            leftAvatar.style.display = 'block';
+        } else {
+            leftAvatar.style.display = 'none';
+        }
 
-        // 只有当前最新触发的友军才会被显示出来
-        if (gameState.currentStageAlly) {
-            const id = gameState.currentStageAlly.id;
-            const allyData = ALLIES_POOL.find(a => a.id === id);
-            
-            if (id === 'gongwei') {
-                leftAvatar.style.backgroundImage = `url('${allyData.avatar}')`;
-                leftAvatar.style.display = 'block';
-            } else if (id === 'nawen') {
-                rightAvatar.style.backgroundImage = `url('${allyData.avatar}')`;
-                rightAvatar.style.display = 'block';
-            }
+        if (gameState.usedAlliesInCurrentStage.includes('nawen')) {
+            const nawenData = ALLIES_POOL.find(a => a.id === 'nawen');
+            rightAvatar.style.backgroundImage = `url('${nawenData.avatar}')`;
+            rightAvatar.style.display = 'block';
+        } else {
+            rightAvatar.style.display = 'none';
         }
     }
 
@@ -1151,7 +1144,7 @@
                 currentBombRadius = TILE_SIZE * 1.5;
                 let growing = true;
                 
-                // 🌟 完全恢复的炸弹循环缩放动画
+                // 🌟 炸弹循环缩放呼吸动画
                 if(bombRadiusTimer) clearInterval(bombRadiusTimer);
                 bombRadiusTimer = setInterval(() => {
                     currentBombRadius += growing ? 1.5 : -1.5;
@@ -1186,7 +1179,6 @@
         if (!activeDragTool) return;
         const toolType = activeDragTool; activeDragTool = null; ghostTool.style.display = 'none';
         
-        // 🌟 清除炸弹循环动画
         if (bombRadiusTimer) { clearInterval(bombRadiusTimer); bombRadiusTimer = null; }
         
         document.removeEventListener('pointermove', moveDrag); document.removeEventListener('pointerup', endDrag);
@@ -1236,7 +1228,7 @@
     function saveGame() { 
         let saves = getSaves(); 
         let timeStr = new Date().toLocaleString('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}); 
-        saves[`存档_${timeStr}`] = { score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage, currentStageAlly: gameState.currentStageAlly, board: board.map(r => r.map(c => ({...c}))) }; 
+        saves[`存档_${timeStr}`] = { score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage, board: board.map(r => r.map(c => ({...c}))) }; 
         setSaves(saves); renderSaveList(); showToast('进度保存成功！'); 
     }
 
@@ -1256,19 +1248,17 @@
         const data = getSaves()[key]; if(!data) return;
         gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
         gameState.usedAlliesInCurrentStage = data.usedAlliesInCurrentStage || [];
-        gameState.currentStageAlly = data.currentStageAlly || null;
         document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); updateAllySideAvatars();
         board = data.board; initSize(); gridContainer.innerHTML = ''; domTiles = [];
         for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} closeSettings(); showToast('存档读取成功');
     }
 
-    function autoSave() { localStorage.setItem('miaoAutoSaveV2', JSON.stringify({ score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage, currentStageAlly: gameState.currentStageAlly, board: board.map(r => r.map(c => ({...c}))) })); }
+    function autoSave() { localStorage.setItem('miaoAutoSaveV2', JSON.stringify({ score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage, board: board.map(r => r.map(c => ({...c}))) })); }
     function loadAutoSave() {
         const saved = localStorage.getItem('miaoAutoSaveV2');
         if (saved) {
             const data = JSON.parse(saved); gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
             gameState.usedAlliesInCurrentStage = data.usedAlliesInCurrentStage || [];
-            gameState.currentStageAlly = data.currentStageAlly || null;
             document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); updateAllySideAvatars(); board = data.board; initSize();
             for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} return true;
         } return false;
@@ -1278,7 +1268,6 @@
         localStorage.removeItem('miaoAutoSaveV2');
         gameState.score = 0; gameState.currentStage = 0; gameState.props = { hammer: 2, bomb: 2, refresh: 2 }; gameState.activeVillains = [];
         gameState.usedAlliesInCurrentStage = [];
-        gameState.currentStageAlly = null;
         document.getElementById('avatar-container').classList.remove('ready');
         document.getElementById('score').innerText = gameState.score;
         applyEvolution(0); updatePropUI(); updateAllySideAvatars();
@@ -1286,13 +1275,12 @@
         initBoard(); closeSettings(); showToast('已开启新一轮游戏！');
     }
 
-    // 🌟 形态进化（新阶段）：重置友军记录、阿德控制、以及伴随立绘
+    // 🌟 形态进化（新阶段）：清空友军使用记录，两侧常驻立绘重置清空
     function applyEvolution(stageIdx) {
         gameState.currentStage = stageIdx; 
-        gameState.usedAlliesInCurrentStage = []; 
-        gameState.currentStageAlly = null; // 清除当前展示立绘
-        gameState.noAdeUntil = 0; 
-        updateAllySideAvatars();
+        gameState.usedAlliesInCurrentStage = []; // 重置该阶段已用友军记录
+        gameState.noAdeUntil = 0; // 重置阿德禁止状态
+        updateAllySideAvatars(); // 清空两侧常驻立绘
 
         const currentData = EVOLUTION[gameState.currentStage];
         document.getElementById('role-badge').innerText = `✨ ${currentData.name} 《${currentData.movie}》`;
@@ -1359,7 +1347,6 @@
     }
 
     function playCuteSFX(type, level = 1) {
-        // 游戏交互音效（内部合成）不被 BGM 开关干扰，时刻保证打击感
         try {
             initAudio();
             if (!audioCtx) return;
