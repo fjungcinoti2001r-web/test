@@ -93,7 +93,6 @@
             background-size: contain; background-repeat: no-repeat; background-position: bottom center; font-size: 55px; display: flex; justify-content: center; align-items: flex-end; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        /* 友军伴随立绘：左侧巩伟，右侧纳文 */
         .ally-side-avatar {
             position: absolute; width: 50px; height: 50px; bottom: 4px; z-index: 4;
             background-size: contain; background-repeat: no-repeat; background-position: bottom center;
@@ -102,12 +101,8 @@
         }
         #left-ally-avatar { left: 15px; }
         #right-ally-avatar { right: 15px; }
-        @keyframes allyHover {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-4px); }
-        }
+        @keyframes allyHover { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
 
-        /* 友军大招演出动画层 */
         #ally-ultimate-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.75); z-index: 9999; display: flex; flex-direction: column;
@@ -119,33 +114,21 @@
             display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
             animation: ultPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
-        @keyframes ultPop {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes ultPop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); } }
         .ally-ult-avatar {
             width: 110px; height: 110px; border-radius: 50%; border: 4px solid #FFD700;
             background-size: contain; background-repeat: no-repeat; background-position: center;
             box-shadow: 0 0 25px #FFD700; background-color: #FFF5E1;
         }
-        .ally-ult-title {
-            font-size: 26px; font-weight: 900; color: #FFF; text-shadow: 0 0 10px #FF4500, 0 0 20px #FFD700;
-            letter-spacing: 2px;
-        }
-        .ally-ult-speech {
-            font-size: 16px; font-weight: bold; color: #FFF8EA; background: rgba(210, 105, 30, 0.85);
-            padding: 6px 18px; border-radius: 20px; border: 2px solid #FFD700; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
-
+        .ally-ult-title { font-size: 26px; font-weight: 900; color: #FFF; text-shadow: 0 0 10px #FF4500, 0 0 20px #FFD700; letter-spacing: 2px; }
+        .ally-ult-speech { font-size: 16px; font-weight: bold; color: #FFF8EA; background: rgba(210, 105, 30, 0.85); padding: 6px 18px; border-radius: 20px; border: 2px solid #FFD700; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+        
         #ultimate-ring {
             position: absolute; top: -4px; left: calc(50% - 42px); width: 84px; height: 84px; border-radius: 50%;
             border: 4px solid #FFD700; opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         #avatar-container.ready #ultimate-ring { opacity: 1; animation: ultimateGlow 1.2s infinite alternate; }
-        @keyframes ultimateGlow {
-            0% { box-shadow: 0 0 5px #FF4500, inset 0 0 5px #FF4500; transform: scale(1); }
-            100% { box-shadow: 0 0 16px #FFD700, inset 0 0 12px #FFD700; transform: scale(1.04); }
-        }
+        @keyframes ultimateGlow { 0% { box-shadow: 0 0 5px #FF4500, inset 0 0 5px #FF4500; transform: scale(1); } 100% { box-shadow: 0 0 16px #FFD700, inset 0 0 12px #FFD700; transform: scale(1.04); } }
 
         #desk {
             width: 100%; height: 32px; z-index: 3; display: flex; justify-content: center; align-items: flex-start;
@@ -157,9 +140,7 @@
         #role-badge { font-size: 10px; background: rgba(255,255,255,0.9); color: #D2691E; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #DEB887; white-space: nowrap; cursor: pointer; }
         #role-badge:active { transform: scale(0.95); background: #FFF5E1; }
         
-        #ally-status {
-            font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap; cursor: pointer; transition: all 0.3s;
-        }
+        #ally-status { font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap; cursor: pointer; transition: all 0.3s; }
         #ally-status.ready-glow { background: #3CB371 !important; color: white !important; animation: allyPulse 0.8s infinite alternate; border-color: #FFD700; box-shadow: 0 0 10px #3CB371; }
         @keyframes allyPulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
 
@@ -256,12 +237,10 @@
 </head>
 <body>
 
-<!-- BGM 背景音乐标签 -->
 <audio id="bgm" src="audio/bgm.mp3" loop preload="auto"></audio>
 
 <div id="toast">提示信息</div>
 
-<!-- 开场引导页 -->
 <div id="intro-mask">
     <div class="intro-content">
         <div class="intro-title-1">开心苗苗乐</div>
@@ -274,7 +253,6 @@
     </div>
 </div>
 
-<!-- 友军大招演出动画层 -->
 <div id="ally-ultimate-overlay">
     <div class="ally-ult-content">
         <div id="ally-ult-img" class="ally-ult-avatar"></div>
@@ -309,14 +287,12 @@
         </div>
     </div>
 
-    <!-- 舞台与吧台背景贴图 -->
     <div id="top-stage">
         <div class="header-info-row">
             <div id="role-badge" title="点击切换阶数">✨ 洪文定 《新少林五祖》</div>
             <div id="ally-status" title="点击选择并释放友军技能">🤝 友军待命</div>
         </div>
         <div id="avatar-container" onclick="triggerCharacterUltimate()">
-            <!-- 伴随立绘：左侧巩伟，右侧纳文 -->
             <div id="left-ally-avatar" class="ally-side-avatar"></div>
             <div id="right-ally-avatar" class="ally-side-avatar"></div>
 
@@ -334,7 +310,6 @@
         <div class="tool-btn" id="refresh-tool"><span class="tool-icon">🌀</span><span class="tool-count" id="count-refresh">刷新×2</span></div>
     </div>
 
-    <!-- 友军选择弹窗 -->
     <div id="ally-select-mask">
         <div class="settings-box">
             <div class="settings-title">选择出战友军大招</div>
@@ -344,7 +319,6 @@
         </div>
     </div>
 
-    <!-- 系统设置弹窗 -->
     <div id="settings-mask">
         <div class="settings-box">
             <div class="settings-title">系统菜单</div>
@@ -357,7 +331,6 @@
         </div>
     </div>
 
-    <!-- 战绩海报弹窗 -->
     <div id="poster-mask">
         <div id="capture-area">
             <div class="poster-header-pill">
@@ -435,7 +408,6 @@
 
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
-    // 自定义音效矩阵
     const AUDIO_POOL = {
         villains: {
             da: ['audio/da_1.mp3', 'audio/da_2.mp3'],
@@ -461,10 +433,10 @@
         activeVillains: [],
         allyCharge: 0,
         allyReady: false,
-        usedAlliesInCurrentStage: [], // 记录当前阶数召唤过的友军列表 (如: ['gongwei', 'nawen'])
+        usedAlliesInCurrentStage: [],
         noNewVillainUntil: 0,
         noAdeUntil: 0,
-        bgmEnabled: true // 右上角按钮仅控制背景音乐
+        bgmEnabled: true
     };
 
     let board = [], domTiles = [], lastSwapPos = null, idleTimer = null;
@@ -560,34 +532,40 @@
         return tile;
     }
 
+    // 🌟 反派渲染彻底拦截：先清空普通背景再 return，同时在异步 onload 处加双重防窜锁
     function updateTileDOMVisual(r, c, data) {
         const tile = domTiles[r][c];
         if (!tile) return;
         
         let villain = gameState.activeVillains.find(v => v.r === r && v.c === c);
         if (villain) {
-            tile.className = `tile is-villain villain-${villain.type}`;
             tile.style.backgroundImage = 'none';
+            tile.className = `tile is-villain villain-${villain.type}`;
             tile.innerText = villain.icon;
-        } else {
-            tile.classList.remove('is-villain', 'villain-da', 'villain-ade', 'villain-bailong');
-            tile.className = `tile ${data && data.effect !== 'none' ? 'effect-'+data.effect : ''}`;
-            if (data && data.type) {
-                tile.innerText = data.type;
-                const imgPath = getTileImageUrl(data.type);
-                if (imgPath) {
-                    const imgTest = new Image();
-                    imgTest.src = imgPath;
-                    imgTest.onload = () => { 
-                        if (!gameState.activeVillains.some(v => v.r === r && v.c === c)) { 
-                            tile.style.backgroundImage = `url('${imgPath}')`; 
-                            tile.innerText = ''; 
-                        } 
-                    };
-                    imgTest.onerror = () => { tile.style.backgroundImage = 'none'; tile.innerText = data.type; };
-                } else {
-                    tile.style.backgroundImage = 'none';
-                }
+            return; // 强制拦截，绝对不走普通贴图覆盖
+        }
+
+        tile.classList.remove('is-villain', 'villain-da', 'villain-ade', 'villain-bailong');
+        tile.className = `tile ${data && data.effect !== 'none' ? 'effect-'+data.effect : ''}`;
+        if (data && data.type) {
+            tile.innerText = data.type;
+            const imgPath = getTileImageUrl(data.type);
+            if (imgPath) {
+                const imgTest = new Image();
+                imgTest.src = imgPath;
+                imgTest.onload = () => { 
+                    const stillNotVillain = !gameState.activeVillains.some(v => v.r === r && v.c === c);
+                    if (stillNotVillain && domTiles[r] && domTiles[r][c] === tile) { 
+                        tile.style.backgroundImage = `url('${imgPath}')`; 
+                        tile.innerText = ''; 
+                    } 
+                };
+                imgTest.onerror = () => { 
+                    tile.style.backgroundImage = 'none'; 
+                    tile.innerText = data.type; 
+                };
+            } else {
+                tile.style.backgroundImage = 'none';
             }
         }
     }
@@ -893,17 +871,27 @@
         }
     }
 
+    // 🌟 阿德毒液蔓延无上限逻辑
     function triggerVillainActiveSkills() {
+        if (Date.now() < gameState.noAdeUntil) return;
+
+        const newAdes = [];
+
         gameState.activeVillains.forEach(v => {
             if (v.type === 'ade') {
-                if (Date.now() < gameState.noAdeUntil) return;
-                let dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
-                let dir = dirs[Math.floor(Math.random() * dirs.length)];
-                let nr = v.r + dir.r, nc = v.c + dir.c;
-                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !gameState.activeVillains.some(av => av.r === nr && av.c === nc)) {
-                    if (gameState.activeVillains.length < 5) {
-                        gameState.activeVillains.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', hp: 1 });
+                const dirs = [{r:-1,c:0}, {r:1,c:0}, {r:0,c:-1}, {r:0,c:1}];
+                dirs.sort(() => Math.random() - 0.5);
+
+                for (let dir of dirs) {
+                    const nr = v.r + dir.r, nc = v.c + dir.c;
+                    const inBounds = nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS;
+                    const isOccupied = gameState.activeVillains.some(av => av.r === nr && av.c === nc) ||
+                                       newAdes.some(na => na.r === nr && na.c === nc);
+
+                    if (inBounds && !isOccupied) {
+                        newAdes.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', hp: 1 });
                         showToast('🟣 【毒液蔓延】吞噬了新的格子！');
+                        break;
                     }
                 }
             } else if (v.type === 'bailong') {
@@ -916,6 +904,11 @@
                 }
             }
         });
+
+        if (newAdes.length > 0) {
+            gameState.activeVillains.push(...newAdes);
+        }
+
         refreshAllDOMVisuals();
     }
 
@@ -960,7 +953,6 @@
         openAllyModal();
     };
 
-    // 🌟 打开选择面板：每位友军在当前阶数限用1次
     function openAllyModal() {
         const container = document.getElementById('ally-cards-container');
         container.innerHTML = '';
@@ -989,22 +981,18 @@
 
     function closeAllyModal() { document.getElementById('ally-select-mask').style.display = 'none'; }
 
-    // 🌟 友军大招演出并记录常驻
     function executeAllySkill(ally) {
         playCuteSFX('ultimate');
         gameState.allyCharge = 0; 
         gameState.allyReady = false;
         
-        // 记录本形态已使用过的友军（两人都可以被使用，分别记录）
         if (!gameState.usedAlliesInCurrentStage.includes(ally.id)) {
             gameState.usedAlliesInCurrentStage.push(ally.id);
         }
         
-        // 🌟 刷新常驻立绘：用过谁就常驻谁（巩伟左、纳文右），两人都用过就都显示！
         updateAllySideAvatars();
         updateAllyUI();
 
-        // 🌟 只单独播放当前召唤的友军大招演出，绝不混淆
         showAllyUltimateOverlay(ally);
         
         if(AUDIO_POOL.allies[ally.id]) {
@@ -1047,7 +1035,6 @@
         }, 1800);
     }
 
-    // 🌟 常驻立绘渲染：本形态召唤过谁就显示谁，巩伟在左，纳文在右，两者可同时常驻
     function updateAllySideAvatars() {
         const leftAvatar = document.getElementById('left-ally-avatar');
         const rightAvatar = document.getElementById('right-ally-avatar');
@@ -1144,7 +1131,6 @@
                 currentBombRadius = TILE_SIZE * 1.5;
                 let growing = true;
                 
-                // 🌟 炸弹循环缩放呼吸动画
                 if(bombRadiusTimer) clearInterval(bombRadiusTimer);
                 bombRadiusTimer = setInterval(() => {
                     currentBombRadius += growing ? 1.5 : -1.5;
@@ -1275,12 +1261,11 @@
         initBoard(); closeSettings(); showToast('已开启新一轮游戏！');
     }
 
-    // 🌟 形态进化（新阶段）：清空友军使用记录，两侧常驻立绘重置清空
     function applyEvolution(stageIdx) {
         gameState.currentStage = stageIdx; 
-        gameState.usedAlliesInCurrentStage = []; // 重置该阶段已用友军记录
-        gameState.noAdeUntil = 0; // 重置阿德禁止状态
-        updateAllySideAvatars(); // 清空两侧常驻立绘
+        gameState.usedAlliesInCurrentStage = []; 
+        gameState.noAdeUntil = 0; 
+        updateAllySideAvatars();
 
         const currentData = EVOLUTION[gameState.currentStage];
         document.getElementById('role-badge').innerText = `✨ ${currentData.name} 《${currentData.movie}》`;
@@ -1303,7 +1288,6 @@
         span.style.left = `${c * TILE_SIZE + TILE_SIZE / 2}px`; span.style.top = `${r * TILE_SIZE + TILE_SIZE / 2}px`;
         gridContainer.appendChild(span); setTimeout(() => span.remove(), 600); playCuteSFX('combo', comboLevel);
         
-        // 🌟 触发连击时随机播放谢苗 8条自定义语音
         playCustomAudio(AUDIO_POOL.xiemiaoCombo);
     }
 
