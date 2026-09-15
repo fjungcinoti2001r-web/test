@@ -62,6 +62,17 @@
             box-shadow: 0 10px 25px rgba(200, 180, 160, 0.5); position: relative; overflow: hidden;
         }
 
+        /* 屏幕震动特效 */
+        @keyframes screenShake {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-4px, 4px); }
+            40% { transform: translate(4px, -3px); }
+            60% { transform: translate(-3px, -2px); }
+            80% { transform: translate(3px, 3px); }
+            100% { transform: translate(0, 0); }
+        }
+        .shake { animation: screenShake 0.3s ease-in-out; }
+
         /* 顶部看板 */
         .top-bar {
             width: 100%; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;
@@ -89,7 +100,7 @@
         }
         #character-avatar {
             width: 100px; height: 100px; z-index: 2; transform-origin: bottom center; margin-bottom: -10px; 
-            background-size: contain; background-repeat: no-repeat; background-position: bottom center; font-size: 70px; display: flex; justify-content: center; align-items: flex-end; transition: transform 0.3s;
+            background-size: contain; background-repeat: no-repeat; background-position: bottom center; font-size: 70px; display: flex; justify-content: center; align-items: flex-end; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #desk {
             width: 100%; height: 36px; z-index: 3; display: flex; justify-content: center; align-items: flex-start;
@@ -97,30 +108,35 @@
         }
         #desk-prop { width: 36px; height: 36px; margin-top: -18px; font-size: 20px; display: flex; justify-content: center; align-items: center; background-size: contain; background-repeat: no-repeat; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
-        /* 消除区 */
+        /* 消除区（8x8 圆形格子版） */
         #game-wrapper {
             position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; padding: 6px; background: #FFFDF9; box-shadow: inset 0 0 15px rgba(222, 184, 135, 0.3);
         }
         #grid-container {
-            position: relative; background: rgba(255, 255, 255, 0.9); border: 4px solid #DEB887; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(200, 180, 160, 0.4); transition: filter 0.3s;
+            position: relative; background: rgba(255, 255, 255, 0.9); border: 4px solid #DEB887; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 20px rgba(200, 180, 160, 0.4); transition: filter 0.3s;
+            touch-action: none;
         }
-        .bg-cell { position: absolute; border: 1px solid rgba(222, 184, 135, 0.15); }
-        .bg-cell.light { background-color: rgba(255, 248, 234, 0.7); }
-        .bg-cell.dark { background-color: rgba(250, 214, 165, 0.4); }
+        .bg-cell { position: absolute; border-radius: 50%; border: 1px solid rgba(222, 184, 135, 0.2); margin: 2px; }
+        .bg-cell.light { background-color: rgba(255, 248, 234, 0.8); }
+        .bg-cell.dark { background-color: rgba(250, 214, 165, 0.5); }
 
+        /* 圆形消除棋子样式（加入Q弹过渡） */
         .tile {
             position: absolute; display: flex; justify-content: center; align-items: center; font-size: 22px;
-            will-change: top, left, transform; cursor: pointer; z-index: 10; 
-            background-size: contain; background-repeat: no-repeat; background-position: center;
+            border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 8px rgba(210, 105, 30, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.6);
+            will-change: top, left, transform; pointer-events: none; z-index: 10; 
+            background-size: cover; background-repeat: no-repeat; background-position: center;
+            transition: top 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.2s;
         }
-        .tile::after { content: ''; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; opacity: 0.9; z-index: 12; background-size: cover;}
+        .tile::after { content: ''; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; opacity: 0.9; z-index: 12; background-size: cover; border-radius: 50%; }
         .tile.effect-row::after { background-image: url('images/eff_row.png'); background-color: rgba(210,105,30,0.3); }
         .tile.effect-col::after { background-image: url('images/eff_col.png'); background-color: rgba(210,105,30,0.3); }
         .tile.effect-cross::after { background-image: url('images/eff_cross.png'); background-color: rgba(255,152,0,0.5); border-radius: 50%;}
-        .tile.selected { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(210, 105, 30, 0.8)); z-index: 20; }
-        .tile.matched { animation: popOut 0.25s forwards; }
-        @keyframes popOut { 50% { transform: scale(1.3); opacity: 0.8; } 100% { transform: scale(0); opacity: 0; } }
-        .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.3s ease-out; }
+        .tile.selected { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(210, 105, 30, 0.9)); z-index: 20; border-color: #FF4500; }
+        .tile.matched { animation: popOut 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes popOut { 50% { transform: scale(1.35); opacity: 0.9; } 100% { transform: scale(0); opacity: 0; } }
+        .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.25s ease-out; }
 
         /* 拖动道具跟随层 */
         #ghost-tool { display: none; position: fixed; font-size: 32px; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); }
@@ -130,11 +146,11 @@
         .combo-text {
             position: absolute; font-weight: 900; color: #FFFDF9;
             text-shadow: -1px -1px 0 #D2691E, 1px -1px 0 #D2691E, -1px 1px 0 #D2691E, 1px 1px 0 #D2691E, 0 0 12px #FFB6C1, 0 0 22px #FAD6A5;
-            pointer-events: none; z-index: 30; white-space: nowrap; animation: comboFly 0.8s ease-out forwards;
+            pointer-events: none; z-index: 30; white-space: nowrap; animation: comboFly 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @keyframes comboFly {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
-            20% { opacity: 1; transform: translate(-50%, -70%) scale(1.2); }
+            20% { opacity: 1; transform: translate(-50%, -70%) scale(1.25); }
             70% { opacity: 1; transform: translate(-50%, -100%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -130%) scale(0.8); }
         }
@@ -200,7 +216,7 @@
     <span id="ghost-tool-icon">🔨</span>
 </div>
 
-<div id="arcade-container">
+<div id="arcade-container" id="main-arcade-panel">
     <div class="top-bar">
         <div class="header-layout">
             <img src="images/gonggu.png" alt="巩固" class="logo-img" onerror="this.style.display='none'">
@@ -279,29 +295,24 @@
         const mask = document.getElementById('intro-mask');
         if (!mask) return;
         mask.style.opacity = '0';
-        setTimeout(() => {
-            mask.style.display = 'none';
-        }, 500);
+        setTimeout(() => { mask.style.display = 'none'; }, 500);
         
         const bgm = document.getElementById('bgm');
         if(bgm && bgm.paused) {
             bgm.play().catch(err => console.log('BGM auto-play blocked'));
             const btn = document.getElementById('bgm-toggle');
-            if(btn) {
-                btn.innerText = '🎵';
-                btn.classList.add('bgm-playing');
-            }
+            if(btn) { btn.innerText = '🎵'; btn.classList.add('bgm-playing'); }
         }
     }
 
-    const ROWS = 9, COLS = 9; let TILE_SIZE = 40;
+    const ROWS = 8, COLS = 8; let TILE_SIZE = 48;
     const TYPES = ['🥋', '🕶️', '🗡️', '👊', '🧨', '📿', '🍶']; 
     const EVOLUTION = [
         { score: 0,     name: "洪文定", avatar: "url('images/avatar_1.png')", fallback: "👦", prop: "url('images/prop_1.png')", propFallback: "🍵" },
         { score: 300,   name: "海远",   avatar: "url('images/avatar_2.png')", fallback: "🧑", prop: "url('images/prop_2.png')", propFallback: "🥢" },
         { score: 800,   name: "巩固",   avatar: "url('images/avatar_3.png')", fallback: "👨", prop: "url('images/prop_3.png')", propFallback: "🎒" },
         { score: 1500,  name: "惠忍",   avatar: "url('images/avatar_4.png')", fallback: "🦲", prop: "url('images/prop_4.png')", propFallback: "📿" },
-        { score: 2500,  name: " 韩晓峰", avatar: "url('images/avatar_5.png')", fallback: "🧥", prop: "url('images/prop_5.png')", propFallback: "📱" },
+        { score: 2500,  name: "韩晓峰", avatar: "url('images/avatar_5.png')", fallback: "🧥", prop: "url('images/prop_5.png')", propFallback: "📱" },
         { score: 4000,  name: "李红旗", avatar: "url('images/avatar_6.png')", fallback: "👮", prop: "url('images/prop_6.png')", propFallback: "🚔" },
         { score: 6500,  name: "成瞎子", avatar: "url('images/avatar_7.png')", fallback: "🦯", prop: "url('images/prop_7.png')", propFallback: "🍶" },
         { score: 9500,  name: "张柳成", avatar: "url('images/avatar_8.png')", fallback: "👔", prop: "url('images/prop_8.png')", propFallback: "🪓" },
@@ -312,20 +323,38 @@
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
     let board = [], domTiles = [], score = 0, currentStage = 0, isAnimating = false, lastSwapPos = null, globalCombo = 0;
-    let props = { hammer: 5, bomb: 5, refresh: 5 }; let selectedTile = null;
+    let props = { hammer: 5, bomb: 5, refresh: 5 }; 
+    
+    // 滑动交互新状态
+    let touchStartCoord = null;
+    let activeTileDom = null;
+
     const gridContainer = document.getElementById('grid-container');
     const ghostTool = document.getElementById('ghost-tool');
     const ghostIcon = document.getElementById('ghost-tool-icon');
     const ghostInd = document.getElementById('ghost-tool-indicator');
 
     let activeDragTool = null;
-    let currentBombRadius = 40;
+    let currentBombRadius = 45;
     let bombRadiusTimer = null;
 
-    // 音效系统
+    // 音效与物理震动
     const AudioCtx = window.AudioContext || window.webkitAudioContext; let audioCtx = null;
     function initAudio() { if (!audioCtx) audioCtx = new AudioCtx(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
     
+    function triggerVibration(pattern) {
+        if (navigator.vibrate) {
+            try { navigator.vibrate(pattern); } catch(e){}
+        }
+    }
+
+    function triggerScreenShake() {
+        const container = document.getElementById('arcade-container');
+        container.classList.remove('shake');
+        void container.offsetWidth; // 触发重绘
+        container.classList.add('shake');
+    }
+
     function playCuteSFX(type, level = 1) {
         initAudio(); const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
         osc.connect(gainNode); gainNode.connect(audioCtx.destination);
@@ -336,22 +365,26 @@
             gainNode.gain.setValueAtTime(0.08, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
             osc.start(t); osc.stop(t + 0.08);
         } else if (type === 'swap') {
-            osc.type = 'triangle'; osc.frequency.setValueAtTime(350, t); osc.frequency.exponentialRampToValueAtTime(700, t + 0.12);
-            gainNode.gain.setValueAtTime(0.1, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-            osc.start(t); osc.stop(t + 0.12);
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(350, t); osc.frequency.exponentialRampToValueAtTime(700, t + 0.1);
+            gainNode.gain.setValueAtTime(0.1, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+            osc.start(t); osc.stop(t + 0.1);
         } else if (type === 'match') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(440, t); osc.frequency.exponentialRampToValueAtTime(880, t + 0.15);
-            gainNode.gain.setValueAtTime(0.15, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-            osc.start(t); osc.stop(t + 0.18);
+            osc.type = 'sine'; osc.frequency.setValueAtTime(440, t); osc.frequency.exponentialRampToValueAtTime(880, t + 0.12);
+            gainNode.gain.setValueAtTime(0.12, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+            osc.start(t); osc.stop(t + 0.12);
+            triggerVibration(25);
         } else if (type === 'explode') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(180, t); osc.frequency.exponentialRampToValueAtTime(30, t + 0.35);
-            gainNode.gain.setValueAtTime(0.25, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
-            osc.start(t); osc.stop(t + 0.35);
+            osc.type = 'square'; osc.frequency.setValueAtTime(180, t); osc.frequency.exponentialRampToValueAtTime(30, t + 0.3);
+            gainNode.gain.setValueAtTime(0.2, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+            osc.start(t); osc.stop(t + 0.3);
+            triggerVibration([60, 40, 60]);
+            triggerScreenShake();
         } else if (type === 'combo') {
             osc.type = 'sine'; const freq = 500 + (level * 90);
-            osc.frequency.setValueAtTime(freq, t); osc.frequency.exponentialRampToValueAtTime(freq * 1.4, t + 0.1);
-            gainNode.gain.setValueAtTime(0.2, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-            osc.start(t); osc.stop(t + 0.15);
+            osc.frequency.setValueAtTime(freq, t); osc.frequency.exponentialRampToValueAtTime(freq * 1.4, t + 0.08);
+            gainNode.gain.setValueAtTime(0.15, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+            osc.start(t); osc.stop(t + 0.08);
+            triggerVibration(30);
         }
     }
 
@@ -363,7 +396,7 @@
         const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
         const span = document.createElement('div'); span.className = 'combo-text'; span.innerText = `${word} x${comboLevel}!`;
         span.style.left = `${c * TILE_SIZE + TILE_SIZE / 2}px`; span.style.top = `${r * TILE_SIZE + TILE_SIZE / 2}px`; span.style.fontSize = `${Math.min(24, 14 + comboLevel * 2)}px`;
-        gridContainer.appendChild(span); setTimeout(() => span.remove(), 850); playCuteSFX('combo', comboLevel);
+        gridContainer.appendChild(span); setTimeout(() => span.remove(), 700); playCuteSFX('combo', comboLevel);
     }
 
     function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
@@ -422,7 +455,14 @@
         gridContainer.style.width = `${TILE_SIZE * COLS}px`; 
         gridContainer.style.height = `${TILE_SIZE * ROWS}px`; 
     }
-    function createBgCell(r, c) { const bg = document.createElement('div'); bg.className = `bg-cell ${(r + c) % 2 === 0 ? 'dark' : 'light'}`; bg.style.width = bg.style.height = `${TILE_SIZE}px`; bg.style.left = `${c * TILE_SIZE}px`; bg.style.top = `${r * TILE_SIZE}px`; gridContainer.appendChild(bg); }
+    function createBgCell(r, c) { 
+        const bg = document.createElement('div'); 
+        bg.className = `bg-cell ${(r + c) % 2 === 0 ? 'dark' : 'light'}`; 
+        bg.style.width = bg.style.height = `${TILE_SIZE - 4}px`; 
+        bg.style.left = `${c * TILE_SIZE + 2}px`; 
+        bg.style.top = `${r * TILE_SIZE + 2}px`; 
+        gridContainer.appendChild(bg); 
+    }
     
     function initBoard() {
         initSize();
@@ -433,17 +473,100 @@
     }
     
     function createTileDOM(r, c, data) {
-        const tile = document.createElement('div'); tile.className = `tile ${data.effect !== 'none' ? 'effect-'+data.effect : ''}`; tile.innerText = data.type; 
-        tile.style.backgroundImage = `url('images/tile_${TYPES.indexOf(data.type) + 1}.png')`;
-        tile.style.width = tile.style.height = `${TILE_SIZE}px`; tile.style.top = `${r * TILE_SIZE}px`; tile.style.left = `${c * TILE_SIZE}px`;
+        const tile = document.createElement('div'); 
+        tile.className = `tile ${data.effect !== 'none' ? 'effect-'+data.effect : ''}`; 
+        tile.innerText = data.type; 
         
-        // 修复触摸坐标偏移问题：精准采用 click/touchend 坐标通过 getBoundingClientRect 计算格子行列
-        tile.addEventListener('click', (e) => {
-            e.stopPropagation();
-            handleTileClick(r, c);
-        });
+        const typeIdx = TYPES.indexOf(data.type);
+        if (typeIdx !== -1) {
+            tile.style.backgroundImage = `url('images/tile_${typeIdx + 1}.png')`;
+        }
+        
+        const padding = 3;
+        tile.style.width = tile.style.height = `${TILE_SIZE - padding * 2}px`; 
+        tile.style.top = `${r * TILE_SIZE + padding}px`; 
+        tile.style.left = `${c * TILE_SIZE + padding}px`;
         
         gridContainer.appendChild(tile); domTiles[r][c] = tile; return tile;
+    }
+
+    // ===== 深度优化：真正的“滑动/拖拽交换”手势机制 (Swipe Gesture) =====
+    gridContainer.addEventListener('pointerdown', (e) => {
+        if (isAnimating || activeDragTool) return;
+        const rect = gridContainer.getBoundingClientRect();
+        const clientX = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
+        const clientY = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
+        
+        const relX = clientX - rect.left;
+        const relY = clientY - rect.top;
+
+        const c = Math.floor(relX / TILE_SIZE);
+        const r = Math.floor(relY / TILE_SIZE);
+
+        if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+            touchStartCoord = { r, c, x: clientX, y: clientY };
+            activeTileDom = domTiles[r][c];
+            if (activeTileDom) activeTileDom.classList.add('selected');
+            playCuteSFX('select');
+        }
+    });
+
+    gridContainer.addEventListener('pointermove', (e) => {
+        if (!touchStartCoord || isAnimating) return;
+        const clientX = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
+        const clientY = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
+
+        const diffX = clientX - touchStartCoord.x;
+        const diffY = clientY - touchStartCoord.y;
+        const threshold = 18; // 触发划动的像素阈值
+
+        if (Math.abs(diffX) > threshold || Math.abs(diffY) > threshold) {
+            let targetR = touchStartCoord.r;
+            let targetC = touchStartCoord.c;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                targetC += diffX > 0 ? 1 : -1;
+            } else {
+                targetR += diffY > 0 ? 1 : -1;
+            }
+
+            if (targetR >= 0 && targetR < ROWS && targetC >= 0 && targetC < COLS) {
+                const startR = touchStartCoord.r;
+                const startC = touchStartCoord.c;
+                
+                // 清除起始选中状态
+                if (activeTileDom) activeTileDom.classList.remove('selected');
+                touchStartCoord = null;
+                activeTileDom = null;
+
+                // 触发划动交换
+                executeSwapAction(startR, startC, targetR, targetC);
+            }
+        }
+    });
+
+    window.addEventListener('pointerup', () => {
+        if (touchStartCoord && activeTileDom) {
+            activeTileDom.classList.remove('selected');
+        }
+        touchStartCoord = null;
+        activeTileDom = null;
+    });
+
+    async function executeSwapAction(r1, c1, r2, c2) {
+        isAnimating = true; globalCombo = 0; lastSwapPos = { r: r2, c: c2 }; 
+        playCuteSFX('swap');
+        swapDataAndDOM(r1, c1, r2, c2); 
+        await sleep(180);
+        
+        const matchInfo = analyzeMatches();
+        if (matchInfo.toRemove.size > 0) { 
+            await processMatches(matchInfo); 
+        } else { 
+            swapDataAndDOM(r1, c1, r2, c2); // 还原
+            await sleep(180); 
+            isAnimating = false; 
+        }
     }
 
     function updatePropUI() {
@@ -463,8 +586,8 @@
         if (isAnimating || props.refresh <= 0) return; props.refresh--; updatePropUI(); isAnimating = true; globalCombo = 0; playCuteSFX('explode');
         for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) {
             let type; do { type = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === type && board[r][c-2]?.type === type) || (r >= 2 && board[r-1][c]?.type === type && board[r-2][c]?.type === type));
-            board[r][c] = { type, effect: 'none' }; domTiles[r][c].className = 'tile'; domTiles[r][c].innerText = type; domTiles[r][c].style.backgroundImage = `url('images/tile_${TYPES.indexOf(type) + 1}.png')`; domTiles[r][c].style.transform = 'scale(0)'; setTimeout(() => domTiles[r][c].style.transform = 'scale(1)', 50);
-        }} await sleep(300); isAnimating = false; gridContainer.style.filter = 'none'; autoSave(); checkDeadlock();
+            board[r][c] = { type, effect: 'none' }; domTiles[r][c].className = 'tile'; domTiles[r][c].innerText = type; domTiles[r][c].style.backgroundImage = `url('images/tile_${TYPES.indexOf(type) + 1}.png')`; domTiles[r][c].style.transform = 'scale(0)'; setTimeout(() => domTiles[r][c].style.transform = 'scale(1)', 40);
+        }} await sleep(250); isAnimating = false; gridContainer.style.filter = 'none'; autoSave(); checkDeadlock();
     };
 
     function setupToolDrag(btnId, type) {
@@ -554,46 +677,18 @@
         }
     }
 
-    // 完美对齐的点击选择逻辑
-    async function handleTileClick(r, c) {
-        if (isAnimating) return;
-        playCuteSFX('select');
-        const tile = domTiles[r][c];
-        
-        if (!selectedTile) {
-            selectedTile = { r, c, dom: tile }; tile.classList.add('selected');
-        } else {
-            selectedTile.dom.classList.remove('selected');
-            if (Math.abs(selectedTile.r - r) + Math.abs(selectedTile.c - c) === 1) {
-                isAnimating = true; globalCombo = 0; lastSwapPos = { r, c }; 
-                playCuteSFX('swap');
-                swapDataAndDOM(selectedTile.r, selectedTile.c, r, c); 
-                await sleep(200);
-                
-                const matchInfo = analyzeMatches();
-                if (matchInfo.toRemove.size > 0) { 
-                    await processMatches(matchInfo); 
-                } else { 
-                    swapDataAndDOM(selectedTile.r, selectedTile.c, r, c); 
-                    await sleep(200); 
-                    isAnimating = false; 
-                }
-            }
-            selectedTile = null;
-        }
-    }
-
     function swapDataAndDOM(r1, c1, r2, c2) {
         const temp = board[r1][c1]; board[r1][c1] = board[r2][c2]; board[r2][c2] = temp;
         const dTemp = domTiles[r1][c1]; domTiles[r1][c1] = domTiles[r2][c2]; domTiles[r2][c2] = dTemp;
-        domTiles[r1][c1].style.top = `${r1 * TILE_SIZE}px`; domTiles[r1][c1].style.left = `${c1 * TILE_SIZE}px`;
-        domTiles[r2][c2].style.top = `${r2 * TILE_SIZE}px`; domTiles[r2][c2].style.left = `${c2 * TILE_SIZE}px`;
+        const padding = 3;
+        domTiles[r1][c1].style.top = `${r1 * TILE_SIZE + padding}px`; domTiles[r1][c1].style.left = `${c1 * TILE_SIZE + padding}px`;
+        domTiles[r2][c2].style.top = `${r2 * TILE_SIZE + padding}px`; domTiles[r2][c2].style.left = `${c2 * TILE_SIZE + padding}px`;
     }
 
     function analyzeMatches() {
         let toRemove = new Set(), newSpecials = [], hLines = [], vLines = [];
         for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS - 2; c++) { let len = 1; while (c+len < COLS && board[r][c]?.type === board[r][c+len]?.type && board[r][c]) len++; if (len >= 3) { let l=[]; for(let i=0;i<len;i++) l.push(`${r},${c+i}`); hLines.push({ type: board[r][c].type, cells: l, r, c, len }); c += len-1; } }
-        for (let c = 0; c < COLS; c++) for (let r = 0; r < ROWS - 2; r++) { let len = 1; while (r+len < ROWS && board[r][c]?.type === board[r+len][c]?.type && board[r][c]) len++; if (len >= 3) { let l=[]; for(let i=0;i<len;i++) l.push(`${r+i},${c}`); vLines.push({ type: board[r][c].type, cells: l, r, c, len }); r += len-1; } }
+        for (let c = 0; c < COLS; c++) for (let r = 0; r < ROWS - 2; r++) { let len = 1; while (r+len < ROWS && board[r+len][c]?.type === board[r][c]?.type && board[r][c]) len++; if (len >= 3) { let l=[]; for(let i=0;i<len;i++) l.push(`${r+i},${c}`); vLines.push({ type: board[r][c].type, cells: l, r, c, len }); r += len-1; } }
         hLines.forEach(hl => { vLines.forEach(vl => { if (hl.type === vl.type) { const intersect = hl.cells.find(c => vl.cells.includes(c)); if (intersect) { let [ir, ic] = intersect.split(',').map(Number); hl.handled = vl.handled = true; hl.cells.concat(vl.cells).forEach(c => toRemove.add(c)); newSpecials.push({ r: ir, c: ic, type: hl.type, effect: 'cross' }); } } });});
         [...hLines, ...vLines].filter(l => !l.handled).forEach(l => { if (l.len >= 4) { let tp = lastSwapPos && l.cells.includes(`${lastSwapPos.r},${lastSwapPos.c}`) ? lastSwapPos : { r: l.r, c: l.c }; newSpecials.push({ r: tp.r, c: tp.c, type: l.type, effect: l.cells[0].charAt(0) === l.cells[1].charAt(0) ? 'row' : 'col' }); } l.cells.forEach(c => toRemove.add(c)); });
         return { toRemove, newSpecials };
@@ -605,7 +700,7 @@
         if (effect === 'col' || effect === 'cross') { createBlastVisual('col', r, c); for(let ir=0; ir<ROWS; ir++) processBlastCell(ir, c, toRemoveSet); }
     }
     function processBlastCell(r, c, set) { const k = `${r},${c}`; if (!set.has(k) && board[r][c]) { set.add(k); if (board[r][c].effect !== 'none') triggerSpecial(r, c, board[r][c].effect, set); } }
-    function createBlastVisual(dir, r, c) { const blast = document.createElement('div'); blast.className = 'blast-wave'; if(dir === 'row') { blast.style.left = '0'; blast.style.top = `${r * TILE_SIZE + TILE_SIZE/2 - 2}px`; blast.style.width = `${COLS * TILE_SIZE}px`; blast.style.height = '4px'; } else { blast.style.top = '0'; blast.style.left = `${c * TILE_SIZE + TILE_SIZE/2 - 2}px`; blast.style.height = `${ROWS * TILE_SIZE}px`; blast.style.width = '4px'; } gridContainer.appendChild(blast); setTimeout(() => blast.remove(), 300); }
+    function createBlastVisual(dir, r, c) { const blast = document.createElement('div'); blast.className = 'blast-wave'; if(dir === 'row') { blast.style.left = '0'; blast.style.top = `${r * TILE_SIZE + TILE_SIZE/2 - 2}px`; blast.style.width = `${COLS * TILE_SIZE}px`; blast.style.height = '4px'; } else { blast.style.top = '0'; blast.style.left = `${c * TILE_SIZE + TILE_SIZE/2 - 2}px`; blast.style.height = `${ROWS * TILE_SIZE}px`; blast.style.width = '4px'; } gridContainer.appendChild(blast); setTimeout(() => blast.remove(), 250); }
 
     async function processMatches(matchInfo) {
         let { toRemove, newSpecials } = matchInfo;
@@ -619,7 +714,7 @@
         if (currentStage < EVOLUTION.length - 1 && score >= EVOLUTION[currentStage + 1].score) {
             applyEvolution(currentStage + 1); props.hammer+=2; props.bomb+=2; props.refresh+=2; updatePropUI(); showToast('突破形态！道具全 +2');
         }
-        await sleep(250);
+        await sleep(180); // 提速消除反馈，使连击更加畅快
         toRemove.forEach(str => { let [r, c] = str.split(',').map(Number); if (domTiles[r][c]) { domTiles[r][c].remove(); domTiles[r][c] = null; } });
         newSpecials.forEach(sp => { board[sp.r][sp.c] = { type: sp.type, effect: sp.effect }; createTileDOM(sp.r, sp.c, board[sp.r][sp.c]); });
         
@@ -628,30 +723,31 @@
     }
 
     async function applyGravity() {
+        const padding = 3;
         for (let c = 0; c < COLS; c++) {
             let empty = 0;
             for (let r = ROWS - 1; r >= 0; r--) {
                 if (!board[r][c]) empty++;
                 else if (empty > 0) {
                     board[r + empty][c] = board[r][c]; domTiles[r + empty][c] = domTiles[r][c]; board[r][c] = null; domTiles[r][c] = null;
-                    domTiles[r + empty][c].style.top = `${(r + empty) * TILE_SIZE}px`;
+                    domTiles[r + empty][c].style.top = `${(r + empty) * TILE_SIZE + padding}px`;
                 }
             }
             for (let i = 0; i < empty; i++) {
                 const type = TYPES[Math.floor(Math.random() * TYPES.length)]; board[i][c] = { type, effect: 'none' };
-                const nTile = createTileDOM(i, c, board[i][c]); nTile.style.top = `${(i - empty) * TILE_SIZE}px`; nTile.offsetHeight; nTile.style.top = `${i * TILE_SIZE}px`;
+                const nTile = createTileDOM(i, c, board[i][c]); nTile.style.top = `${(i - empty) * TILE_SIZE + padding}px`; nTile.offsetHeight; nTile.style.top = `${i * TILE_SIZE + padding}px`;
             }
         }
-        await sleep(250);
+        await sleep(200);
     }
 
     function applyEvolution(stageIdx) {
-        currentStage = stageIdx; const av = document.getElementById('character-avatar'); av.style.transform = "scale(1.3) translateY(-10px)";
+        currentStage = stageIdx; const av = document.getElementById('character-avatar'); av.style.transform = "scale(1.25) translateY(-8px)";
         setTimeout(() => {
             av.style.backgroundImage = EVOLUTION[currentStage].avatar; av.innerText = EVOLUTION[currentStage].fallback;
             const prop = document.getElementById('desk-prop'); prop.style.backgroundImage = EVOLUTION[currentStage].prop; prop.innerText = EVOLUTION[currentStage].propFallback;
             av.style.transform = "scale(1) translateY(0)";
-        }, 150);
+        }, 120);
     }
 
     function checkDeadlock() {
