@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>开心苗苗乐·演员谢苗超话</title>
+    <title>开心苗苗乐·演员谢苗超话制作</title>
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: none; }
         
@@ -111,7 +111,7 @@
         }
         @keyframes ultimateGlow {
             0% { box-shadow: 0 0 5px #FF4500, inset 0 0 5px #FF4500; transform: scale(1); }
-            100% { box-shadow: 0 0 16px #FFD700, inset 0 0 10px #FFD700; transform: scale(1.04); }
+            100% { box-shadow: 0 0 16px #FFD700, inset 0 0 12px #FFD700; transform: scale(1.04); }
         }
 
         #desk {
@@ -128,7 +128,6 @@
         }
         #role-badge:active { transform: scale(0.95); background: #FFF5E1; }
         
-        /* 友军就绪状态：绿色高亮闪烁 */
         #ally-status {
             font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap; cursor: pointer; transition: all 0.3s;
         }
@@ -160,6 +159,7 @@
             transition: top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.2s;
         }
         
+        /* 🌟 反派高优先级独立图层，杜绝正常格子被误判 */
         .tile.is-villain {
             background-image: none !important;
             font-size: 24px;
@@ -294,7 +294,6 @@
     <div id="top-stage">
         <div class="header-info-row">
             <div id="role-badge" title="点击切换阶数">✨ 洪文定 《新少林五祖》</div>
-            <!-- 友军状态栏：蓄能满时变成绿色并可点击选择和释放 -->
             <div id="ally-status" title="点击选择并释放友军技能">🤝 友军待命</div>
         </div>
         <div id="avatar-container" onclick="triggerCharacterUltimate()">
@@ -312,7 +311,7 @@
         <div class="tool-btn" id="refresh-tool"><span class="tool-icon">🌀</span><span class="tool-count" id="count-refresh">刷新×2</span></div>
     </div>
 
-    <!-- 友军选择弹窗：巩伟(父子同心) vs 纳文(JUDO冠军) -->
+    <!-- 友军选择弹窗 -->
     <div id="ally-select-mask">
         <div class="settings-box">
             <div class="settings-title">选择出战友军大招</div>
@@ -423,16 +422,15 @@
     ];
     let activeVillains = []; 
 
-    // 两大友军池
     const ALLIES_POOL = [
-        { id: 'gongwei', name: "巩伟（《给爸爸的信》）", skillName: "父子同心", desc: "技能：随机清除场上的 2 个反派目标！" },
-        { id: 'nawen', name: "纳文（《火遮眼》）", skillName: "JUDO冠军", desc: "技能：关节技压制，10秒内不再刷新新敌人！" }
+        { id: 'gongwei', name: "巩伟（《给爸爸的信》）", skillName: "父子同心", desc: "技能：瞬间点名清除场上的 2 个敌对反派目标！" },
+        { id: 'nawen', name: "纳文（《火遮眼》）", skillName: "JUDO冠军", desc: "技能：关节技压制，10秒内不再刷新新敌人且战力暴涨！" }
     ];
     let stageAlliesSelection = {}; 
-    let allyCharge = 0;            // 蓄能计数 (0 - 3)
-    let allyReady = false;         // 蓄能满3次后标记为准备就绪
-    let currentStageAlly = null;   // 当前选中的友军
-    let noNewVillainUntil = 0;     // 纳文控制时间戳
+    let allyCharge = 0;            
+    let allyReady = false;         
+    let currentStageAlly = null;   
+    let noNewVillainUntil = 0;     
 
     const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
 
@@ -545,7 +543,7 @@
         }
     }
 
-    // 🌟 友军状态栏点击交互：只有当蓄能满3次（allyReady=true）时，点击才能弹出选择弹窗
+    // 友军就绪后点击触发弹窗
     document.getElementById('ally-status').onclick = () => {
         if (!allyReady) {
             showToast('⏳ 友军正在蓄能中，请通过攻击反派积攒能量 (当前 ' + allyCharge + '/3)');
@@ -573,7 +571,7 @@
                     stageAlliesSelection[currentStage] = ally.id;
                     currentStageAlly = ally;
                     closeAllyModal();
-                    executeAllySkill(ally); // 选择后立刻释放该友军大招
+                    executeAllySkill(ally); 
                 };
             }
             container.appendChild(card);
@@ -585,7 +583,6 @@
         document.getElementById('ally-select-mask').style.display = 'none';
     }
 
-    // 执行对应友军的主动技能
     function executeAllySkill(ally) {
         playCuteSFX('ultimate');
         allyCharge = 0;
@@ -637,7 +634,6 @@
         await processMatches({ toRemove, newSpecials: [] });
     }
 
-    // 生成反派
     function spawnVillainIfNeeded() {
         if (Date.now() < noNewVillainUntil) return;
 
@@ -669,7 +665,6 @@
         }
     }
 
-    // 反派主动技能（阿德蔓延、柏龙乱跑）
     function triggerVillainActiveSkills() {
         activeVillains.forEach(v => {
             if (v.type === 'ade') {
@@ -695,7 +690,6 @@
         refreshAllDOMVisuals();
     }
 
-    // 攻击反派并累计蓄能
     function checkVillainDamage(r, c) {
         let hitList = [];
         activeVillains.forEach(v => {
@@ -709,7 +703,7 @@
                     showToast(`⚔️ 成功击破反派【${v.name}】！`);
                     playCuteSFX('explode');
                 } else {
-                    showToast(`🛡️ 【${v.name}】削弱大块头！`);
+                    showToast(`🛡️ 【${v.name}】冰块护甲减弱！`);
                     playCuteSFX('select');
                 }
             });
@@ -1051,15 +1045,34 @@
             if (toolType === 'hammer') {
                 const c = Math.floor(dropX / TILE_SIZE);
                 const r = Math.floor(dropY / TILE_SIZE);
-                if (r >= 0 && r < ROWS && c >= 0 && c < COLS && !activeVillains.some(v => v.r === r && v.c === c)) {
-                    props.hammer--; toRemove.add(`${r},${c}`); playCuteSFX('explode');
+                if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+                    props.hammer--;
+                    playCuteSFX('explode');
+                    let vIdx = activeVillains.findIndex(v => v.r === r && v.c === c);
+                    if (vIdx !== -1) {
+                        activeVillains[vIdx].hp--;
+                        if (activeVillains[vIdx].hp <= 0) activeVillains.splice(vIdx, 1);
+                        showToast('🔨 锤子重击反派！');
+                        refreshAllDOMVisuals();
+                    } else {
+                        toRemove.add(`${r},${c}`);
+                    }
                 }
             } else if (toolType === 'bomb') {
                 props.bomb--;
                 const activeRadius = currentBombRadius;
                 for (let r = 0; r < ROWS; r++) {
                     for (let c = 0; c < COLS; c++) {
-                        if (activeVillains.some(v => v.r === r && v.c === c)) continue;
+                        if (activeVillains.some(v => v.r === r && v.c === c)) {
+                            let v = activeVillains.find(v => v.r === r && v.c === c);
+                            let tileCenterX = c * TILE_SIZE + TILE_SIZE / 2;
+                            let tileCenterY = r * TILE_SIZE + TILE_SIZE / 2;
+                            if (Math.hypot(tileCenterX - dropX, tileCenterY - dropY) <= activeRadius) {
+                                v.hp--;
+                                if (v.hp <= 0) activeVillains = activeVillains.filter(item => item !== v);
+                            }
+                            continue;
+                        }
                         const tileCenterX = c * TILE_SIZE + TILE_SIZE / 2;
                         const tileCenterY = r * TILE_SIZE + TILE_SIZE / 2;
                         const dist = Math.hypot(tileCenterX - dropX, tileCenterY - dropY);
@@ -1067,6 +1080,7 @@
                     }
                 }
                 playCuteSFX('explode');
+                refreshAllDOMVisuals();
             }
             updatePropUI(); await processMatches({ toRemove, newSpecials: [] });
         }
@@ -1161,7 +1175,7 @@
         });
         
         await applyGravity(); 
-        triggerVillainActiveSkills(); // 触发反派动态机制
+        triggerVillainActiveSkills(); 
 
         lastSwapPos = null; const nextInfo = analyzeMatches();
         if (nextInfo.toRemove.size > 0) { await processMatches(nextInfo); } else { 
