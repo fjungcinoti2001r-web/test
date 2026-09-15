@@ -2,11 +2,11 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>开心苗苗乐·演员谢苗超话制作</title>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: none; }
         
         html, body {
             width: 100%; height: 100%; height: 100dvh; overflow: hidden;
@@ -183,8 +183,7 @@
 <body>
 <div id="toast">提示信息</div>
 
-<!-- ===== 动态效果引导页（绑定直接点击和按钮触发） ===== -->
-<div id="intro-mask" onclick="enterGame()">
+<div id="intro-mask" onclick="enterGame(event)">
     <div class="intro-content">
         <div class="intro-title-1">开心苗苗乐</div>
         <div class="intro-title-2">
@@ -275,7 +274,6 @@
 <audio id="bgm" src="audio/bgm.mp3" loop preload="auto"></audio>
 
 <script>
-    // 点击进入游戏引导页
     function enterGame(e) {
         if (e) e.stopPropagation();
         const mask = document.getElementById('intro-mask');
@@ -285,7 +283,6 @@
             mask.style.display = 'none';
         }, 500);
         
-        // 尝试自动播放背景音乐
         const bgm = document.getElementById('bgm');
         if(bgm && bgm.paused) {
             bgm.play().catch(err => console.log('BGM auto-play blocked'));
@@ -434,11 +431,18 @@
             board[r][c] = { type, effect: 'none' }; createTileDOM(r, c, board[r][c]);
         }} autoSave();
     }
+    
     function createTileDOM(r, c, data) {
         const tile = document.createElement('div'); tile.className = `tile ${data.effect !== 'none' ? 'effect-'+data.effect : ''}`; tile.innerText = data.type; 
         tile.style.backgroundImage = `url('images/tile_${TYPES.indexOf(data.type) + 1}.png')`;
         tile.style.width = tile.style.height = `${TILE_SIZE}px`; tile.style.top = `${r * TILE_SIZE}px`; tile.style.left = `${c * TILE_SIZE}px`;
-        tile.addEventListener('click', () => handleTileClick(r, c));
+        
+        // 使用原生 pointerdown 统一触控与鼠标事件，彻底解决手机端点击坐标偏移和乱跳的问题
+        tile.addEventListener('pointerdown', (e) => {
+            e.stopPropagation();
+            handleTilePointerDown(r, c);
+        });
+        
         gridContainer.appendChild(tile); domTiles[r][c] = tile; return tile;
     }
 
@@ -550,7 +554,8 @@
         }
     }
 
-    async function handleTileClick(r, c) {
+    // 完美对齐的触控点击逻辑
+    async function handleTilePointerDown(r, c) {
         if (isAnimating) return;
         playCuteSFX('select');
         const tile = domTiles[r][c];
@@ -583,9 +588,6 @@
         const dTemp = domTiles[r1][c1]; domTiles[r1][c1] = domTiles[r2][c2]; domTiles[r2][c2] = dTemp;
         domTiles[r1][c1].style.top = `${r1 * TILE_SIZE}px`; domTiles[r1][c1].style.left = `${c1 * TILE_SIZE}px`;
         domTiles[r2][c2].style.top = `${r2 * TILE_SIZE}px`; domTiles[r2][c2].style.left = `${c2 * TILE_SIZE}px`;
-        domTiles[r1][c1].onclick = null; domTiles[r2][c2].onclick = null;
-        domTiles[r1][c1].addEventListener('click', () => handleTileClick(r1, c1));
-        domTiles[r2][c2].addEventListener('click', () => handleTileClick(r2, c2));
     }
 
     function analyzeMatches() {
@@ -632,7 +634,7 @@
                 if (!board[r][c]) empty++;
                 else if (empty > 0) {
                     board[r + empty][c] = board[r][c]; domTiles[r + empty][c] = domTiles[r][c]; board[r][c] = null; domTiles[r][c] = null;
-                    domTiles[r + empty][c].style.top = `${(r + empty) * TILE_SIZE}px`; let nr = r + empty; domTiles[nr][c].onclick = null; domTiles[nr][c].addEventListener('click', () => handleTileClick(nr, c));
+                    domTiles[r + empty][c].style.top = `${(r + empty) * TILE_SIZE}px`;
                 }
             }
             for (let i = 0; i < empty; i++) {
