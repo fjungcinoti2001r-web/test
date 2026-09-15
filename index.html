@@ -14,6 +14,7 @@
             background-image: radial-gradient(#FAD6A5 10%, transparent 11%); background-size: 30px 30px;
         }
 
+        /* 🌟 开场引导页 */
         #intro-mask {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #FFF5E1 0%, #FFEFD5 100%);
@@ -28,19 +29,13 @@
             0% { transform: scale(0.7); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        .intro-title-1 {
-            font-size: 32px; font-weight: 900; color: #D2691E; letter-spacing: 2px;
-            text-shadow: 0 4px 10px rgba(210, 105, 30, 0.2);
-        }
+        .intro-title-1 { font-size: 32px; font-weight: 900; color: #D2691E; letter-spacing: 2px; text-shadow: 0 4px 10px rgba(210, 105, 30, 0.2); }
         .intro-title-2 {
             display: flex; align-items: center; gap: 8px; font-size: 15px; color: #8B5A2B; font-weight: bold;
             background: rgba(255, 255, 255, 0.5); padding: 5px 16px; border-radius: 30px; border: 2px solid #FAD6A5;
         }
         .intro-title-2 img { width: 28px; height: 28px; object-fit: contain; border-radius: 50%; border: 1px solid #DEB887; }
-        .intro-title-3 {
-            font-size: 11px; color: #CD853F; font-weight: bold; letter-spacing: 1px;
-            background: rgba(255, 255, 255, 0.6); padding: 3px 12px; border-radius: 20px; border: 1px dashed #DEB887;
-        }
+        .intro-title-3 { font-size: 11px; color: #CD853F; font-weight: bold; letter-spacing: 1px; background: rgba(255, 255, 255, 0.6); padding: 3px 12px; border-radius: 20px; border: 1px dashed #DEB887; }
         .intro-enter-btn {
             margin-top: 10px; padding: 10px 32px; background-color: #3CB371; color: white;
             font-size: 17px; font-weight: 900; border: none; border-radius: 30px; cursor: pointer;
@@ -48,11 +43,7 @@
             animation: pulseBtn 2s infinite; pointer-events: auto;
         }
         .intro-enter-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #2E8B57; }
-        @keyframes pulseBtn {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
 
         #arcade-container {
             width: 100%; max-width: 480px; height: 100%; display: flex; flex-direction: column;
@@ -62,13 +53,13 @@
 
         @keyframes screenShake {
             0% { transform: translate(0, 0); }
-            20% { transform: translate(-5px, 5px); }
-            40% { transform: translate(5px, -4px); }
-            60% { transform: translate(-3px, -3px); }
-            80% { transform: translate(4px, 4px); }
+            20% { transform: translate(-4px, 4px); }
+            40% { transform: translate(4px, -3px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(3px, 3px); }
             100% { transform: translate(0, 0); }
         }
-        .shake { animation: screenShake 0.35s ease-in-out; }
+        .shake { animation: screenShake 0.3s ease-in-out; }
 
         .top-bar {
             width: 100%; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;
@@ -88,6 +79,7 @@
         .score-label { font-size: 8px; color: #FF9800; font-weight: 900; }
         .score-val { font-size: 13px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
+        /* 🌟 恢复顶部的舞台与吧台背景图样式 */
         #top-stage {
             height: 19%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
@@ -106,9 +98,7 @@
             position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border-radius: 50%;
             border: 4px solid #FFD700; opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
-        #avatar-container.ready #ultimate-ring {
-            opacity: 1; animation: ultimateGlow 1.2s infinite alternate;
-        }
+        #avatar-container.ready #ultimate-ring { opacity: 1; animation: ultimateGlow 1.2s infinite alternate; }
         @keyframes ultimateGlow {
             0% { box-shadow: 0 0 5px #FF4500, inset 0 0 5px #FF4500; transform: scale(1); }
             100% { box-shadow: 0 0 16px #FFD700, inset 0 0 12px #FFD700; transform: scale(1.04); }
@@ -120,30 +110,19 @@
         }
         #desk-prop { width: 32px; height: 32px; margin-top: -16px; font-size: 18px; display: flex; justify-content: center; align-items: center; background-size: contain; background-repeat: no-repeat; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
         
-        .header-info-row {
-            display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 2px 10px; z-index: 15;
-        }
-        #role-badge {
-            font-size: 10px; background: rgba(255,255,255,0.9); color: #D2691E; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #DEB887; white-space: nowrap; cursor: pointer;
-        }
+        .header-info-row { display: flex; width: 100%; justify-content: space-between; align-items: center; padding: 2px 10px; z-index: 15; }
+        #role-badge { font-size: 10px; background: rgba(255,255,255,0.9); color: #D2691E; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #DEB887; white-space: nowrap; cursor: pointer; }
         #role-badge:active { transform: scale(0.95); background: #FFF5E1; }
         
         #ally-status {
             font-size: 10px; background: rgba(60,179,113,0.15); color: #2E8B57; font-weight: 900; padding: 2px 7px; border-radius: 10px; border: 1px solid #3CB371; white-space: nowrap; cursor: pointer; transition: all 0.3s;
         }
-        #ally-status.ready-glow {
-            background: #3CB371 !important; color: white !important; animation: allyPulse 0.8s infinite alternate; border-color: #FFD700; box-shadow: 0 0 10px #3CB371;
-        }
-        @keyframes allyPulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.08); }
-        }
+        #ally-status.ready-glow { background: #3CB371 !important; color: white !important; animation: allyPulse 0.8s infinite alternate; border-color: #FFD700; box-shadow: 0 0 10px #3CB371; }
+        @keyframes allyPulse { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
 
-        #game-wrapper {
-            position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; padding: 4px; background: #FFFDF9; box-shadow: inset 0 0 15px rgba(222, 184, 135, 0.3);
-        }
+        #game-wrapper { position: relative; width: 100%; flex: 1; display: flex; justify-content: center; align-items: center; padding: 4px; background: #FFFDF9; box-shadow: inset 0 0 15px rgba(222, 184, 135, 0.3); }
         #grid-container {
-            position: relative; background: rgba(255, 255, 255, 0.9); border: 4px solid #DEB887; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(200, 180, 160, 0.4); transition: filter 0.3s;
+            position: relative; background: rgba(255, 255, 255, 0.9); border: 4px solid #DEB887; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 18px rgba(200, 180, 160, 0.4);
             touch-action: none;
         }
         .bg-cell { position: absolute; border-radius: 50%; border: 1px solid rgba(222, 184, 135, 0.2); margin: 2px; }
@@ -156,40 +135,27 @@
             box-shadow: 0 3px 6px rgba(210, 105, 30, 0.25), inset 0 2px 4px rgba(255, 255, 255, 0.6);
             will-change: top, left, transform; pointer-events: none; z-index: 10; 
             background-size: cover; background-repeat: no-repeat; background-position: center;
-            transition: top 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.2s;
+            transition: top 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.18s;
         }
         
-        /* 🌟 严格隔离的反派类名，绝不误染普通棋子 */
-        .tile.is-villain {
-            background-image: none !important;
-            font-size: 24px;
-            z-index: 25 !important;
-        }
+        .tile.is-villain { background-image: none !important; font-size: 24px; z-index: 25 !important; }
         .tile.villain-da { border: 3px solid #1E90FF !important; background-color: #E0FFFF !important; }
         .tile.villain-ade { border: 3px solid #9932CC !important; background-color: #E6E6FA !important; }
         .tile.villain-bailong { border: 3px solid #FF8C00 !important; animation: bailongHop 0.5s infinite alternate; background-color: #FFFACD !important; }
 
-        @keyframes bailongHop {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-4px) scale(1.05); }
-        }
+        @keyframes bailongHop { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-4px) scale(1.05); } }
 
-        .tile.hint-pulse {
-            animation: hintGlow 0.6s infinite alternate; border-color: #FFD700; z-index: 25;
-        }
-        @keyframes hintGlow {
-            0% { transform: scale(1); filter: drop-shadow(0 0 2px #FFD700); }
-            100% { transform: scale(1.12); filter: drop-shadow(0 0 10px #FFD700); }
-        }
+        .tile.hint-pulse { animation: hintGlow 0.6s infinite alternate; border-color: #FFD700; z-index: 25; }
+        @keyframes hintGlow { 0% { transform: scale(1); filter: drop-shadow(0 0 2px #FFD700); } 100% { transform: scale(1.12); filter: drop-shadow(0 0 10px #FFD700); } }
 
         .tile::after { content: ''; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; opacity: 0.9; z-index: 12; background-size: cover; border-radius: 50%; }
-        .tile.effect-row::after { background-image: url('images/eff_row.png'); background-color: rgba(210,105,30,0.3); }
-        .tile.effect-col::after { background-image: url('images/eff_col.png'); background-color: rgba(210,105,30,0.3); }
-        .tile.effect-cross::after { background-image: url('images/eff_cross.png'); background-color: rgba(255,152,0,0.5); border-radius: 50%;}
+        .tile.effect-row::after { background-color: rgba(210,105,30,0.3); border: 2px dashed #FFF; }
+        .tile.effect-col::after { background-color: rgba(210,105,30,0.3); border: 2px dashed #FFF; }
+        .tile.effect-cross::after { background-color: rgba(255,152,0,0.5); border-radius: 50%; border: 2px solid #FFD700; }
         .tile.selected { transform: scale(1.15); filter: drop-shadow(0 0 10px rgba(210, 105, 30, 0.9)); z-index: 20; border-color: #FF4500; }
-        .tile.matched { animation: popOut 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .tile.matched { animation: popOut 0.16s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes popOut { 50% { transform: scale(1.35); opacity: 0.9; } 100% { transform: scale(0); opacity: 0; } }
-        .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.22s ease-out; }
+        .blast-wave { position: absolute; background: #FFA07A; opacity: 0.8; z-index: 15; pointer-events: none; transition: all 0.2s ease-out; }
 
         #ghost-tool { display: none; position: fixed; font-size: 32px; z-index: 9999; pointer-events: none; transform: translate(-50%, -50%); }
         #ghost-tool-indicator { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed; z-index: -1; }
@@ -197,7 +163,7 @@
         .combo-text {
             position: absolute; font-weight: 900; color: #FFFDF9;
             text-shadow: -1px -1px 0 #D2691E, 1px -1px 0 #D2691E, -1px 1px 0 #D2691E, 1px 1px 0 #D2691E, 0 0 12px #FFB6C1, 0 0 22px #FAD6A5;
-            pointer-events: none; z-index: 30; white-space: nowrap; animation: comboFly 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none; z-index: 30; white-space: nowrap; animation: comboFly 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @keyframes comboFly {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
@@ -253,6 +219,7 @@
 <body>
 <div id="toast">提示信息</div>
 
+<!-- 🌟 完整还原的初始开场引导页面 -->
 <div id="intro-mask">
     <div class="intro-content">
         <div class="intro-title-1">开心苗苗乐</div>
@@ -291,6 +258,7 @@
         </div>
     </div>
 
+    <!-- 🌟 恢复了舞台背景和吧台背景 -->
     <div id="top-stage">
         <div class="header-info-row">
             <div id="role-badge" title="点击切换阶数">✨ 洪文定 《新少林五祖》</div>
@@ -298,9 +266,9 @@
         </div>
         <div id="avatar-container" onclick="triggerCharacterUltimate()">
             <div id="ultimate-ring"></div>
-            <div id="character-avatar" style="background-image: url('images/avatar_1.png');">👦</div>
+            <div id="character-avatar" style="font-size: 55px;">👦</div>
         </div>
-        <div id="desk"><div id="desk-prop" style="background-image: url('images/prop_1.png');">🍵</div></div>
+        <div id="desk"><div id="desk-prop" style="font-size: 18px;">🍵</div></div>
     </div>
 
     <div id="game-wrapper"><div id="grid-container"></div></div>
@@ -343,7 +311,7 @@
                 <img src="images/xiemiao.png" alt="" style="width: 28px; height: 28px; object-fit: contain; mix-blend-mode: multiply;" onerror="this.style.display='none'">
             </div>
             <div class="poster-title">开心苗苗乐</div>
-            <div id="poster-avatar-preview" style="width: 90px; height: 90px; background-size: contain; background-repeat: no-repeat; background-position: center; font-size: 60px; text-align: center; line-height: 90px;">👦</div>
+            <div id="poster-avatar-preview" style="width: 90px; height: 90px; font-size: 60px; text-align: center; line-height: 90px;">👦</div>
             <div class="poster-role-tag" id="poster-role-text">已解锁：洪文定</div>
             <div class="poster-score-box">
                 <div style="font-size: 13px; color: #8B5A2B; font-weight: bold;">历史最高战力</div>
@@ -361,19 +329,66 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const enterBtn = document.getElementById('enter-game-btn');
-        if (enterBtn) enterBtn.addEventListener('click', enterGame);
-        const introMask = document.getElementById('intro-mask');
-        if (introMask) introMask.addEventListener('click', enterGame);
-    });
+    const ROWS = 8, COLS = 8; 
+    let TILE_SIZE = 48;
+    const TYPES = ['🥋', '🕶️', '🗡️', '👊', '🧨', '📿', '🍶']; 
 
-    let soundEnabled = true;
-    const bgmToggle = document.getElementById('bgm-toggle');
-    bgmToggle.addEventListener('click', () => {
-        soundEnabled = !soundEnabled;
-        bgmToggle.innerText = soundEnabled ? '🎵' : '🔇';
-        showToast(soundEnabled ? '🔊 音效与特效已开启' : '🔇 音效与特效已关闭');
+    const EVOLUTION = [
+        { score: 0,     name: "洪文定", movie: "新少林五祖", fallback: "👦", propFallback: "🍵", ultText: "少林正宗，刚柔并济！" },
+        { score: 8000,  name: "海远",   movie: "赌神2",       fallback: "🧑", propFallback: "🥢", ultText: "眼神锁定，牌局由我！" },
+        { score: 16000, name: "巩固",   movie: "给爸爸的信",   fallback: "👨", propFallback: "🎒", ultText: "父子同心，硬桥硬马！" },
+        { score: 24000, name: "惠忍",   movie: "少林寺传奇",   fallback: "🦲", propFallback: "📿", ultText: "金刚怒目，佛门武学！" },
+        { score: 32000, name: "韩晓峰", movie: "我的杀手女友", fallback: "🧥", propFallback: "📱", ultText: "凌厉出击，制暴专家！" },
+        { score: 40000, name: "李红旗", movie: "东北警察故事", fallback: "👮", propFallback: "🚔", ultText: "红旗所指，悍匪莫近！" },
+        { score: 48000, name: "成瞎子", movie: "目中无人",     fallback: "🦯", propFallback: "🍶", ultText: "听风辨位，拔刀居合！" },
+        { score: 56000, name: "张柳成", movie: "狂虎危城",     fallback: "👔", propFallback: "🪓", ultText: "危城血战，生死无憾！" },
+        { score: 64000, name: "黄铭金", movie: "缉恶",         fallback: "🕶️", propFallback: "💼", ultText: "雷霆缉凶，目中无人！" },
+        { score: 72000, name: "王伟",   movie: "火遮眼",       fallback: "🔥", propFallback: "🩸", ultText: "绝命生死搏，火遮眼！" },
+        { score: 80000, name: "苗哥本人",movie: "演员谢苗", fallback: "😎", propFallback: "🎬", ultText: "真打！真狠！真解恨！动作宇宙主宰！" }
+    ];
+
+    const VILLAINS = [
+        { type: 'da', name: "大块头", icon: "🧊", skillDesc: "【冰块阻碍】需在其周围相邻消除或特效波及2次方可碎裂！", hp: 2 },
+        { type: 'ade', name: "阿德", icon: "🟣", skillDesc: "【毒液蔓延】回合不清理会向周围吞噬有效空间！", hp: 1 },
+        { type: 'bailong', name: "柏龙", icon: "🥎", skillDesc: "【乱跑毛球】覆盖棋子且每步随机乱跑！", hp: 1 }
+    ];
+
+    const ALLIES_POOL = [
+        { id: 'gongwei', name: "巩伟（《给爸爸的信》）", skillName: "父子同心", desc: "技能：瞬间点名清除场上的 2 个敌对反派目标！" },
+        { id: 'nawen', name: "纳文（《火遮眼》）", skillName: "JUDO冠军", desc: "技能：关节技压制，10秒内不再刷新新敌人且战力暴涨！" }
+    ];
+
+    const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
+
+    let gameState = {
+        score: 0,
+        currentStage: 0,
+        isAnimating: false,
+        globalCombo: 0,
+        props: { hammer: 2, bomb: 2, refresh: 2 },
+        activeVillains: [],
+        allyCharge: 0,
+        allyReady: false,
+        currentStageAlly: null,
+        stageAlliesSelection: {},
+        noNewVillainUntil: 0,
+        soundEnabled: true
+    };
+
+    let board = [], domTiles = [], lastSwapPos = null, idleTimer = null;
+    let touchStartCoord = null, activeTileDom = null, activeDragTool = null, currentBombRadius = 45, bombRadiusTimer = null;
+    let audioCtx = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('enter-game-btn').addEventListener('click', enterGame);
+        document.getElementById('intro-mask').addEventListener('click', enterGame);
+        
+        const bgmToggle = document.getElementById('bgm-toggle');
+        bgmToggle.addEventListener('click', () => {
+            gameState.soundEnabled = !gameState.soundEnabled;
+            bgmToggle.innerText = gameState.soundEnabled ? '🎵' : '🔇';
+            showToast(gameState.soundEnabled ? '🔊 音效已开启' : '🔇 音效已关闭');
+        });
     });
 
     function enterGame(e) {
@@ -384,7 +399,6 @@
         setTimeout(() => { mask.style.display = 'none'; }, 500);
         
         initAudio();
-
         if (!loadAutoSave()) { 
             initBoard(); 
             updatePropUI(); 
@@ -392,473 +406,22 @@
         }
     }
 
-    const ROWS = 8, COLS = 8; let TILE_SIZE = 48;
-    const TYPES = ['🥋', '🕶️', '🗡️', '👊', '🧨', '📿', '🍶']; 
-    
-    function getTileImageUrl(typeStr) {
-        const idx = TYPES.indexOf(typeStr);
-        if (idx !== -1) return `images/tile_${idx + 1}.png`;
-        return '';
-    }
-
-    const EVOLUTION = [
-        { score: 0,     name: "洪文定", movie: "新少林五祖", avatar: "images/avatar_1.png", fallback: "👦", prop: "images/prop_1.png", propFallback: "🍵", ultText: "少林正宗，刚柔并济！" },
-        { score: 8000,  name: "海远",   movie: "赌神2",       avatar: "images/avatar_2.png", fallback: "🧑", prop: "images/prop_2.png", propFallback: "🥢", ultText: "眼神锁定，牌局由我！" },
-        { score: 16000, name: "巩固",   movie: "给爸爸的信",   avatar: "images/avatar_3.png", fallback: "👨", prop: "images/prop_3.png", propFallback: "🎒", ultText: "父子同心，硬桥硬马！" },
-        { score: 24000, name: "惠忍",   movie: "少林寺传奇",   avatar: "images/avatar_4.png", fallback: "🦲", prop: "images/prop_4.png", propFallback: "📿", ultText: "金刚怒目，佛门武学！" },
-        { score: 32000, name: "韩晓峰", movie: "我的杀手女友", avatar: "images/avatar_5.png", fallback: "🧥", prop: "images/prop_5.png", propFallback: "📱", ultText: "凌厉出击，制暴专家！" },
-        { score: 40000, name: "李红旗", movie: "东北警察故事", avatar: "images/avatar_6.png", fallback: "👮", prop: "images/prop_6.png", propFallback: "🚔", ultText: "红旗所指，悍匪莫近！" },
-        { score: 48000, name: "成瞎子", movie: "目中无人",     avatar: "images/avatar_7.png", fallback: "🦯", prop: "images/prop_7.png", propFallback: "🍶", ultText: "听风辨位，拔刀居合！" },
-        { score: 56000, name: "张柳成", movie: "狂虎危城",     avatar: "images/avatar_8.png", fallback: "👔", prop: "images/prop_8.png", propFallback: "🪓", ultText: "危城血战，生死无憾！" },
-        { score: 64000, name: "黄铭金", movie: "缉恶",         avatar: "images/avatar_9.png", fallback: "🕶️", prop: "images/prop_9.png", propFallback: "💼", ultText: "雷霆缉凶，目中无人！" },
-        { score: 72000, name: "王伟",   movie: "火遮眼",       avatar: "images/avatar_10.png",fallback: "🔥", prop: "images/prop_10.png",propFallback: "🩸", ultText: "绝命生死搏，火遮眼！" },
-        { score: 80000, name: "苗哥本人",movie: "演员谢苗",avatar: "images/avatar_11.png",fallback: "😎", prop: "images/prop_11.png",propFallback: "🎬", ultText: "真打！真狠！真解恨！动作宇宙主宰！" }
-    ];
-
-    const VILLAINS = [
-        { type: 'da', name: "大块头", icon: "🧊", skillDesc: "【冰块阻碍】需在其周围相邻消除或特效波及2次方可碎裂！", hp: 2 },
-        { type: 'ade', name: "阿德", icon: "🟣", skillDesc: "【毒液蔓延】回合不清理会向周围吞噬有效空间！", hp: 1 },
-        { type: 'bailong', name: "柏龙", icon: "🥎", skillDesc: "【乱跑毛球】覆盖棋子且每步随机乱跑！", hp: 1 }
-    ];
-    let activeVillains = []; 
-
-    const ALLIES_POOL = [
-        { id: 'gongwei', name: "巩伟（《给爸爸的信》）", skillName: "父子同心", desc: "技能：瞬间点名清除场上的 2 个敌对反派目标！" },
-        { id: 'nawen', name: "纳文（《火遮眼》）", skillName: "JUDO冠军", desc: "技能：关节技压制，10秒内不再刷新新敌人且战力暴涨！" }
-    ];
-    let stageAlliesSelection = {}; 
-    let allyCharge = 0;            
-    let allyReady = false;         
-    let currentStageAlly = null;   
-    let noNewVillainUntil = 0;     
-
-    const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
-
-    let board = [], domTiles = [], score = 0, currentStage = 0, isAnimating = false, lastSwapPos = null, globalCombo = 0;
-    let props = { hammer: 2, bomb: 2, refresh: 2 }; 
-    let idleTimer = null; 
-
-    let touchStartCoord = null;
-    let activeTileDom = null;
-
-    const gridContainer = document.getElementById('grid-container');
-    const ghostTool = document.getElementById('ghost-tool');
-    const ghostIcon = document.getElementById('ghost-tool-icon');
-    const ghostInd = document.getElementById('ghost-tool-indicator');
-
-    let activeDragTool = null;
-    let currentBombRadius = 45;
-    let bombRadiusTimer = null;
-
-    const AudioCtx = window.AudioContext || window.webkitAudioContext; 
-    let audioCtx = null;
-    
-    function initAudio() { 
-        if (!audioCtx) { audioCtx = new AudioCtx(); }
-        if (audioCtx.state === 'suspended') { audioCtx.resume(); } 
-    }
-    
-    function triggerVibration(pattern) {
-        if (!soundEnabled) return;
-        if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch(e){} }
-    }
-
-    function triggerScreenShake() {
-        const container = document.getElementById('arcade-container');
-        container.classList.remove('shake');
-        void container.offsetWidth; 
-        container.classList.add('shake');
-    }
-
-    function playCuteSFX(type, level = 1) {
-        if (!soundEnabled) return;
-        try {
-            initAudio();
-            if (!audioCtx) return;
-            const osc = audioCtx.createOscillator(); 
-            const gainNode = audioCtx.createGain();
-            osc.connect(gainNode); 
-            gainNode.connect(audioCtx.destination);
-            const t = audioCtx.currentTime;
-
-            if (type === 'select') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, t); osc.frequency.exponentialRampToValueAtTime(659.25, t + 0.08);
-                gainNode.gain.setValueAtTime(0.08, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-                osc.start(t); osc.stop(t + 0.08);
-            } else if (type === 'swap') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(350, t); osc.frequency.exponentialRampToValueAtTime(700, t + 0.1);
-                gainNode.gain.setValueAtTime(0.1, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
-                osc.start(t); osc.stop(t + 0.1);
-            } else if (type === 'match') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(440, t); osc.frequency.exponentialRampToValueAtTime(880, t + 0.12);
-                gainNode.gain.setValueAtTime(0.12, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-                osc.start(t); osc.stop(t + 0.12);
-                triggerVibration(25);
-            } else if (type === 'explode') {
-                osc.type = 'square'; osc.frequency.setValueAtTime(180, t); osc.frequency.exponentialRampToValueAtTime(30, t + 0.3);
-                gainNode.gain.setValueAtTime(0.2, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-                osc.start(t); osc.stop(t + 0.3);
-                triggerVibration([60, 40, 60]);
-                triggerScreenShake();
-            } else if (type === 'ultimate') {
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, t); osc.frequency.exponentialRampToValueAtTime(450, t + 0.5);
-                gainNode.gain.setValueAtTime(0.3, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-                osc.start(t); osc.stop(t + 0.5);
-                triggerVibration([100, 50, 100, 50, 150]);
-                triggerScreenShake();
-            } else if (type === 'combo') {
-                osc.type = 'sine'; const freq = 500 + (level * 90);
-                osc.frequency.setValueAtTime(freq, t); osc.frequency.exponentialRampToValueAtTime(freq * 1.4, t + 0.08);
-                gainNode.gain.setValueAtTime(0.15, t); gainNode.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-                osc.start(t); osc.stop(t + 0.08);
-                triggerVibration(30);
-            }
-        } catch(e) {}
-    }
-    
-    function showComboPopup(r, c, comboLevel) {
-        if (comboLevel < 2) return;
-        const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
-        const span = document.createElement('div'); span.className = 'combo-text'; span.innerText = `${word} x${comboLevel}!`;
-        span.style.left = `${c * TILE_SIZE + TILE_SIZE / 2}px`; span.style.top = `${r * TILE_SIZE + TILE_SIZE / 2}px`; span.style.fontSize = `${Math.min(24, 14 + comboLevel * 2)}px`;
-        gridContainer.appendChild(span); setTimeout(() => span.remove(), 700); playCuteSFX('combo', comboLevel);
-    }
-
-    function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
-    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = 1; setTimeout(()=> t.style.opacity = 0, 2000); }
-
-    function resetIdleTimer() {
-        clearTimeout(idleTimer);
-        document.querySelectorAll('.hint-pulse').forEach(el => el.classList.remove('hint-pulse'));
-        idleTimer = setTimeout(() => { showHintMove(); }, 5000); 
-    }
-
-    function showHintMove() {
-        if (isAnimating) return;
-        const hint = findAValidMove();
-        if (hint) {
-            domTiles[hint.r1][hint.c1]?.classList.add('hint-pulse');
-            domTiles[hint.r2][hint.c2]?.classList.add('hint-pulse');
-            showToast('💡 提示：这里可以消除哦！');
-        }
-    }
-
-    document.getElementById('ally-status').onclick = () => {
-        if (!allyReady) {
-            showToast('⏳ 友军正在蓄能中，请通过攻击反派积攒能量 (当前 ' + allyCharge + '/3)');
-            return;
-        }
-        openAllyModal();
-    };
-
-    function openAllyModal() {
-        const container = document.getElementById('ally-cards-container');
-        container.innerHTML = '';
-        const usedAllyId = stageAlliesSelection[currentStage];
-
-        ALLIES_POOL.forEach(ally => {
-            const card = document.createElement('div');
-            card.className = `ally-card ${usedAllyId === ally.id ? 'used' : ''}`;
-            card.innerHTML = `
-                <div style="font-weight:900; color:#D2691E; font-size:14px; margin-bottom:4px;">${ally.name}</div>
-                <div style="font-size:12px; color:#2E8B57; font-weight:bold; margin-bottom:2px;">技能：${ally.skillName}</div>
-                <div style="font-size:11px; color:#5C4033;">${ally.desc}</div>
-                ${usedAllyId === ally.id ? '<div style="font-size:10px; color:red; margin-top:4px;">[当前阶段已出战过]</div>' : ''}
-            `;
-            if (usedAllyId !== ally.id) {
-                card.onclick = () => {
-                    stageAlliesSelection[currentStage] = ally.id;
-                    currentStageAlly = ally;
-                    closeAllyModal();
-                    executeAllySkill(ally); 
-                };
-            }
-            container.appendChild(card);
-        });
-        document.getElementById('ally-select-mask').style.display = 'flex';
-    }
-
-    function closeAllyModal() {
-        document.getElementById('ally-select-mask').style.display = 'none';
-    }
-
-    function executeAllySkill(ally) {
-        playCuteSFX('ultimate');
-        allyCharge = 0;
-        allyReady = false;
-        updateAllyUI();
-
-        if (ally.id === 'gongwei') {
-            if (activeVillains.length > 0) {
-                let cleared = activeVillains.slice(0, 2);
-                activeVillains = activeVillains.filter(v => !cleared.includes(v));
-                showToast('🤝【巩伟·父子同心】父子联手，双杀反派！');
-            } else {
-                showToast('🤝【巩伟·父子同心】场上没有反派，热身完毕！');
-            }
-        } else if (ally.id === 'nawen') {
-            noNewVillainUntil = Date.now() + 10000;
-            showToast('🤝【纳文·JUDO冠军】10秒内反派绝迹！');
-            score += 1500;
-            document.getElementById('score').innerText = score;
-        }
-        refreshAllDOMVisuals();
-    }
-
-    async function triggerCharacterUltimate() {
-        const ring = document.getElementById('avatar-container');
-        if (!ring.classList.contains('ready') || isAnimating) {
-            showToast('⚠️ 奥义未就绪，请通过战力突破解锁！');
-            return;
-        }
-
-        isAnimating = true;
-        ring.classList.remove('ready');
-        playCuteSFX('ultimate');
-
-        const currentData = EVOLUTION[currentStage];
-        const span = document.createElement('div');
-        span.className = 'combo-text';
-        span.style.left = '50%'; span.style.top = '40%';
-        span.style.transform = 'translate(-50%, -50%)';
-        span.style.fontSize = '26px';
-        span.style.color = '#FFD700';
-        span.innerText = `【形态奥义】${currentData.ultText}`;
-        gridContainer.appendChild(span);
-        setTimeout(() => span.remove(), 1200);
-
-        activeVillains = [];
-        let toRemove = new Set();
-        for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) { toRemove.add(`${r},${c}`); } }
-        await processMatches({ toRemove, newSpecials: [] });
-    }
-
-    function spawnVillainIfNeeded() {
-        if (Date.now() < noNewVillainUntil) return;
-
-        if (activeVillains.length < 3 && Math.random() < 0.4) {
-            let emptySpots = [];
-            for (let r = 0; r < ROWS; r++) {
-                for (let c = 0; c < COLS; c++) {
-                    if (!activeVillains.some(v => v.r === r && v.c === c) && (!board[r][c]?.effect || board[r][c]?.effect === 'none')) {
-                        emptySpots.push({r, c});
-                    }
-                }
-            }
-            if (emptySpots.length > 0) {
-                let spot = emptySpots[Math.floor(Math.random() * emptySpots.length)];
-                let vTemplate = VILLAINS[Math.floor(Math.random() * VILLAINS.length)];
-                let newVillain = { 
-                    r: spot.r, 
-                    c: spot.c, 
-                    type: vTemplate.type,
-                    name: vTemplate.name, 
-                    icon: vTemplate.icon,
-                    hp: vTemplate.type === 'da' ? 2 : 1 
-                };
-                activeVillains.push(newVillain);
-                refreshAllDOMVisuals();
-                triggerScreenShake();
-                showToast(`⚠️ 警报！【${vTemplate.name}】降临！${vTemplate.skillDesc}`);
-            }
-        }
-    }
-
-    function triggerVillainActiveSkills() {
-        activeVillains.forEach(v => {
-            if (v.type === 'ade') {
-                let dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
-                let dir = dirs[Math.floor(Math.random() * dirs.length)];
-                let nr = v.r + dir.r, nc = v.c + dir.c;
-                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !activeVillains.some(av => av.r === nr && av.c === nc)) {
-                    if (activeVillains.length < 5) {
-                        activeVillains.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', hp: 1 });
-                        showToast('🟣 【毒液蔓延】吞噬了新的格子！');
-                    }
-                }
-            } else if (v.type === 'bailong') {
-                let dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
-                let dir = dirs[Math.floor(Math.random() * dirs.length)];
-                let nr = v.r + dir.r, nc = v.c + dir.c;
-                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !activeVillains.some(av => av.r === nr && av.c === nc)) {
-                    v.r = nr; v.c = nc;
-                    showToast('🥎 【声东击西】闪现换位！');
-                }
-            }
-        });
-        refreshAllDOMVisuals();
-    }
-
-    function checkVillainDamage(r, c) {
-        let hitList = [];
-        activeVillains.forEach(v => {
-            if (Math.abs(v.r - r) + Math.abs(v.c - c) === 1) hitList.push(v);
-        });
-
-        if (hitList.length > 0) {
-            hitList.forEach(v => {
-                v.hp--;
-                if (v.hp <= 0) {
-                    showToast(`⚔️ 成功击破反派【${v.name}】！`);
-                    playCuteSFX('explode');
-                } else {
-                    showToast(`🛡️ 【${v.name}】冰块护甲减弱！`);
-                    playCuteSFX('select');
-                }
-            });
-            
-            activeVillains = activeVillains.filter(v => v.hp > 0);
-            score += 400;
-            document.getElementById('score').innerText = score;
-
-            if (!allyReady) {
-                allyCharge++;
-                if (allyCharge >= 3) {
-                    allyReady = true;
-                    showToast('🌟 友军蓄能完毕！点击顶部状态栏选择释放大招！');
-                    playCuteSFX('ultimate');
-                }
-                updateAllyUI();
-            }
-        }
-    }
-
-    function updateAllyUI() {
-        const allyStatus = document.getElementById('ally-status');
-        const allyNameText = currentStageAlly ? currentStageAlly.name.split('（')[0] : '友军';
-        if (allyReady) {
-            allyStatus.className = 'ready-glow';
-            allyStatus.innerText = `✨ 点此释放大招！`;
-        } else {
-            allyStatus.className = '';
-            allyStatus.innerText = `🤝 [${allyNameText}] 蓄能 (${allyCharge}/3)`;
-        }
-    }
-
-    const settingsMask = document.getElementById('settings-mask');
-    document.getElementById('settings-toggle').onclick = () => { renderSaveList(); settingsMask.style.display = 'flex'; };
-    function closeSettings() { settingsMask.style.display = 'none'; }
-    function getSaves() { return JSON.parse(localStorage.getItem('miaoSaves') || '{}'); }
-    function setSaves(saves) { localStorage.setItem('miaoSaves', JSON.stringify(saves)); }
-    
-    function saveGame() { 
-        let saves = getSaves(); 
-        let timeStr = new Date().toLocaleString('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}); 
-        saves[`存档_${timeStr}`] = { score, currentStage, props, activeVillains, allyCharge, allyReady, stageAlliesSelection, currentStageAlly, board: board.map(r => r.map(c => ({...c}))) }; 
-        setSaves(saves); renderSaveList(); showToast('进度已保存！'); 
-    }
-    function renderSaveList() {
-        const container = document.getElementById('save-list-container'); container.innerHTML = '';
-        Object.keys(getSaves()).reverse().forEach(key => {
-            let div = document.createElement('div'); div.className = 'save-item'; div.innerText = `${key} (战力: ${getSaves()[key].score})`;
-            let pressTimer; let isLongPress = false;
-            const startPress = () => { isLongPress = false; pressTimer = setTimeout(() => { isLongPress = true; if(confirm(`确定删除 [${key}] 吗？`)){ let s = getSaves(); delete s[key]; setSaves(s); renderSaveList(); } }, 800); };
-            const cancelPress = () => clearTimeout(pressTimer);
-            div.addEventListener('touchstart', startPress, {passive: true}); div.addEventListener('touchend', () => { cancelPress(); if(!isLongPress) loadGame(key); }); div.addEventListener('touchmove', cancelPress, {passive: true});
-            div.addEventListener('mousedown', startPress); div.addEventListener('mouseup', () => { cancelPress(); if(!isLongPress) loadGame(key); }); div.addEventListener('mouseleave', cancelPress);
-            container.appendChild(div);
-        });
-        if(container.innerHTML === '') container.innerHTML = '<div style="color:#999; font-size:12px; margin-top:15px;">暂无本地存档</div>';
-    }
-    function loadGame(key) {
-        const data = getSaves()[key]; if(!data) return;
-        score = data.score; currentStage = data.currentStage; props = data.props; activeVillains = data.activeVillains || []; allyCharge = data.allyCharge || 0; allyReady = data.allyReady || false;
-        stageAlliesSelection = data.stageAlliesSelection || {}; currentStageAlly = data.currentStageAlly || null;
-        document.getElementById('score').innerText = score; applyEvolution(currentStage); updatePropUI(); updateAllyUI();
-        board = data.board; initSize(); gridContainer.innerHTML = ''; domTiles = [];
-        for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} closeSettings(); checkDeadlock(); showToast('存档读取成功');
-    }
-    function autoSave() { localStorage.setItem('miaoAutoSave', JSON.stringify({ score, currentStage, props, activeVillains, allyCharge, allyReady, stageAlliesSelection, currentStageAlly, board: board.map(r => r.map(c => ({...c}))) })); }
-    function loadAutoSave() {
-        const saved = localStorage.getItem('miaoAutoSave');
-        if (saved) {
-            const data = JSON.parse(saved); score = data.score; currentStage = data.currentStage; props = data.props; activeVillains = data.activeVillains || []; allyCharge = data.allyCharge || 0; allyReady = data.allyReady || false;
-            stageAlliesSelection = data.stageAlliesSelection || {}; currentStageAlly = data.currentStageAlly || null;
-            document.getElementById('score').innerText = score; applyEvolution(currentStage); updatePropUI(); updateAllyUI(); board = data.board; initSize();
-            for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} checkDeadlock(); return true;
-        } return false;
-    }
-
-    function restartGame() {
-        localStorage.removeItem('miaoAutoSave');
-        score = 0; currentStage = 0; props = { hammer: 2, bomb: 2, refresh: 2 }; activeVillains = []; allyCharge = 0; allyReady = false;
-        stageAlliesSelection = {}; currentStageAlly = null;
-        document.getElementById('avatar-container').classList.remove('ready');
-        document.getElementById('score').innerText = score;
-        applyEvolution(0); updatePropUI(); updateAllyUI();
-        gridContainer.innerHTML = ''; domTiles = [];
-        initBoard();
-        closeSettings();
-        showToast('已开启新一轮游戏！');
-    }
-
     function initSize() { 
         const maxW = document.getElementById('game-wrapper').clientWidth - 6;
         const maxH = document.getElementById('game-wrapper').clientHeight - 6;
         TILE_SIZE = Math.floor(Math.min(maxW / COLS, maxH / ROWS));
+        const gridContainer = document.getElementById('grid-container');
         gridContainer.style.width = `${TILE_SIZE * COLS}px`; 
         gridContainer.style.height = `${TILE_SIZE * ROWS}px`; 
     }
+
     function createBgCell(r, c) { 
         const bg = document.createElement('div'); 
         bg.className = `bg-cell ${(r + c) % 2 === 0 ? 'dark' : 'light'}`; 
         bg.style.width = bg.style.height = `${TILE_SIZE - 4}px`; 
         bg.style.left = `${c * TILE_SIZE + 2}px`; 
         bg.style.top = `${r * TILE_SIZE + 2}px`; 
-        gridContainer.appendChild(bg); 
-    }
-    
-    function initBoard() {
-        initSize();
-        for (let r = 0; r < ROWS; r++) { board[r] = []; domTiles[r] = []; for (let c = 0; c < COLS; c++) {
-            createBgCell(r, c); let type; do { type = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === type && board[r][c-2]?.type === type) || (r >= 2 && board[r-1][c]?.type === type && board[r-2][c]?.type === type));
-            board[r][c] = { type, effect: 'none' }; createTileDOM(r, c, board[r][c]);
-        }} 
-        spawnVillainIfNeeded();
-        autoSave();
-        resetIdleTimer();
-    }
-    
-    function refreshAllDOMVisuals() {
-        for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) {
-                updateTileDOMVisual(r, c, board[r][c]);
-            }
-        }
-    }
-
-    // 🌟 核心防错渲染：每次更新视觉时，先强行清空可能残留的反派类名，再根据 activeVillains 精准赋予
-    function updateTileDOMVisual(r, c, data) {
-        const tile = domTiles[r][c];
-        if (!tile) return;
-        
-        let villain = activeVillains.find(v => v.r === r && v.c === c);
-        if (villain) {
-            tile.className = `tile is-villain villain-${villain.type}`;
-            tile.style.backgroundImage = 'none';
-            tile.innerText = villain.icon;
-        } else {
-            // 严格移除所有反派标记，还原为普通棋子
-            tile.classList.remove('is-villain', 'villain-da', 'villain-ade', 'villain-bailong');
-            tile.className = `tile ${data && data.effect !== 'none' ? 'effect-'+data.effect : ''}`;
-            if (data && data.type) {
-                tile.innerText = data.type;
-                const imgPath = getTileImageUrl(data.type);
-                if (imgPath) {
-                    const imgTest = new Image();
-                    imgTest.src = imgPath;
-                    imgTest.onload = () => { 
-                        if (!activeVillains.some(v => v.r === r && v.c === c)) { 
-                            tile.style.backgroundImage = `url('${imgPath}')`; 
-                            tile.innerText = ''; 
-                        } 
-                    };
-                    imgTest.onerror = () => { tile.style.backgroundImage = 'none'; tile.innerText = data.type; };
-                } else {
-                    tile.style.backgroundImage = 'none';
-                }
-            }
-        }
+        document.getElementById('grid-container').appendChild(bg); 
     }
 
     function createTileDOM(r, c, data) {
@@ -868,27 +431,73 @@
         tile.style.width = tile.style.height = `${TILE_SIZE - padding * 2}px`; 
         tile.style.top = `${r * TILE_SIZE + padding}px`; 
         tile.style.left = `${c * TILE_SIZE + padding}px`;
-        gridContainer.appendChild(tile); 
+        document.getElementById('grid-container').appendChild(tile); 
         domTiles[r][c] = tile; 
         updateTileDOMVisual(r, c, data);
         return tile;
     }
 
+    function updateTileDOMVisual(r, c, data) {
+        const tile = domTiles[r][c];
+        if (!tile) return;
+        
+        let villain = gameState.activeVillains.find(v => v.r === r && v.c === c);
+        if (villain) {
+            tile.className = `tile is-villain villain-${villain.type}`;
+            tile.style.backgroundImage = 'none';
+            tile.innerText = villain.icon;
+        } else {
+            tile.classList.remove('is-villain', 'villain-da', 'villain-ade', 'villain-bailong');
+            tile.className = `tile ${data && data.effect !== 'none' ? 'effect-'+data.effect : ''}`;
+            if (data && data.type) {
+                tile.innerText = data.type;
+                tile.style.backgroundImage = 'none';
+            }
+        }
+    }
+
+    function refreshAllDOMVisuals() {
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                updateTileDOMVisual(r, c, board[r][c]);
+            }
+        }
+    }
+
+    function initBoard() {
+        initSize();
+        for (let r = 0; r < ROWS; r++) { 
+            board[r] = []; 
+            domTiles[r] = []; 
+            for (let c = 0; c < COLS; c++) {
+                createBgCell(r, c); 
+                let type; 
+                do { 
+                    type = TYPES[Math.floor(Math.random() * TYPES.length)]; 
+                } while ((c >= 2 && board[r][c-1]?.type === type && board[r][c-2]?.type === type) || (r >= 2 && board[r-1][c]?.type === type && board[r-2][c]?.type === type));
+                board[r][c] = { type, effect: 'none' }; 
+                createTileDOM(r, c, board[r][c]);
+            }
+        } 
+        spawnVillainIfNeeded();
+        autoSave();
+        resetIdleTimer();
+    }
+
+    const gridContainer = document.getElementById('grid-container');
+
     gridContainer.addEventListener('pointerdown', (e) => {
-        if (isAnimating || activeDragTool) return;
+        if (gameState.isAnimating || activeDragTool) return;
         resetIdleTimer();
         const rect = gridContainer.getBoundingClientRect();
         const clientX = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
         const clientY = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
         
-        const relX = clientX - rect.left;
-        const relY = clientY - rect.top;
-
-        const c = Math.floor(relX / TILE_SIZE);
-        const r = Math.floor(relY / TILE_SIZE);
+        const c = Math.floor((clientX - rect.left) / TILE_SIZE);
+        const r = Math.floor((clientY - rect.top) / TILE_SIZE);
 
         if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
-            if (activeVillains.some(v => v.r === r && v.c === c)) {
+            if (gameState.activeVillains.some(v => v.r === r && v.c === c)) {
                 showToast('⚠️ 无法直接移动反派，请在其周围消除进行攻击！');
                 return;
             }
@@ -900,15 +509,13 @@
     });
 
     gridContainer.addEventListener('pointermove', (e) => {
-        if (!touchStartCoord || isAnimating) return;
+        if (!touchStartCoord || gameState.isAnimating) return;
         const clientX = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
         const clientY = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
 
         const diffX = clientX - touchStartCoord.x;
         const diffY = clientY - touchStartCoord.y;
-        const threshold = 16; 
-
-        if (Math.abs(diffX) > threshold || Math.abs(diffY) > threshold) {
+        if (Math.abs(diffX) > 16 || Math.abs(diffY) > 16) {
             let targetR = touchStartCoord.r;
             let targetC = touchStartCoord.c;
 
@@ -919,15 +526,10 @@
             }
 
             if (targetR >= 0 && targetR < ROWS && targetC >= 0 && targetC < COLS) {
-                if (activeVillains.some(v => v.r === targetR && v.c === targetC)) return;
-
-                const startR = touchStartCoord.r;
-                const startC = touchStartCoord.c;
-                
+                if (gameState.activeVillains.some(v => v.r === targetR && v.c === targetC)) return;
+                const startR = touchStartCoord.r, startC = touchStartCoord.c;
                 if (activeTileDom) activeTileDom.classList.remove('selected');
-                touchStartCoord = null;
-                activeTileDom = null;
-
+                touchStartCoord = null; activeTileDom = null;
                 executeSwapAction(startR, startC, targetR, targetC);
             }
         }
@@ -935,12 +537,11 @@
 
     window.addEventListener('pointerup', () => {
         if (touchStartCoord && activeTileDom) { activeTileDom.classList.remove('selected'); }
-        touchStartCoord = null;
-        activeTileDom = null;
+        touchStartCoord = null; activeTileDom = null;
     });
 
     async function executeSwapAction(r1, c1, r2, c2) {
-        isAnimating = true; globalCombo = 0; lastSwapPos = { r: r2, c: c2 }; 
+        gameState.isAnimating = true; gameState.globalCombo = 0; lastSwapPos = { r: r2, c: c2 }; 
         playCuteSFX('swap');
         swapDataAndDOM(r1, c1, r2, c2); 
         await sleep(180);
@@ -951,140 +552,7 @@
         } else { 
             swapDataAndDOM(r1, c1, r2, c2); 
             await sleep(180); 
-            isAnimating = false; 
-        }
-    }
-
-    function updatePropUI() {
-        document.getElementById('count-hammer').innerText = `单点×${props.hammer}`;
-        document.getElementById('count-bomb').innerText = `炸弹×${props.bomb}`;
-        document.getElementById('count-refresh').innerText = `刷新×${props.refresh}`;
-        ['hammer', 'bomb', 'refresh'].forEach(p => {
-            const el = document.getElementById(p === 'refresh' ? 'refresh-tool' : `${p}-tool`);
-            if (props[p] <= 0) el.classList.add('disabled'); else el.classList.remove('disabled');
-        });
-    }
-
-    setupToolDrag('hammer-tool', 'hammer');
-    setupToolDrag('bomb-tool', 'bomb');
-
-    document.getElementById('refresh-tool').onclick = async () => {
-        try {
-            if (isAnimating || props.refresh <= 0) return; props.refresh--; updatePropUI(); isAnimating = true; globalCombo = 0; playCuteSFX('explode');
-            for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) {
-                if (activeVillains.some(v => v.r === r && v.c === c)) continue;
-                let type; do { type = TYPES[Math.floor(Math.random() * TYPES.length)]; } while ((c >= 2 && board[r][c-1]?.type === type && board[r][c-2]?.type === type) || (r >= 2 && board[r-1][c]?.type === type && board[r-2][c]?.type === type));
-                board[r][c] = { type, effect: 'none' }; 
-                updateTileDOMVisual(r, c, board[r][c]);
-                const tile = domTiles[r][c];
-                tile.style.transform = 'scale(0)'; 
-                setTimeout(() => tile.style.transform = 'scale(1)', 40);
-            }} await sleep(250); isAnimating = false; gridContainer.style.filter = 'none'; autoSave(); checkDeadlock(); resetIdleTimer();
-        } catch(err) {
-            isAnimating = false;
-        }
-    };
-
-    function setupToolDrag(btnId, type) {
-        const btn = document.getElementById(btnId);
-        const startDrag = (e) => {
-            if (props[type] <= 0 || isAnimating) return;
-            e.preventDefault(); activeDragTool = type;
-            
-            ghostIcon.innerText = type === 'hammer' ? '🔨' : '💣';
-            
-            if (type === 'bomb') {
-                currentBombRadius = TILE_SIZE * 1.5;
-                let growing = true;
-                bombRadiusTimer = setInterval(() => {
-                    currentBombRadius += growing ? 1.5 : -1.5;
-                    if (currentBombRadius > TILE_SIZE * 3) growing = false;
-                    if (currentBombRadius < TILE_SIZE) growing = true;
-                    ghostInd.style.width = `${currentBombRadius * 2}px`;
-                    ghostInd.style.height = `${currentBombRadius * 2}px`;
-                }, 30);
-                ghostInd.style.borderColor = '#FF334B';
-                ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.3) 0%, rgba(255,51,75,0.1) 100%)';
-            } else {
-                ghostInd.style.width = `${TILE_SIZE}px`;
-                ghostInd.style.height = `${TILE_SIZE}px`;
-                ghostInd.style.borderColor = '#3CB371';
-                ghostInd.style.background = 'radial-gradient(circle, rgba(60,179,113,0.3) 0%, rgba(60,179,113,0.1) 100%)';
-            }
-
-            ghostTool.style.display = 'block'; updateGhostPos(e);
-            document.addEventListener('pointermove', moveDrag, { passive: false });
-            document.addEventListener('pointerup', endDrag, { passive: false });
-        };
-        btn.addEventListener('pointerdown', startDrag);
-    }
-
-    function updateGhostPos(e) {
-        const x = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
-        const y = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
-        ghostTool.style.left = `${x}px`; ghostTool.style.top = `${y}px`;
-    }
-
-    function moveDrag(e) { 
-        if (activeDragTool) { e.preventDefault(); updateGhostPos(e); }
-    }
-
-    async function endDrag(e) {
-        if (!activeDragTool) return;
-        const toolType = activeDragTool; activeDragTool = null; ghostTool.style.display = 'none';
-        if (bombRadiusTimer) { clearInterval(bombRadiusTimer); bombRadiusTimer = null; }
-        document.removeEventListener('pointermove', moveDrag); document.removeEventListener('pointerup', endDrag);
-
-        const x = e.clientX !== undefined ? e.clientX : (e.changedTouches ? e.changedTouches[0].clientX : 0);
-        const y = e.clientY !== undefined ? e.clientY : (e.changedTouches ? e.changedTouches[0].clientY : 0);
-        const box = gridContainer.getBoundingClientRect();
-
-        if (x >= box.left && x <= box.right && y >= box.top && y <= box.bottom) {
-            const dropX = x - box.left;
-            const dropY = y - box.top;
-            isAnimating = true; let toRemove = new Set();
-            
-            if (toolType === 'hammer') {
-                const c = Math.floor(dropX / TILE_SIZE);
-                const r = Math.floor(dropY / TILE_SIZE);
-                if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
-                    props.hammer--;
-                    playCuteSFX('explode');
-                    let vIdx = activeVillains.findIndex(v => v.r === r && v.c === c);
-                    if (vIdx !== -1) {
-                        activeVillains[vIdx].hp--;
-                        if (activeVillains[vIdx].hp <= 0) activeVillains.splice(vIdx, 1);
-                        showToast('🔨 锤子重击反派！');
-                        refreshAllDOMVisuals();
-                    } else {
-                        toRemove.add(`${r},${c}`);
-                    }
-                }
-            } else if (toolType === 'bomb') {
-                props.bomb--;
-                const activeRadius = currentBombRadius;
-                for (let r = 0; r < ROWS; r++) {
-                    for (let c = 0; c < COLS; c++) {
-                        if (activeVillains.some(v => v.r === r && v.c === c)) {
-                            let v = activeVillains.find(v => v.r === r && v.c === c);
-                            let tileCenterX = c * TILE_SIZE + TILE_SIZE / 2;
-                            let tileCenterY = r * TILE_SIZE + TILE_SIZE / 2;
-                            if (Math.hypot(tileCenterX - dropX, tileCenterY - dropY) <= activeRadius) {
-                                v.hp--;
-                                if (v.hp <= 0) activeVillains = activeVillains.filter(item => item !== v);
-                            }
-                            continue;
-                        }
-                        const tileCenterX = c * TILE_SIZE + TILE_SIZE / 2;
-                        const tileCenterY = r * TILE_SIZE + TILE_SIZE / 2;
-                        const dist = Math.hypot(tileCenterX - dropX, tileCenterY - dropY);
-                        if (dist <= activeRadius) { toRemove.add(`${r},${c}`); }
-                    }
-                }
-                playCuteSFX('explode');
-                refreshAllDOMVisuals();
-            }
-            updatePropUI(); await processMatches({ toRemove, newSpecials: [] });
+            gameState.isAnimating = false; 
         }
     }
 
@@ -1099,13 +567,13 @@
     function analyzeMatches() {
         let toRemove = new Set(), newSpecials = [], hLines = [], vLines = [];
         for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS - 2; c++) { 
-            if (activeVillains.some(v => v.r === r && v.c === c)) continue;
-            let len = 1; while (c+len < COLS && board[r][c]?.type === board[r][c+len]?.type && board[r][c] && !activeVillains.some(v => v.r === r && v.c === c+len)) len++; 
+            if (gameState.activeVillains.some(v => v.r === r && v.c === c)) continue;
+            let len = 1; while (c+len < COLS && board[r][c]?.type === board[r][c+len]?.type && board[r][c] && !gameState.activeVillains.some(v => v.r === r && v.c === c+len)) len++; 
             if (len >= 3) { let l=[]; for(let i=0;i<len;i++) l.push(`${r},${c+i}`); hLines.push({ type: board[r][c].type, cells: l, r, c, len }); c += len-1; } 
         }
         for (let c = 0; c < COLS; c++) for (let r = 0; r < ROWS - 2; r++) { 
-            if (activeVillains.some(v => v.r === r && v.c === c)) continue;
-            let len = 1; while (r+len < ROWS && board[r+len][c]?.type === board[r][c]?.type && board[r][c] && !activeVillains.some(v => v.r === r+len && v.c === c)) len++; 
+            if (gameState.activeVillains.some(v => v.r === r && v.c === c)) continue;
+            let len = 1; while (r+len < ROWS && board[r+len][c]?.type === board[r][c]?.type && board[r][c] && !gameState.activeVillains.some(v => v.r === r+len && v.c === c)) len++; 
             if (len >= 3) { let l=[]; for(let i=0;i<len;i++) l.push(`${r+i},${c}`); vLines.push({ type: board[r][c].type, cells: l, r, c, len }); r += len-1; } 
         }
         hLines.forEach(hl => { vLines.forEach(vl => { if (hl.type === vl.type) { const intersect = hl.cells.find(c => vl.cells.includes(c)); if (intersect) { let [ir, ic] = intersect.split(',').map(Number); hl.handled = vl.handled = true; hl.cells.concat(vl.cells).forEach(c => toRemove.add(c)); newSpecials.push({ r: ir, c: ic, type: hl.type, effect: 'cross' }); } } });});
@@ -1113,35 +581,11 @@
         return { toRemove, newSpecials };
     }
 
-    function findAValidMove() {
-        const checkSwap = (r1, c1, r2, c2) => {
-            if (activeVillains.some(v => (v.r === r1 && v.c === c1) || (v.r === r2 && v.c === c2))) return false;
-            const temp = board[r1][c1]; board[r1][c1] = board[r2][c2]; board[r2][c2] = temp;
-            const match = analyzeMatches().toRemove.size > 0;
-            board[r2][c2] = board[r1][c1]; board[r1][c1] = temp;
-            return match;
-        };
-        for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) {
-                if (c < COLS - 1 && checkSwap(r, c, r, c + 1)) return { r1: r, c1: c, r2: r, c2: c + 1 };
-                if (r < ROWS - 1 && checkSwap(r, c, r + 1, c)) return { r1: r, c1: c, r2: r + 1, c2: c };
-            }
-        }
-        return null;
-    }
-
-    async function triggerSpecial(r, c, effect, toRemoveSet) {
-        playCuteSFX('explode');
-        if (effect === 'row' || effect === 'cross') { createBlastVisual('row', r, c); for(let ic=0; ic<COLS; ic++) processBlastCell(r, ic, toRemoveSet); }
-        if (effect === 'col' || effect === 'cross') { createBlastVisual('col', r, c); for(let ir=0; ir<ROWS; ir++) processBlastCell(ir, c, toRemoveSet); }
-    }
-    function processBlastCell(r, c, set) { const k = `${r},${c}`; if (!set.has(k) && board[r][c]) { set.add(k); if (board[r][c].effect !== 'none') triggerSpecial(r, c, board[r][c].effect, set); } }
-    function createBlastVisual(dir, r, c) { const blast = document.createElement('div'); blast.className = 'blast-wave'; if(dir === 'row') { blast.style.left = '0'; blast.style.top = `${r * TILE_SIZE + TILE_SIZE/2 - 2}px`; blast.style.width = `${COLS * TILE_SIZE}px`; blast.style.height = '4px'; } else { blast.style.top = '0'; blast.style.left = `${c * TILE_SIZE + TILE_SIZE/2 - 2}px`; blast.style.height = `${ROWS * TILE_SIZE}px`; blast.style.width = '4px'; } gridContainer.appendChild(blast); setTimeout(() => blast.remove(), 250); }
-
     async function processMatches(matchInfo) {
         let { toRemove, newSpecials } = matchInfo;
-        globalCombo++; let firstMatch = Array.from(toRemove)[0];
-        if (firstMatch) { let [fr, fc] = firstMatch.split(',').map(Number); showComboPopup(fr, fc, globalCombo); } else { playCuteSFX('match'); }
+        gameState.globalCombo++; 
+        let firstMatch = Array.from(toRemove)[0];
+        if (firstMatch) { let [fr, fc] = firstMatch.split(',').map(Number); showComboPopup(fr, fc, gameState.globalCombo); } else { playCuteSFX('match'); }
 
         toRemove.forEach(str => { 
             let [r, c] = str.split(',').map(Number); 
@@ -1151,38 +595,44 @@
 
         toRemove.forEach(str => { 
             let [r, c] = str.split(',').map(Number); 
-            if (activeVillains.some(v => v.r === r && v.c === c)) return;
+            if (gameState.activeVillains.some(v => v.r === r && v.c === c)) return;
             if (domTiles[r][c]) { domTiles[r][c].classList.add('matched'); board[r][c] = null; } 
         });
         
-        score += toRemove.size * 20; 
-        document.getElementById('score').innerText = score;
+        gameState.score += toRemove.size * 20; 
+        document.getElementById('score').innerText = gameState.score;
         
-        if (currentStage < EVOLUTION.length - 1 && score >= EVOLUTION[currentStage + 1].score) {
-            applyEvolution(currentStage + 1); 
-            props.hammer += 1; props.bomb += 1; props.refresh += 1; updatePropUI(); 
+        if (gameState.currentStage < EVOLUTION.length - 1 && gameState.score >= EVOLUTION[gameState.currentStage + 1].score) {
+            applyEvolution(gameState.currentStage + 1); 
+            gameState.props.hammer += 1; gameState.props.bomb += 1; gameState.props.refresh += 1; updatePropUI(); 
             document.getElementById('avatar-container').classList.add('ready');
-            showToast('🔥 战力突破！');
+            showToast('🔥 战力突破！解锁新阶数！');
         }
 
-        await sleep(180); 
+        await sleep(160); 
         toRemove.forEach(str => { 
             let [r, c] = str.split(',').map(Number); 
-            if (activeVillains.some(v => v.r === r && v.c === c)) return;
+            if (gameState.activeVillains.some(v => v.r === r && v.c === c)) return;
             if (domTiles[r][c]) { domTiles[r][c].remove(); domTiles[r][c] = null; } 
         });
         newSpecials.forEach(sp => { 
-            if (activeVillains.some(v => v.r === sp.r && v.c === sp.c)) return;
+            if (gameState.activeVillains.some(v => v.r === sp.r && v.c === sp.c)) return;
             board[sp.r][sp.c] = { type: sp.type, effect: sp.effect }; createTileDOM(sp.r, sp.c, board[sp.r][sp.c]); 
         });
         
         await applyGravity(); 
         triggerVillainActiveSkills(); 
 
-        lastSwapPos = null; const nextInfo = analyzeMatches();
-        if (nextInfo.toRemove.size > 0) { await processMatches(nextInfo); } else { 
+        lastSwapPos = null; 
+        const nextInfo = analyzeMatches();
+        if (nextInfo.toRemove.size > 0) { 
+            await processMatches(nextInfo); 
+        } else { 
             spawnVillainIfNeeded();
-            autoSave(); checkDeadlock(); isAnimating = false; resetIdleTimer();
+            autoSave(); 
+            checkDeadlock(); 
+            gameState.isAnimating = false; 
+            resetIdleTimer();
         }
     }
 
@@ -1191,10 +641,7 @@
         for (let c = 0; c < COLS; c++) {
             let empty = 0;
             for (let r = ROWS - 1; r >= 0; r--) {
-                if (activeVillains.some(v => v.r === r && v.c === c)) {
-                    empty = 0; 
-                    continue;
-                }
+                if (gameState.activeVillains.some(v => v.r === r && v.c === c)) { empty = 0; continue; }
                 if (!board[r][c]) empty++;
                 else if (empty > 0) {
                     board[r + empty][c] = board[r][c]; domTiles[r + empty][c] = domTiles[r][c]; board[r][c] = null; domTiles[r][c] = null;
@@ -1202,92 +649,441 @@
                 }
             }
             for (let i = 0; i < empty; i++) {
-                if (activeVillains.some(v => v.r === i && v.c === c)) continue;
+                if (gameState.activeVillains.some(v => v.r === i && v.c === c)) continue;
                 const type = TYPES[Math.floor(Math.random() * TYPES.length)]; board[i][c] = { type, effect: 'none' };
                 const nTile = createTileDOM(i, c, board[i][c]); nTile.style.top = `${(i - empty) * TILE_SIZE + padding}px`; nTile.offsetHeight; nTile.style.top = `${i * TILE_SIZE + padding}px`;
             }
         }
-        await sleep(200);
+        await sleep(180);
     }
 
-    function applyEvolution(stageIdx) {
-        currentStage = stageIdx; 
-        const currentData = EVOLUTION[currentStage];
+    function triggerSpecial(r, c, effect, toRemoveSet) {
+        playCuteSFX('explode');
+        if (effect === 'row' || effect === 'cross') { for(let ic=0; ic<COLS; ic++) processBlastCell(r, ic, toRemoveSet); }
+        if (effect === 'col' || effect === 'cross') { for(let ir=0; ir<ROWS; ir++) processBlastCell(ir, c, toRemoveSet); }
+    }
+    function processBlastCell(r, c, set) { const k = `${r},${c}`; if (!set.has(k) && board[r][c]) { set.add(k); if (board[r][c].effect !== 'none') triggerSpecial(r, c, board[r][c].effect, set); } }
 
-        document.getElementById('role-badge').innerText = `✨ ${currentData.name} 《${currentData.movie}》`;
-
-        const av = document.getElementById('character-avatar'); av.style.transform = "scale(1.25) translateY(-8px)";
-        setTimeout(() => {
-            av.style.backgroundImage = 'none';
-            av.innerText = currentData.fallback;
-            const avatarTest = new Image();
-            avatarTest.src = currentData.avatar;
-            avatarTest.onload = () => { av.style.backgroundImage = `url('${currentData.avatar}')`; av.innerText = ''; };
-            avatarTest.onerror = () => { av.style.backgroundImage = 'none'; av.innerText = currentData.fallback; };
-
-            const prop = document.getElementById('desk-prop');
-            prop.style.backgroundImage = 'none';
-            prop.innerText = currentData.propFallback;
-            const propTest = new Image();
-            propTest.src = currentData.prop;
-            propTest.onload = () => { prop.style.backgroundImage = `url('${currentData.prop}')`; prop.innerText = ''; };
-            propTest.onerror = () => { prop.style.backgroundImage = 'none'; prop.innerText = currentData.propFallback; };
-
-            av.style.transform = "scale(1) translateY(0)";
-        }, 120);
+    function findAValidMove() {
+        const checkSwap = (r1, c1, r2, c2) => {
+            if (gameState.activeVillains.some(v => (v.r === r1 && v.c === c1) || (v.r === r2 && v.c === c2))) return false;
+            const temp = board[r1][c1]; board[r1][c1] = board[r2][c2]; board[r2][c2] = temp;
+            const match = analyzeMatches().toRemove.size > 0;
+            board[r2][c2] = board[r1][c1]; board[r1][c1] = temp;
+            return match;
+        };
+        for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+                if (c < COLS - 1 && checkSwap(r, c, r, c + 1)) return true;
+                if (r < ROWS - 1 && checkSwap(r, c, r + 1, c)) return true;
+            }
+        }
+        return false;
     }
 
     function checkDeadlock() {
-        let hasMove = findAValidMove() !== null;
-        if (!hasMove) {
+        if (!findAValidMove()) {
             showToast('🔄 盘面无解，自动洗牌重排中...');
             playCuteSFX('explode');
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
-                    if (activeVillains.some(v => v.r === r && v.c === c)) continue;
+                    if (gameState.activeVillains.some(v => v.r === r && v.c === c)) continue;
                     let type = TYPES[Math.floor(Math.random() * TYPES.length)];
                     board[r][c] = { type, effect: 'none' };
                     updateTileDOMVisual(r, c, board[r][c]);
                 }
             }
-            gridContainer.style.filter = 'none';
             if (!findAValidMove()) checkDeadlock();
-        } else {
-            gridContainer.style.filter = 'none';
         }
     }
 
-    document.getElementById('camera-toggle').onclick = () => generatePoster();
-    function generatePoster() {
-        document.getElementById('poster-mask').style.display = 'flex'; 
-        document.getElementById('poster-score').innerText = score; 
-        document.getElementById('poster-role-text').innerText = `已解锁：${EVOLUTION[currentStage].name} 《${EVOLUTION[currentStage].movie}》`;
-        
-        const prev = document.getElementById('poster-avatar-preview');
-        const currentData = EVOLUTION[currentStage];
-        prev.style.backgroundImage = 'none';
-        prev.innerText = currentData.fallback;
-        const posterImgTest = new Image();
-        posterImgTest.src = currentData.avatar;
-        posterImgTest.onload = () => { prev.style.backgroundImage = `url('${currentData.avatar}')`; prev.innerText = ''; };
-        posterImgTest.onerror = () => { prev.style.backgroundImage = 'none'; prev.innerText = currentData.fallback; };
+    function spawnVillainIfNeeded() {
+        if (Date.now() < gameState.noNewVillainUntil) return;
 
-        document.getElementById('capture-area').style.display = 'flex'; 
-        document.getElementById('final-poster-img').style.display = 'none'; 
-        document.getElementById('save-tip-text').innerText = "战绩卡片生成完毕";
-        
-        setTimeout(() => {
-            try {
-                document.getElementById('capture-area').style.display = 'none';
-                document.getElementById('final-poster-img').src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="320" height="260"><rect width="100%" height="100%" fill="#FFF5E1" rx="20" /><text x="160" y="45" font-size="20" font-weight="bold" fill="#D2691E" text-anchor="middle">✨ 苗友战绩卡片 ✨</text><text x="160" y="85" font-size="14" font-weight="bold" fill="#8B5A2B" text-anchor="middle">${EVOLUTION[currentStage].name}《${EVOLUTION[currentStage].movie}》</text><text x="160" y="145" font-size="32" font-weight="bold" fill="#FF9800" text-anchor="middle">战力: ${score}</text><text x="160" y="200" font-size="12" fill="#CD853F" text-anchor="middle">演员谢苗超话制作</text></svg>`);
-                document.getElementById('final-poster-img').style.display = 'block';
-                document.getElementById('save-tip-text').innerText = "👇 长按上方战绩卡片即可保存到相册 👇";
-            } catch(e) {
-                showToast("海报生成异常");
-                document.getElementById('poster-mask').style.display = 'none';
+        if (gameState.activeVillains.length < 3 && Math.random() < 0.35) {
+            let emptySpots = [];
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    if (!gameState.activeVillains.some(v => v.r === r && v.c === c) && (!board[r][c]?.effect || board[r][c]?.effect === 'none')) {
+                        emptySpots.push({r, c});
+                    }
+                }
             }
-        }, 300);
+            if (emptySpots.length > 0) {
+                let spot = emptySpots[Math.floor(Math.random() * emptySpots.length)];
+                let vTemplate = VILLAINS[Math.floor(Math.random() * VILLAINS.length)];
+                gameState.activeVillains.push({ r: spot.r, c: spot.c, type: vTemplate.type, name: vTemplate.name, icon: vTemplate.icon, hp: vTemplate.type === 'da' ? 2 : 1 });
+                refreshAllDOMVisuals();
+                triggerScreenShake();
+                showToast(`⚠️ 警报！【${vTemplate.name}】降临！`);
+            }
+        }
     }
+
+    function triggerVillainActiveSkills() {
+        gameState.activeVillains.forEach(v => {
+            if (v.type === 'ade') {
+                let dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
+                let dir = dirs[Math.floor(Math.random() * dirs.length)];
+                let nr = v.r + dir.r, nc = v.c + dir.c;
+                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !gameState.activeVillains.some(av => av.r === nr && av.c === nc)) {
+                    if (gameState.activeVillains.length < 5) {
+                        gameState.activeVillains.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', hp: 1 });
+                        showToast('🟣 【毒液蔓延】吞噬了新的格子！');
+                    }
+                }
+            } else if (v.type === 'bailong') {
+                let dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
+                let dir = dirs[Math.floor(Math.random() * dirs.length)];
+                let nr = v.r + dir.r, nc = v.c + dir.c;
+                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !gameState.activeVillains.some(av => av.r === nr && av.c === nc)) {
+                    v.r = nr; v.c = nc;
+                    showToast('🥎 【声东击西】闪现换位！');
+                }
+            }
+        });
+        refreshAllDOMVisuals();
+    }
+
+    function checkVillainDamage(r, c) {
+        let hitList = [];
+        gameState.activeVillains.forEach(v => {
+            if (Math.abs(v.r - r) + Math.abs(v.c - c) === 1) hitList.push(v);
+        });
+
+        if (hitList.length > 0) {
+            hitList.forEach(v => {
+                v.hp--;
+                if (v.hp <= 0) {
+                    showToast(`⚔️ 成功击破反派【${v.name}】！`);
+                    playCuteSFX('explode');
+                } else {
+                    showToast(`🛡️ 【${v.name}】护甲减弱！`);
+                    playCuteSFX('select');
+                }
+            });
+            gameState.activeVillains = gameState.activeVillains.filter(v => v.hp > 0);
+            gameState.score += 400;
+            document.getElementById('score').innerText = gameState.score;
+
+            if (!gameState.allyReady) {
+                gameState.allyCharge++;
+                if (gameState.allyCharge >= 3) {
+                    gameState.allyReady = true;
+                    showToast('🌟 友军蓄能完毕！点击顶部状态栏选择释放大招！');
+                    playCuteSFX('ultimate');
+                }
+                updateAllyUI();
+            }
+        }
+    }
+
+    document.getElementById('ally-status').onclick = () => {
+        if (!gameState.allyReady) {
+            showToast('⏳ 友军正在蓄能中，请通过消除攻击反派积攒能量 (当前 ' + gameState.allyCharge + '/3)');
+            return;
+        }
+        openAllyModal();
+    };
+
+    function openAllyModal() {
+        const container = document.getElementById('ally-cards-container');
+        container.innerHTML = '';
+        const usedAllyId = gameState.stageAlliesSelection[gameState.currentStage];
+
+        ALLIES_POOL.forEach(ally => {
+            const card = document.createElement('div');
+            card.className = `ally-card ${usedAllyId === ally.id ? 'used' : ''}`;
+            card.innerHTML = `
+                <div style="font-weight:900; color:#D2691E; font-size:14px; margin-bottom:4px;">${ally.name}</div>
+                <div style="font-size:12px; color:#2E8B57; font-weight:bold; margin-bottom:2px;">技能：${ally.skillName}</div>
+                <div style="font-size:11px; color:#5C4033;">${ally.desc}</div>
+                ${usedAllyId === ally.id ? '<div style="font-size:10px; color:red; margin-top:4px;">[当前阶段已出战过]</div>' : ''}
+            `;
+            if (usedAllyId !== ally.id) {
+                card.onclick = () => {
+                    gameState.stageAlliesSelection[gameState.currentStage] = ally.id;
+                    gameState.currentStageAlly = ally;
+                    closeAllyModal();
+                    executeAllySkill(ally); 
+                };
+            }
+            container.appendChild(card);
+        });
+        document.getElementById('ally-select-mask').style.display = 'flex';
+    }
+
+    function closeAllyModal() { document.getElementById('ally-select-mask').style.display = 'none'; }
+
+    function executeAllySkill(ally) {
+        playCuteSFX('ultimate');
+        gameState.allyCharge = 0; gameState.allyReady = false;
+        updateAllyUI();
+
+        if (ally.id === 'gongwei') {
+            if (gameState.activeVillains.length > 0) {
+                let cleared = gameState.activeVillains.slice(0, 2);
+                gameState.activeVillains = gameState.activeVillains.filter(v => !cleared.includes(v));
+                showToast('🤝【巩伟·父子同心】父子联手，双杀反派！');
+            } else {
+                showToast('🤝【巩伟·父子同心】场上没有反派！');
+            }
+        } else if (ally.id === 'nawen') {
+            gameState.noNewVillainUntil = Date.now() + 10000;
+            showToast('🤝【纳文·JUDO冠军】10秒内反派绝迹！');
+            gameState.score += 1500;
+            document.getElementById('score').innerText = gameState.score;
+        }
+        refreshAllDOMVisuals();
+    }
+
+    async function triggerCharacterUltimate() {
+        const ring = document.getElementById('avatar-container');
+        if (!ring.classList.contains('ready') || gameState.isAnimating) {
+            showToast('⚠️ 奥义未就绪，请通过战力突破解锁！');
+            return;
+        }
+
+        gameState.isAnimating = true;
+        ring.classList.remove('ready');
+        playCuteSFX('ultimate');
+
+        const currentData = EVOLUTION[gameState.currentStage];
+        const span = document.createElement('div');
+        span.className = 'combo-text';
+        span.style.left = '50%'; span.style.top = '40%'; span.style.transform = 'translate(-50%, -50%)'; span.style.fontSize = '26px'; span.style.color = '#FFD700';
+        span.innerText = `【形态奥义】${currentData.ultText}`;
+        gridContainer.appendChild(span);
+        setTimeout(() => span.remove(), 1200);
+
+        gameState.activeVillains = [];
+        let toRemove = new Set();
+        for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) { toRemove.add(`${r},${c}`); } }
+        await processMatches({ toRemove, newSpecials: [] });
+    }
+
+    function updateAllyUI() {
+        const allyStatus = document.getElementById('ally-status');
+        const allyNameText = gameState.currentStageAlly ? gameState.currentStageAlly.name.split('（')[0] : '友军';
+        if (gameState.allyReady) {
+            allyStatus.className = 'ready-glow';
+            allyStatus.innerText = `✨ 点此释放大招！`;
+        } else {
+            allyStatus.className = '';
+            allyStatus.innerText = `🤝 [${allyNameText}] 蓄能 (${gameState.allyCharge}/3)`;
+        }
+    }
+
+    function updatePropUI() {
+        document.getElementById('count-hammer').innerText = `单点×${gameState.props.hammer}`;
+        document.getElementById('count-bomb').innerText = `炸弹×${gameState.props.bomb}`;
+        document.getElementById('count-refresh').innerText = `刷新×${gameState.props.refresh}`;
+        ['hammer', 'bomb', 'refresh'].forEach(p => {
+            const el = document.getElementById(p === 'refresh' ? 'refresh-tool' : `${p}-tool`);
+            if (gameState.props[p] <= 0) el.classList.add('disabled'); else el.classList.remove('disabled');
+        });
+    }
+
+    document.getElementById('refresh-tool').onclick = async () => {
+        if (gameState.isAnimating || gameState.props.refresh <= 0) return; 
+        gameState.props.refresh--; updatePropUI(); gameState.isAnimating = true; gameState.globalCombo = 0; playCuteSFX('explode');
+        for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) {
+            if (gameState.activeVillains.some(v => v.r === r && v.c === c)) continue;
+            let type = TYPES[Math.floor(Math.random() * TYPES.length)];
+            board[r][c] = { type, effect: 'none' }; 
+            updateTileDOMVisual(r, c, board[r][c]);
+        }} 
+        await sleep(200); 
+        gameState.isAnimating = false; 
+        autoSave(); 
+    };
+
+    const ghostTool = document.getElementById('ghost-tool'), ghostIcon = document.getElementById('ghost-tool-icon'), ghostInd = document.getElementById('ghost-tool-indicator');
+    setupToolDrag('hammer-tool', 'hammer');
+    setupToolDrag('bomb-tool', 'bomb');
+
+    function setupToolDrag(btnId, type) {
+        const btn = document.getElementById(btnId);
+        btn.addEventListener('pointerdown', (e) => {
+            if (gameState.props[type] <= 0 || gameState.isAnimating) return;
+            e.preventDefault(); activeDragTool = type;
+            ghostIcon.innerText = type === 'hammer' ? '🔨' : '💣';
+            
+            if (type === 'bomb') {
+                currentBombRadius = TILE_SIZE * 1.5;
+                ghostInd.style.width = `${currentBombRadius * 2}px`;
+                ghostInd.style.height = `${currentBombRadius * 2}px`;
+                ghostInd.style.borderColor = '#FF334B';
+                ghostInd.style.background = 'radial-gradient(circle, rgba(255,51,75,0.3) 0%, rgba(255,51,75,0.1) 100%)';
+            } else {
+                ghostInd.style.width = `${TILE_SIZE}px`; ghostInd.style.height = `${TILE_SIZE}px`;
+                ghostInd.style.borderColor = '#3CB371';
+                ghostInd.style.background = 'radial-gradient(circle, rgba(60,179,113,0.3) 0%, rgba(60,179,113,0.1) 100%)';
+            }
+            ghostTool.style.display = 'block'; updateGhostPos(e);
+            document.addEventListener('pointermove', moveDrag, { passive: false });
+            document.addEventListener('pointerup', endDrag, { passive: false });
+        });
+    }
+
+    function updateGhostPos(e) {
+        const x = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
+        const y = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
+        ghostTool.style.left = `${x}px`; ghostTool.style.top = `${y}px`;
+    }
+
+    function moveDrag(e) { if (activeDragTool) { e.preventDefault(); updateGhostPos(e); } }
+
+    async function endDrag(e) {
+        if (!activeDragTool) return;
+        const toolType = activeDragTool; activeDragTool = null; ghostTool.style.display = 'none';
+        document.removeEventListener('pointermove', moveDrag); document.removeEventListener('pointerup', endDrag);
+
+        const x = e.clientX !== undefined ? e.clientX : (e.changedTouches ? e.changedTouches[0].clientX : 0);
+        const y = e.clientY !== undefined ? e.clientY : (e.changedTouches ? e.changedTouches[0].clientY : 0);
+        const box = gridContainer.getBoundingClientRect();
+
+        if (x >= box.left && x <= box.right && y >= box.top && y <= box.bottom) {
+            gameState.isAnimating = true; let toRemove = new Set();
+            if (toolType === 'hammer') {
+                const c = Math.floor((x - box.left) / TILE_SIZE);
+                const r = Math.floor((y - box.top) / TILE_SIZE);
+                if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+                    gameState.props.hammer--;
+                    playCuteSFX('explode');
+                    let vIdx = gameState.activeVillains.findIndex(v => v.r === r && v.c === c);
+                    if (vIdx !== -1) {
+                        gameState.activeVillains[vIdx].hp--;
+                        if (gameState.activeVillains[vIdx].hp <= 0) gameState.activeVillains.splice(vIdx, 1);
+                        refreshAllDOMVisuals();
+                    } else { toRemove.add(`${r},${c}`); }
+                }
+            } else if (toolType === 'bomb') {
+                gameState.props.bomb--;
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        const tileCenterX = c * TILE_SIZE + TILE_SIZE / 2 + box.left;
+                        const tileCenterY = r * TILE_SIZE + TILE_SIZE / 2 + box.top;
+                        if (Math.hypot(tileCenterX - x, tileCenterY - y) <= currentBombRadius) { toRemove.add(`${r},${c}`); }
+                    }
+                }
+                playCuteSFX('explode');
+            }
+            updatePropUI(); 
+            await processMatches({ toRemove, newSpecials: [] });
+        }
+    }
+
+    const settingsMask = document.getElementById('settings-mask');
+    document.getElementById('settings-toggle').onclick = () => { renderSaveList(); settingsMask.style.display = 'flex'; };
+    function closeSettings() { settingsMask.style.display = 'none'; }
+
+    function getSaves() { return JSON.parse(localStorage.getItem('miaoSavesV2') || '{}'); }
+    function setSaves(saves) { localStorage.setItem('miaoSavesV2', JSON.stringify(saves)); }
+    
+    function saveGame() { 
+        let saves = getSaves(); 
+        let timeStr = new Date().toLocaleString('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}); 
+        saves[`存档_${timeStr}`] = { score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, board: board.map(r => r.map(c => ({...c}))) }; 
+        setSaves(saves); renderSaveList(); showToast('进度保存成功！'); 
+    }
+
+    function renderSaveList() {
+        const container = document.getElementById('save-list-container'); container.innerHTML = '';
+        Object.keys(getSaves()).reverse().forEach(key => {
+            let div = document.createElement('div'); div.className = 'save-item'; div.innerText = `${key} (战力: ${getSaves()[key].score})`;
+            let pressTimer;
+            div.addEventListener('touchstart', () => pressTimer = setTimeout(() => { if(confirm(`确定删除 [${key}] 吗？`)){ let s = getSaves(); delete s[key]; setSaves(s); renderSaveList(); } }, 800));
+            div.addEventListener('touchend', () => { clearTimeout(pressTimer); loadGame(key); });
+            container.appendChild(div);
+        });
+        if(container.innerHTML === '') container.innerHTML = '<div style="color:#999; font-size:12px; margin-top:15px;">暂无本地存档</div>';
+    }
+
+    function loadGame(key) {
+        const data = getSaves()[key]; if(!data) return;
+        gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
+        document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI();
+        board = data.board; initSize(); gridContainer.innerHTML = ''; domTiles = [];
+        for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} closeSettings(); showToast('存档读取成功');
+    }
+
+    function autoSave() { localStorage.setItem('miaoAutoSaveV2', JSON.stringify({ score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, board: board.map(r => r.map(c => ({...c}))) })); }
+    function loadAutoSave() {
+        const saved = localStorage.getItem('miaoAutoSaveV2');
+        if (saved) {
+            const data = JSON.parse(saved); gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
+            document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); board = data.board; initSize();
+            for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} return true;
+        } return false;
+    }
+
+    function restartGame() {
+        localStorage.removeItem('miaoAutoSaveV2');
+        gameState.score = 0; gameState.currentStage = 0; gameState.props = { hammer: 2, bomb: 2, refresh: 2 }; gameState.activeVillains = [];
+        document.getElementById('avatar-container').classList.remove('ready');
+        document.getElementById('score').innerText = gameState.score;
+        applyEvolution(0); updatePropUI();
+        gridContainer.innerHTML = ''; domTiles = [];
+        initBoard(); closeSettings(); showToast('已开启新一轮游戏！');
+    }
+
+    function applyEvolution(stageIdx) {
+        gameState.currentStage = stageIdx; 
+        const currentData = EVOLUTION[gameState.currentStage];
+        document.getElementById('role-badge').innerText = `✨ ${currentData.name} 《${currentData.movie}》`;
+        const av = document.getElementById('character-avatar'); av.innerText = currentData.fallback;
+        const prop = document.getElementById('desk-prop'); prop.innerText = currentData.propFallback;
+    }
+
+    function showComboPopup(r, c, comboLevel) {
+        if (comboLevel < 2) return;
+        const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
+        const span = document.createElement('div'); span.className = 'combo-text'; span.innerText = `${word} x${comboLevel}!`;
+        span.style.left = `${c * TILE_SIZE + TILE_SIZE / 2}px`; span.style.top = `${r * TILE_SIZE + TILE_SIZE / 2}px`;
+        gridContainer.appendChild(span); setTimeout(() => span.remove(), 600); playCuteSFX('combo', comboLevel);
+    }
+
+    function resetIdleTimer() {
+        clearTimeout(idleTimer);
+        document.querySelectorAll('.hint-pulse').forEach(el => el.classList.remove('hint-pulse'));
+    }
+
+    function initAudio() { 
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume(); 
+    }
+
+    function playCuteSFX(type) {
+        if (!gameState.soundEnabled) return;
+        try {
+            initAudio();
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator(), gainNode = audioCtx.createGain();
+            osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+            const t = audioCtx.currentTime;
+            if (type === 'select') { osc.frequency.setValueAtTime(523, t); gainNode.gain.setValueAtTime(0.05, t); osc.start(t); osc.stop(t + 0.05); }
+            else if (type === 'swap') { osc.frequency.setValueAtTime(350, t); gainNode.gain.setValueAtTime(0.08, t); osc.start(t); osc.stop(t + 0.08); }
+            else if (type === 'match') { osc.frequency.setValueAtTime(440, t); gainNode.gain.setValueAtTime(0.1, t); osc.start(t); osc.stop(t + 0.1); }
+            else if (type === 'explode') { osc.frequency.setValueAtTime(150, t); gainNode.gain.setValueAtTime(0.15, t); osc.start(t); osc.stop(t + 0.2); }
+        } catch(e) {}
+    }
+
+    function triggerScreenShake() {
+        const container = document.getElementById('arcade-container');
+        container.classList.remove('shake'); void container.offsetWidth; container.classList.add('shake');
+    }
+
+    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = 1; setTimeout(()=> t.style.opacity = 0, 2000); }
+    function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+    document.getElementById('camera-toggle').onclick = () => {
+        document.getElementById('poster-mask').style.display = 'flex'; 
+        document.getElementById('poster-score').innerText = gameState.score; 
+        document.getElementById('poster-role-text').innerText = `已解锁：${EVOLUTION[gameState.currentStage].name} 《${EVOLUTION[gameState.currentStage].movie}》`;
+        document.getElementById('poster-avatar-preview').innerText = EVOLUTION[gameState.currentStage].fallback;
+    };
     function closePoster() { document.getElementById('poster-mask').style.display = 'none'; }
 </script>
 </body>
