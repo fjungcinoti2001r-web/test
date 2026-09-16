@@ -322,6 +322,8 @@
     <div id="settings-mask">
         <div class="settings-box">
             <div class="settings-title">系统菜单</div>
+            <button class="settings-btn btn-blue" onclick="testGameAudio(this, 'villain')">🔊 试听反派音效</button>
+            <button class="settings-btn btn-blue" onclick="testGameAudio(this, 'combo')">🔊 试听连击音效</button>
             <button class="settings-btn btn-green" onclick="saveGame()">💾 记录当前进度</button>
             <div style="text-align: left; margin-top: 15px; color: #8B5A2B; font-weight: 900; font-size: 14px;">本地存档：</div>
             <div class="save-hint">※ 点击读取，点击存档读取，点击删除按钮删除</div>
@@ -456,15 +458,30 @@
         ...AUDIO_POOL.adeGameOver, ...AUDIO_POOL.xiemiaoCombo];
     const customAudioBuffers = new Map();
     const activeEffectPlayers = new Set();
+    const customAudioLevels = new WeakMap();
     let effectGain = null, bgmSource = null, bgmGain = null;
     const supportsBufferedAudio = /^https?:$/.test(location.protocol);
 
     function loadCustomAudioBuffer(path) {
         if (!customAudioBuffers.has(path)) {
-            const promise = fetch(path).then(response => {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 15000);
+            const promise = fetch(path, { signal: controller.signal }).then(response => {
                 if (!response.ok) throw new Error('音效加载失败 ' + response.status + ': ' + path);
                 return response.arrayBuffer();
-            }).then(bytes => audioCtx.decodeAudioData(bytes)).catch(error => {
+            }).then(bytes => new Promise((resolve, reject) => {
+                const decodeTimer = setTimeout(() => reject(new Error('音频解码超时: ' + path)), 10000);
+                audioCtx.decodeAudioData(bytes, buffer => { clearTimeout(decodeTimer); resolve(buffer); },
+                    error => { clearTimeout(decodeTimer); reject(error); });
+            })).then(buffer => {
+                let peak = 0;
+                for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+                    const samples = buffer.getChannelData(ch);
+                    for (let i = 0; i < samples.length; i++) peak = Math.max(peak, Math.abs(samples[i]));
+                }
+                customAudioLevels.set(buffer, peak > 0 ? Math.max(1, Math.min(4, 0.7 / peak)) : 1);
+                return buffer;
+            }).finally(() => clearTimeout(timeout)).catch(error => {
                 customAudioBuffers.delete(path);
                 throw error;
             });
@@ -509,29 +526,50 @@
     document.addEventListener('touchend', unlockCustomAudio, { capture: true });
     document.addEventListener('click', unlockCustomAudio, { capture: true });
 
-    function playCustomAudio(audioArray) {
-        if (!audioArray || audioArray.length === 0) return;
+    async function playCustomAudio(audioArray) {
+        if (!audioArray || audioArray.length === 0) return false;
         const path = audioArray[Math.floor(Math.random() * audioArray.length)];
         if (supportsBufferedAudio && audioCtx && effectGain) {
-            const requestedAt = Date.now();
-            loadCustomAudioBuffer(path).then(buffer => {
-                // 网络过慢时不补播已经过时的游戏事件。
-                if (Date.now() - requestedAt > 3000 || audioCtx.state !== 'running') return;
+            try {
+                if (audioCtx.state !== 'running') await audioCtx.resume();
+                const buffer = await loadCustomAudioBuffer(path);
+                if (audioCtx.state !== 'running') throw new Error('请点一下屏幕开启声音');
                 const source = audioCtx.createBufferSource();
+                const clipGain = audioCtx.createGain();
+                clipGain.gain.value = customAudioLevels.get(buffer) || 1;
                 source.buffer = buffer;
-                source.connect(effectGain);
-                source.onended = () => source.disconnect();
+                source.connect(clipGain);
+                clipGain.connect(effectGain);
+                source.onended = () => { source.disconnect(); clipGain.disconnect(); };
                 source.start();
-            }).catch(error => console.warn('音效播放失败:', path, error));
-            return;
+                return true;
+            } catch (error) {
+                console.warn('音效缓存播放失败，改用普通播放器:', path, error);
+            }
         }
-        // 本地 file 页面不能可靠地 fetch 音频，保留普通播放器。
         const audio = new Audio(path);
         activeEffectPlayers.add(audio);
         const cleanup = () => activeEffectPlayers.delete(audio);
         audio.addEventListener('ended', cleanup, { once: true });
         audio.addEventListener('error', cleanup, { once: true });
-        audio.play().catch(error => { cleanup(); console.warn('音效播放失败:', path, error); });
+        try { await audio.play(); return true; }
+        catch (error) {
+            cleanup();
+            console.warn('音效播放失败:', path, error);
+            showToast(error.name === 'NotAllowedError' ? '🔊 请点一下屏幕，再在菜单试听音效' : '🔊 音效加载失败，请检查网络后重试');
+            return false;
+        }
+    }
+
+    async function testGameAudio(button, kind) {
+        unlockCustomAudio();
+        const original = button.innerText;
+        button.disabled = true;
+        button.innerText = '音效加载中…';
+        try {
+            const played = await playCustomAudio(kind === 'villain' ? AUDIO_POOL.villains.da : AUDIO_POOL.xiemiaoCombo);
+            if (played) showToast('🔊 正在试听' + (kind === 'villain' ? '反派音效' : '连击音效'));
+        } finally { button.disabled = false; button.innerText = original; }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -788,7 +826,7 @@
         return { toRemove, newSpecials };
     }
 
-    async function processMatches(matchInfo) {
+    async function processMatches(matchInfo, advanceVillains = true) {
         let { toRemove, newSpecials } = matchInfo;
         gameState.globalCombo++; 
         let firstMatch = Array.from(toRemove)[0];
@@ -832,20 +870,42 @@
             board[sp.r][sp.c] = { type: sp.type, effect: sp.effect }; createTileDOM(sp.r, sp.c, board[sp.r][sp.c]); 
         });
         
-        await applyGravity(); 
-        triggerVillainActiveSkills(); 
-
-        if (checkAdeGameOver()) return;
-
-        lastSwapPos = null; 
-        const nextInfo = analyzeMatches();
-        if (nextInfo.toRemove.size > 0) { 
-            await processMatches(nextInfo); 
-        } else { 
+        await applyGravity();
+        lastSwapPos = null;
+        let nextInfo = analyzeMatches();
+        if (nextInfo.toRemove.size > 0) {
+            await processMatches(nextInfo, advanceVillains);
+            return;
+        }
+        // 一次操作的所有连消完成后，反派只行动一次。
+        if (advanceVillains) {
+            triggerVillainActiveSkills();
+            if (checkAdeGameOver()) return;
             spawnVillainIfNeeded();
-            checkDeadlock();
-            autoSave(); 
-            gameState.isAnimating = false; 
+        }
+        checkDeadlock();
+        // 柏龙移位、自动洗牌也可能产生三连，必须继续结算。
+        nextInfo = analyzeMatches();
+        if (nextInfo.toRemove.size > 0) {
+            await processMatches(nextInfo, false);
+            return;
+        }
+        autoSave();
+        gameState.isAnimating = false;
+        resetIdleTimer();
+    }
+
+    async function settleExistingBoard() {
+        if (gameState.isGameOver || gameState.isAnimating) return;
+        gameState.isAnimating = true;
+        gameState.globalCombo = 0;
+        if (checkAdeGameOver()) return;
+        checkDeadlock();
+        const matches = analyzeMatches();
+        if (matches.toRemove.size) await processMatches(matches, false);
+        else {
+            gameState.isAnimating = false;
+            autoSave();
             resetIdleTimer();
         }
     }
@@ -991,7 +1051,7 @@
 
         gameState.activeVillains.forEach(v => {
             if (v.type === 'ade') {
-                if (Date.now() < gameState.noAdeUntil) return;
+                if (Date.now() < gameState.noAdeUntil || newAdes.length >= 1) return;
                 const dirs = [{r:-1,c:0}, {r:1,c:0}, {r:0,c:-1}, {r:0,c:1}];
                 dirs.sort(() => Math.random() - 0.5);
 
@@ -1014,7 +1074,7 @@
                 const dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
                 const dir = dirs[Math.floor(Math.random() * dirs.length)];
                 const nr = v.r + dir.r, nc = v.c + dir.c;
-                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !gameState.activeVillains.some(av => av.r === nr && av.c === nc)) {
+                if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !gameState.activeVillains.some(av => av.r === nr && av.c === nc) && !newAdes.some(av => av.r === nr && av.c === nc)) {
                     v.r = nr; v.c = nc;
                     showToast('🥎 【声东击西】闪现换位！');
                 }
@@ -1188,7 +1248,7 @@
             document.getElementById('score').innerText = gameState.score;
         }
         refreshAllDOMVisuals();
-        autoSave();
+        settleExistingBoard();
     }
 
     function showAllyUltimateOverlay(ally) {
@@ -1287,7 +1347,7 @@
         await sleep(200); 
         const matches = analyzeMatches();
         if (matches.toRemove.size) await processMatches(matches);
-        else { checkDeadlock(); gameState.isAnimating = false; autoSave(); resetIdleTimer(); }
+        else { gameState.isAnimating = false; await settleExistingBoard(); }
     };
 
     const ghostTool = document.getElementById('ghost-tool'), ghostIcon = document.getElementById('ghost-tool-icon'), ghostInd = document.getElementById('ghost-tool-indicator');
@@ -1452,7 +1512,7 @@
         applyEvolution(data.currentStage, false); updatePropUI(); updateAllyUI();
         document.getElementById('score').innerText = gameState.score;
         document.getElementById('avatar-container').classList.toggle('ready', data.ultimateReady === true);
-        resetIdleTimer();
+        settleExistingBoard();
     }
 
     function getSaves() { const saves = readStored('miaoSavesV2', {}); return saves && typeof saves === 'object' && !Array.isArray(saves) ? saves : {}; }
@@ -1544,7 +1604,7 @@
         
         playCuteSFX('combo', comboLevel);
 
-        if (comboLevel >= 3) {
+        if (comboLevel >= 2) {
             let selectedPool = [];
             if (comboLevel <= 4) {
                 selectedPool = [AUDIO_POOL.xiemiaoCombo[0], AUDIO_POOL.xiemiaoCombo[1], AUDIO_POOL.xiemiaoCombo[2]];
