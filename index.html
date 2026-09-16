@@ -450,67 +450,93 @@
     let audioCtx = null;
     let gameEntered = false;
 
-    // 复用播放器，并在用户点击时解锁，供消除动画后的异步事件使用。
-    const customAudioPlayers = new Map();
+    // 网页使用已解锁的 Web Audio 上下文播放缓存，避免每个音效单独请求自动播放。
     const customAudioPaths = [...Object.values(AUDIO_POOL.villains).flat(),
         ...Object.values(AUDIO_POOL.allies).flat(), ...AUDIO_POOL.bailongDefeated,
         ...AUDIO_POOL.adeGameOver, ...AUDIO_POOL.xiemiaoCombo];
-    customAudioPaths.forEach(path => {
-        const audio = new Audio(path);
-        audio.preload = 'auto';
-        customAudioPlayers.set(path, { audio, unlocked: false, priming: false, pending: false });
-    });
+    const customAudioBuffers = new Map();
+    const activeEffectPlayers = new Set();
+    let effectGain = null, bgmSource = null, bgmGain = null;
+    const supportsBufferedAudio = /^https?:$/.test(location.protocol);
 
-    function startCustomAudio(player) {
-        const audio = player.audio;
-        audio.volume = 1;
-        audio.currentTime = 0;
-        audio.play().then(() => { player.unlocked = true; }).catch(error => {
-            if (error.name !== 'AbortError') console.warn('音效播放失败:', audio.src, error);
-        });
+    function loadCustomAudioBuffer(path) {
+        if (!customAudioBuffers.has(path)) {
+            const promise = fetch(path).then(response => {
+                if (!response.ok) throw new Error('音效加载失败 ' + response.status + ': ' + path);
+                return response.arrayBuffer();
+            }).then(bytes => audioCtx.decodeAudioData(bytes)).catch(error => {
+                customAudioBuffers.delete(path);
+                throw error;
+            });
+            customAudioBuffers.set(path, promise);
+        }
+        return customAudioBuffers.get(path);
     }
 
     function unlockCustomAudio() {
-        customAudioPlayers.forEach(player => {
-            if (player.unlocked || player.priming) return;
-            player.priming = true;
-            player.audio.volume = 0;
-            player.audio.play().then(() => {
-                player.audio.pause();
-                player.audio.currentTime = 0;
-                player.audio.volume = 1;
-                player.unlocked = true;
-                player.priming = false;
-                if (player.pending) {
-                    player.pending = false;
-                    startCustomAudio(player);
-                }
-            }).catch(error => {
-                player.priming = false;
-                player.audio.volume = 1;
-                if (player.pending) {
-                    player.pending = false;
-                    startCustomAudio(player);
-                }
-                console.warn('音效尚未解锁:', player.audio.src, error);
-            });
-        });
+        try {
+            initAudio();
+            if (!supportsBufferedAudio || !audioCtx) return;
+            if (!effectGain) {
+                effectGain = audioCtx.createGain();
+                effectGain.gain.value = 1.4;
+                const limiter = audioCtx.createDynamicsCompressor();
+                limiter.threshold.value = -3;
+                limiter.knee.value = 0;
+                limiter.ratio.value = 20;
+                limiter.attack.value = 0.003;
+                limiter.release.value = 0.1;
+                effectGain.connect(limiter);
+                limiter.connect(audioCtx.destination);
+                customAudioPaths.forEach(path => {
+                    loadCustomAudioBuffer(path).catch(error => console.warn(error));
+                });
+            }
+            const bgm = document.getElementById('bgm');
+            if (bgm && !bgmSource) {
+                bgmGain = audioCtx.createGain();
+                bgmGain.gain.value = 0.1;
+                bgmGain.connect(audioCtx.destination);
+                bgmSource = audioCtx.createMediaElementSource(bgm);
+                bgmSource.connect(bgmGain);
+                bgm.volume = 1; // 音量交给增益节点，兼容不支持设置媒体音量的手机。
+            }
+        } catch (error) {
+            console.warn('音频初始化失败:', error);
+        }
     }
     document.addEventListener('pointerdown', unlockCustomAudio, { capture: true });
+    document.addEventListener('touchend', unlockCustomAudio, { capture: true });
     document.addEventListener('click', unlockCustomAudio, { capture: true });
 
     function playCustomAudio(audioArray) {
         if (!audioArray || audioArray.length === 0) return;
         const path = audioArray[Math.floor(Math.random() * audioArray.length)];
-        const player = customAudioPlayers.get(path);
-        if (!player) return;
-        if (player.priming) { player.pending = true; return; }
-        startCustomAudio(player);
+        if (supportsBufferedAudio && audioCtx && effectGain) {
+            const requestedAt = Date.now();
+            loadCustomAudioBuffer(path).then(buffer => {
+                // 网络过慢时不补播已经过时的游戏事件。
+                if (Date.now() - requestedAt > 3000 || audioCtx.state !== 'running') return;
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(effectGain);
+                source.onended = () => source.disconnect();
+                source.start();
+            }).catch(error => console.warn('音效播放失败:', path, error));
+            return;
+        }
+        // 本地 file 页面不能可靠地 fetch 音频，保留普通播放器。
+        const audio = new Audio(path);
+        activeEffectPlayers.add(audio);
+        const cleanup = () => activeEffectPlayers.delete(audio);
+        audio.addEventListener('ended', cleanup, { once: true });
+        audio.addEventListener('error', cleanup, { once: true });
+        audio.play().catch(error => { cleanup(); console.warn('音效播放失败:', path, error); });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         const bgm = document.getElementById('bgm');
-        if (bgm) bgm.volume = 0.15;
+        if (bgm) bgm.volume = 0.1;
         const bgmToggle = document.getElementById('bgm-toggle');
         
         const initAudioPlay = () => {
