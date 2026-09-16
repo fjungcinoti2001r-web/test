@@ -423,6 +423,7 @@
         // 专属事件音效：可在这里替换素材路径。
         bailongDefeated: ['audio/bailong_3.mp3'],
         adeGameOver: ['audio/ade_gameover.mp3'],
+        villainDefeated: ['audio/combo_9.mp3'],
         xiemiaoCombo: [
             'audio/combo_1.mp3', 'audio/combo_2.mp3', 'audio/combo_3.mp3', 'audio/combo_4.mp3',
             'audio/combo_5.mp3', 'audio/combo_6.mp3', 'audio/combo_7.mp3', 'audio/combo_8.mp3'
@@ -453,7 +454,7 @@
     // 网页使用已解锁的 Web Audio 上下文播放缓存，避免每个音效单独请求自动播放。
     const customAudioPaths = [...Object.values(AUDIO_POOL.villains).flat(),
         ...Object.values(AUDIO_POOL.allies).flat(), ...AUDIO_POOL.bailongDefeated,
-        ...AUDIO_POOL.adeGameOver, ...AUDIO_POOL.xiemiaoCombo];
+        ...AUDIO_POOL.adeGameOver, ...AUDIO_POOL.villainDefeated, ...AUDIO_POOL.xiemiaoCombo];
     const customAudioBuffers = new Map();
     const activeEffectPlayers = new Set();
     const customAudioLevels = new WeakMap();
@@ -494,7 +495,7 @@
             if (!supportsBufferedAudio || !audioCtx) return;
             if (!effectGain) {
                 effectGain = audioCtx.createGain();
-                effectGain.gain.value = 1.2;
+                effectGain.gain.value = 1.4;
                 const limiter = audioCtx.createDynamicsCompressor();
                 limiter.threshold.value = -3;
                 limiter.knee.value = 0;
@@ -510,7 +511,7 @@
             const bgm = document.getElementById('bgm');
             if (bgm && !bgmSource) {
                 bgmGain = audioCtx.createGain();
-                bgmGain.gain.value = 0.2;
+                bgmGain.gain.value = 0.1;
                 bgmGain.connect(audioCtx.destination);
                 bgmSource = audioCtx.createMediaElementSource(bgm);
                 bgmSource.connect(bgmGain);
@@ -1044,7 +1045,7 @@
 
         gameState.activeVillains.forEach(v => {
             if (v.type === 'ade') {
-                if (Date.now() < gameState.noAdeUntil || newAdes.length >= 2) return;
+                if (Date.now() < gameState.noAdeUntil || newAdes.length >= 1) return;
                 const dirs = [{r:-1,c:0}, {r:1,c:0}, {r:0,c:-1}, {r:0,c:1}];
                 dirs.sort(() => Math.random() - 0.5);
 
@@ -1069,7 +1070,7 @@
                 const nr = v.r + dir.r, nc = v.c + dir.c;
                 if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !gameState.activeVillains.some(av => av.r === nr && av.c === nc) && !newAdes.some(av => av.r === nr && av.c === nc)) {
                     v.r = nr; v.c = nc;
-                    showToast('🥎 【西装暴徒】闪现换位！');
+                    showToast('🥎 【声东击西】闪现换位！');
                 }
             }
         });
@@ -1131,6 +1132,7 @@
             hitList.forEach(v => {
                 v.hp--;
                 if (v.hp <= 0) {
+                    playCustomAudio(AUDIO_POOL.villainDefeated);
                     playVillainDefeatAudio([v]);
                     showToast(`⚔️ 成功击破反派【${v.name}】！`);
                     playCuteSFX('explode');
