@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>开心苗苗乐·演员谢苗超话制作</title>
+    <title>开心苗苗乐·演员谢苗超话</title>
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: none; }
         
@@ -257,7 +257,7 @@
     <div class="ally-ult-content">
         <div id="ally-ult-img" class="ally-ult-avatar"></div>
         <div id="ally-ult-title" class="ally-ult-title">【父子同心】</div>
-        <div id="ally-ult-speech" class="ally-ult-speech">“老爸，我来帮你！”</div>
+        <div id="ally-ult-speech" class="ally-ult-speech">“儿子，我来帮你！”</div>
     </div>
 </div>
 
@@ -312,8 +312,8 @@
 
     <div id="ally-select-mask">
         <div class="settings-box">
-            <div class="settings-title">选择出战友军大招</div>
-            <div style="font-size: 11px; color: #8B5A2B; margin-bottom: 12px; font-weight: bold;">※ 当前阶数下，每位友军仅限出战 1 次！</div>
+            <div class="settings-title">选择出战友军</div>
+            <div style="font-size: 11px; color: #8B5A2B; margin-bottom: 12px; font-weight: bold;">※ 当前阶段下，每位友军仅限出战 1 次！</div>
             <div id="ally-cards-container"></div>
             <button class="settings-btn btn-pink" onclick="closeAllyModal()" style="margin-top: 10px;">返回游戏</button>
         </div>
@@ -382,31 +382,31 @@
     ];
 
     const VILLAINS = [
-        { type: 'da', name: "大块头", image: "images/villain_da.png", icon: "🧊", skillDesc: "【冰块阻碍】需在其周围相邻消除或特效波及2次方可碎裂！", hp: 2 },
-        { type: 'ade', name: "阿德", image: "images/villain_ade.png", icon: "🟣", skillDesc: "【毒液蔓延】回合不清理会向周围吞噬有效空间！", hp: 1 },
-        { type: 'bailong', name: "柏龙", image: "images/villain_bailong.png", icon: "🥎", skillDesc: "【乱跑毛球】覆盖棋子且每步随机乱跑！", hp: 1 }
+        { type: 'da', name: "大块头", image: "images/villain_da.png", icon: "🧊", skillDesc: "【制冰厂】需在其周围相邻消除或特效波及2次方可碎裂！", hp: 2 },
+        { type: 'ade', name: "阿德", image: "images/villain_ade.png", icon: "🟣", skillDesc: "【恐怖蔓延】回合不清理会向周围吞噬有效空间！", hp: 1 },
+        { type: 'bailong', name: "柏龙", image: "images/villain_bailong.png", icon: "🥎", skillDesc: "【西装暴徒】覆盖棋子且每步随机占领！", hp: 1 }
     ];
 
     const ALLIES_POOL = [
         { 
             id: 'gongwei', 
             name: "巩伟（《给爸爸的信》）", 
-            skillName: "父子同心", 
-            desc: "技能：瞬间点名清除场上的 2 个敌对反派目标！", 
+            skillName: "父子同心👊", 
+            desc: "技能：瞬间清除场上的 2 个反派！", 
             avatar: "images/gongwei.png",
-            speech: "“老爸，父子同心，其利断金！”"
+            speech: "“父子同心，其利断金！”"
         },
         { 
             id: 'nawen', 
             name: "纳文（《火遮眼》）", 
             skillName: "JUDO冠军", 
-            desc: "技能：清剿毒瘤！本阶段不再出现阿德，且场上阿德全部清除！", 
+            desc: "技能：同归于尽！本阶段不再出现阿德，且场上阿德全部清除！", 
             avatar: "images/nawen.png",
-            speech: "“绝对压制，杂碎清零！”"
+            speech: "“赛博报仇”"
         }
     ];
 
-    const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "一路走来", "打好每一拳", "给苗哥递锤子", "中国功夫！", "真打! 真狠! 真解恨!", "打爆全球！", "hey hey！"];
+    const COMBO_WORDS = ["SO COOL~", "苗友狂喜", "华夏第一美胸", "虐自己一下又一下💪", "给苗哥递锤子🔨", "打爆全球！", "只管挥拳，等待回音👊", "够硬👊🏻够狠🔨够痛快", "hey hey！"];
 
     const AUDIO_POOL = {
         villains: {
@@ -913,7 +913,7 @@
                         board[nr][nc] = null;
                         const vTemplate = VILLAINS.find(item => item.type === 'ade');
                         newAdes.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', image: vTemplate ? vTemplate.image : 'images/villain_ade.png', hp: 1 });
-                        showToast('🟣 【毒液蔓延】吞噬了新的格子！');
+                        showToast('🟣 【恐怖蔓延】阿德增殖中！');
                         adeSpreadHappened = true;
                         break;
                     }
@@ -982,7 +982,7 @@
                     showToast(`⚔️ 成功击破反派【${v.name}】！`);
                     playCuteSFX('explode');
                 } else {
-                    showToast(`🛡️ 【${v.name}】护甲减弱！`);
+                    showToast(`🛡️ 【${v.name}】血条削弱！`);
                     playCuteSFX('select');
                 }
             });
@@ -994,7 +994,7 @@
                 gameState.allyCharge++;
                 if (gameState.allyCharge >= 3) {
                     gameState.allyReady = true;
-                    showToast('🌟 友军蓄能完毕！点击顶部状态栏选择释放大招！');
+                    showToast('🌟 友军来了，点击召唤助力！');
                     playCuteSFX('ultimate');
                 }
                 updateAllyUI();
@@ -1004,7 +1004,7 @@
 
     document.getElementById('ally-status').onclick = () => {
         if (!gameState.allyReady) {
-            showToast('⏳ 友军正在蓄能中，请通过消除攻击反派积攒能量 (当前 ' + gameState.allyCharge + '/3)');
+            showToast('⏳ 友军正在路上，请通过消除攻击反派积攒能量 (当前 ' + gameState.allyCharge + '/3)');
             return;
         }
         openAllyModal();
