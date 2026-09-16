@@ -494,7 +494,7 @@
             if (!supportsBufferedAudio || !audioCtx) return;
             if (!effectGain) {
                 effectGain = audioCtx.createGain();
-                effectGain.gain.value = 1.4;
+                effectGain.gain.value = 1.2;
                 const limiter = audioCtx.createDynamicsCompressor();
                 limiter.threshold.value = -3;
                 limiter.knee.value = 0;
@@ -510,7 +510,7 @@
             const bgm = document.getElementById('bgm');
             if (bgm && !bgmSource) {
                 bgmGain = audioCtx.createGain();
-                bgmGain.gain.value = 0.1;
+                bgmGain.gain.value = 0.15;
                 bgmGain.connect(audioCtx.destination);
                 bgmSource = audioCtx.createMediaElementSource(bgm);
                 bgmSource.connect(bgmGain);
@@ -1044,7 +1044,7 @@
 
         gameState.activeVillains.forEach(v => {
             if (v.type === 'ade') {
-                if (Date.now() < gameState.noAdeUntil || newAdes.length >= 1) return;
+                if (Date.now() < gameState.noAdeUntil || newAdes.length >= 2) return;
                 const dirs = [{r:-1,c:0}, {r:1,c:0}, {r:0,c:-1}, {r:0,c:1}];
                 dirs.sort(() => Math.random() - 0.5);
 
