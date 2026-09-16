@@ -1069,7 +1069,7 @@
                 const nr = v.r + dir.r, nc = v.c + dir.c;
                 if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !gameState.activeVillains.some(av => av.r === nr && av.c === nc) && !newAdes.some(av => av.r === nr && av.c === nc)) {
                     v.r = nr; v.c = nc;
-                    showToast('🥎 【声东击西】闪现换位！');
+                    showToast('🥎 【西装暴徒】闪现换位！');
                 }
             }
         });
