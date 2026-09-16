@@ -79,29 +79,29 @@
         .score-val { font-size: 13px; font-weight: 900; color: #FF9800; font-family: 'Arial Black', sans-serif; line-height: 1.1; }
 
         #top-stage {
-            height: 19%; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
+            height: 19%; min-height: 164px; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
             background-color: #FFFDF9; background-image: url('images/stage_bg.png'); background-size: cover; background-position: center; border-bottom: 3px solid #DEB887;
         }
         
         #avatar-container {
-            position: relative; width: 180px; height: 85px; z-index: 3; margin-bottom: -8px; cursor: pointer;
+            position: relative; width: 240px; max-width: 100%; height: 116px; flex-shrink: 0; z-index: 3; margin-bottom: -8px; cursor: pointer;
             display: flex; justify-content: center; align-items: flex-end;
         }
         #character-avatar {
-            width: 80px; height: 80px; z-index: 2; transform-origin: bottom center; 
+            position: relative; width: 116px; height: 116px; z-index: 2; transform-origin: bottom center; 
             background-size: contain; background-repeat: no-repeat; background-position: bottom center; font-size: 55px; display: flex; justify-content: center; align-items: flex-end; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
         .ally-side-avatar {
-            position: absolute; width: 50px; height: 50px; bottom: 4px; z-index: 4;
+            position: absolute; width: 100px; height: 100px; bottom: 8px; z-index: 1;
             background-size: contain; background-repeat: no-repeat; background-position: bottom center;
-            border-radius: 50%; border: 2px solid #FFD700; box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-            animation: allyHover 1s infinite alternate; display: none;
+            border-radius: 50%; border: 2px solid #FFD700; box-shadow: 0 2px 6px rgba(0,0,0,0.3); pointer-events: none;
+            animation: none; display: none;
         }
-        #left-ally-avatar { left: 15px; }
-        #right-ally-avatar { right: 15px; }
-        @keyframes allyHover { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
+        #left-ally-avatar { left: 12px; }
+        #right-ally-avatar { right: 12px; }
+
 
         #ally-ultimate-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -116,15 +116,15 @@
         }
         @keyframes ultPop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); } }
         .ally-ult-avatar {
-            width: 110px; height: 110px; border-radius: 50%; border: 4px solid #FFD700;
+            width: min(360px, 84vw, 64vh); aspect-ratio: 4 / 3; height: auto; border-radius: 12px; border: 3px solid #FFD700;
             background-size: contain; background-repeat: no-repeat; background-position: center;
-            box-shadow: 0 0 25px #FFD700; background-color: #FFF5E1;
+            box-shadow: none; background-color: transparent;
         }
         .ally-ult-title { font-size: 26px; font-weight: 900; color: #FFF; text-shadow: 0 0 10px #FF4500, 0 0 20px #FFD700; letter-spacing: 2px; }
         .ally-ult-speech { font-size: 16px; font-weight: bold; color: #FFF8EA; background: rgba(210, 105, 30, 0.85); padding: 6px 18px; border-radius: 20px; border: 2px solid #FFD700; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
         
         #ultimate-ring {
-            position: absolute; top: -4px; left: calc(50% - 42px); width: 84px; height: 84px; border-radius: 50%;
+            position: absolute; bottom: 0; left: calc(50% - 60px); width: 120px; height: 120px; border-radius: 50%;
             border: 4px solid #FFD700; opacity: 0; pointer-events: none; transition: opacity 0.3s;
         }
         #avatar-container.ready #ultimate-ring { opacity: 1; animation: ultimateGlow 1.2s infinite alternate; }
@@ -324,7 +324,7 @@
             <div class="settings-title">系统菜单</div>
             <button class="settings-btn btn-green" onclick="saveGame()">💾 记录当前进度</button>
             <div style="text-align: left; margin-top: 15px; color: #8B5A2B; font-weight: 900; font-size: 14px;">本地存档：</div>
-            <div class="save-hint">※ 点击读取，长按删除</div>
+            <div class="save-hint">※ 点击读取，点击存档读取，点击删除按钮删除</div>
             <div id="save-list-container"></div>
             <button class="settings-btn btn-blue" onclick="restartGame()">🔄 重新开始</button>
             <button class="settings-btn btn-pink" onclick="closeSettings()">返回游戏</button>
@@ -394,6 +394,7 @@
             skillName: "父子同心👊", 
             desc: "技能：瞬间清除场上的 2 个反派！", 
             avatar: "images/gongwei.png",
+            groupPhoto: "images/gongwei_group.png",
             speech: "“父子同心，其利断金！”"
         },
         { 
@@ -402,6 +403,7 @@
             skillName: "JUDO冠军", 
             desc: "技能：同归于尽！本阶段不再出现阿德，且场上阿德全部清除！", 
             avatar: "images/nawen.png",
+            groupPhoto: "images/nawen_group.png",
             speech: "“赛博报仇”"
         }
     ];
@@ -410,14 +412,17 @@
 
     const AUDIO_POOL = {
         villains: {
-            da: ['audio/da_1.mp3', 'audio/da_2.mp3'],
+            da: ['audio/da_1.mp3', 'audio/da_2.mp3', 'audio/da_3.mp3'],
             ade: ['audio/ade_1.mp3', 'audio/ade_2.mp3'],
             bailong: ['audio/bailong_1.mp3', 'audio/bailong_2.mp3']
         },
         allies: {
             gongwei: ['audio/gongwei_1.mp3', 'audio/gongwei_2.mp3'],
-            nawen: ['audio/nawen_1.mp3', 'audio/nawen_2.mp3']
+            nawen: ['audio/nawen_1.mp3', 'audio/nawen_2.mp3', 'audio/nawen_3.mp3']
         },
+        // 专属事件音效：可在这里替换素材路径。
+        bailongDefeated: ['audio/bailong_3.mp3'],
+        adeGameOver: ['audio/ade_gameover.mp3'],
         xiemiaoCombo: [
             'audio/combo_1.mp3', 'audio/combo_2.mp3', 'audio/combo_3.mp3', 'audio/combo_4.mp3',
             'audio/combo_5.mp3', 'audio/combo_6.mp3', 'audio/combo_7.mp3', 'audio/combo_8.mp3'
@@ -443,6 +448,7 @@
     let board = [], domTiles = [], lastSwapPos = null, idleTimer = null;
     let touchStartCoord = null, activeTileDom = null, activeDragTool = null, currentBombRadius = 45, bombRadiusTimer = null;
     let audioCtx = null;
+    let gameEntered = false;
 
     function playCustomAudio(audioArray) {
         if (!audioArray || audioArray.length === 0) return;
@@ -453,6 +459,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         const bgm = document.getElementById('bgm');
+        if (bgm) bgm.volume = 0.35;
         const bgmToggle = document.getElementById('bgm-toggle');
         
         const initAudioPlay = () => {
@@ -485,13 +492,15 @@
     });
 
     function enterGame(e) {
+        if (gameEntered) return;
+        gameEntered = true;
         if (e) { e.stopPropagation(); e.preventDefault(); }
         const mask = document.getElementById('intro-mask');
         if (!mask) return;
         mask.style.opacity = '0';
         setTimeout(() => { mask.style.display = 'none'; }, 500);
         
-        initAudio();
+        try { initAudio(); } catch (_) {}
         const bgm = document.getElementById('bgm');
         if (bgm && gameState.bgmEnabled) { bgm.play().catch(e => {}); }
 
@@ -533,50 +542,47 @@
         return tile;
     }
 
+    // 每种图片只检测一次；刷新时不再先切换成 emoji。
+    const tileImageCache = new Map();
+    function loadTileImage(path) {
+        if (!tileImageCache.has(path)) {
+            const result = new Promise(resolve => {
+                const image = new Image();
+                image.onload = () => resolve(true);
+                image.onerror = () => resolve(false);
+                image.src = path;
+            });
+            tileImageCache.set(path, result);
+        }
+        return tileImageCache.get(path);
+    }
+
     function updateTileDOMVisual(r, c, data) {
         const tile = domTiles[r][c];
         if (!tile) return;
-        
-        let villain = gameState.activeVillains.find(v => v.r === r && v.c === c);
-        if (villain) {
-            tile.className = `tile is-villain villain-${villain.type}`;
-            const vImg = new Image();
-            vImg.src = villain.image;
-            vImg.onload = () => {
-                if (gameState.activeVillains.some(v => v.r === r && v.c === c)) {
-                    tile.style.backgroundImage = `url('${villain.image}')`;
-                    tile.innerText = '';
+        const villain = gameState.activeVillains.find(v => v.r === r && v.c === c);
+        const classes = villain
+            ? 'tile is-villain villain-' + villain.type
+            : 'tile' + (data && data.effect !== 'none' ? ' effect-' + data.effect : '');
+        if (tile.className !== classes) tile.className = classes;
+        const path = villain ? villain.image : (data && data.type ? getTileImageUrl(data.type) : '');
+        const fallback = villain ? villain.icon : (data && data.type || '');
+        const visualKey = JSON.stringify([path, fallback]);
+        if (tile.dataset.visualKey === visualKey) return;
+        tile.dataset.visualKey = visualKey;
+        const request = {};
+        tile.imageRequest = request;
+        tile.style.backgroundImage = path ? "url('" + path + "')" : 'none';
+        tile.innerText = path ? '' : fallback;
+        if (path) {
+            loadTileImage(path).then(loaded => {
+                // 格子换位、变成反派或被移除后，过期结果不能覆盖新画面。
+                if (tile.imageRequest !== request || !tile.isConnected) return;
+                if (!loaded) {
+                    tile.style.backgroundImage = 'none';
+                    tile.innerText = fallback;
                 }
-            };
-            vImg.onerror = () => {
-                tile.style.backgroundImage = 'none';
-                tile.innerText = villain.icon;
-            };
-            return;
-        }
-
-        tile.classList.remove('is-villain', 'villain-da', 'villain-ade', 'villain-bailong');
-        tile.className = `tile ${data && data.effect !== 'none' ? 'effect-'+data.effect : ''}`;
-        if (data && data.type) {
-            tile.innerText = data.type;
-            const imgPath = getTileImageUrl(data.type);
-            if (imgPath) {
-                const imgTest = new Image();
-                imgTest.src = imgPath;
-                imgTest.onload = () => { 
-                    const stillNotVillain = !gameState.activeVillains.some(v => v.r === r && v.c === c);
-                    if (stillNotVillain && domTiles[r] && domTiles[r][c] === tile) { 
-                        tile.style.backgroundImage = `url('${imgPath}')`; 
-                        tile.innerText = ''; 
-                    } 
-                };
-                imgTest.onerror = () => { 
-                    tile.style.backgroundImage = 'none'; 
-                    tile.innerText = data.type; 
-                };
-            } else {
-                tile.style.backgroundImage = 'none';
-            }
+            });
         }
     }
 
@@ -760,8 +766,8 @@
             await processMatches(nextInfo); 
         } else { 
             spawnVillainIfNeeded();
+            checkDeadlock();
             autoSave(); 
-            checkDeadlock(); 
             gameState.isAnimating = false; 
             resetIdleTimer();
         }
@@ -770,19 +776,27 @@
     async function applyGravity() {
         const padding = 2;
         for (let c = 0; c < COLS; c++) {
-            let empty = 0;
-            for (let r = ROWS - 1; r >= 0; r--) {
-                if (gameState.activeVillains.some(v => v.r === r && v.c === c)) { empty = 0; continue; }
-                if (!board[r][c]) empty++;
-                else if (empty > 0) {
-                    board[r + empty][c] = board[r][c]; domTiles[r + empty][c] = domTiles[r][c]; board[r][c] = null; domTiles[r][c] = null;
-                    domTiles[r + empty][c].style.top = `${(r + empty) * TILE_SIZE + padding}px`;
+            let end = ROWS - 1;
+            while (end >= 0) {
+                if (gameState.activeVillains.some(v => v.r === end && v.c === c)) { end--; continue; }
+                let start = end;
+                while (start > 0 && !gameState.activeVillains.some(v => v.r === start - 1 && v.c === c)) start--;
+                let write = end;
+                for (let r = end; r >= start; r--) {
+                    if (!board[r][c]) { if (domTiles[r][c]) domTiles[r][c].remove(); domTiles[r][c] = null; continue; }
+                    if (write !== r) {
+                        board[write][c] = board[r][c]; domTiles[write][c] = domTiles[r][c];
+                        board[r][c] = null; domTiles[r][c] = null;
+                    }
+                    if (!domTiles[write][c]) createTileDOM(write, c, board[write][c]);
+                    domTiles[write][c].style.top = (write * TILE_SIZE + padding) + 'px';
+                    write--;
                 }
-            }
-            for (let i = 0; i < empty; i++) {
-                if (gameState.activeVillains.some(v => v.r === i && v.c === c)) continue;
-                const type = TYPES[Math.floor(Math.random() * TYPES.length)]; board[i][c] = { type, effect: 'none' };
-                const nTile = createTileDOM(i, c, board[i][c]); nTile.style.top = `${(i - empty) * TILE_SIZE + padding}px`; nTile.offsetHeight; nTile.style.top = `${i * TILE_SIZE + padding}px`;
+                for (let r = write; r >= start; r--) {
+                    board[r][c] = {type: TYPES[Math.floor(Math.random() * TYPES.length)], effect: 'none'};
+                    createTileDOM(r, c, board[r][c]);
+                }
+                end = start - 1;
             }
         }
         await sleep(180);
@@ -844,7 +858,7 @@
 
         if (freeCount <= 10) return;
 
-        if (!findAValidMove()) {
+        for (let attempt = 0; attempt < 40 && !findAValidMove(); attempt++) {
             showToast('🔄 盘面无解，自动洗牌重排中...');
             playCuteSFX('explode');
             for (let r = 0; r < ROWS; r++) {
@@ -855,7 +869,7 @@
                     updateTileDOMVisual(r, c, board[r][c]);
                 }
             }
-            if (!findAValidMove()) checkDeadlock();
+            // 有限次数洗牌，避免递归导致页面卡死。
         }
     }
 
@@ -893,13 +907,14 @@
 
     function triggerVillainActiveSkills() {
         if (gameState.isGameOver) return;
-        if (Date.now() < gameState.noAdeUntil) return;
+        // 纳文只禁用阿德，不影响柏龙行动。
 
         const newAdes = [];
         let adeSpreadHappened = false;
 
         gameState.activeVillains.forEach(v => {
             if (v.type === 'ade') {
+                if (Date.now() < gameState.noAdeUntil) return;
                 const dirs = [{r:-1,c:0}, {r:1,c:0}, {r:0,c:-1}, {r:0,c:1}];
                 dirs.sort(() => Math.random() - 0.5);
 
@@ -948,6 +963,7 @@
         if (remainingSpaces <= 3) {
             gameState.isGameOver = true;
             gameState.isAnimating = true;
+            playCustomAudio(AUDIO_POOL.adeGameOver);
             triggerScreenShake();
             playCuteSFX('explode');
             showToast('🟣 棋盘已被完全吞噬！');
@@ -969,16 +985,23 @@
         openPosterModal(true);
     }
 
+    function playVillainDefeatAudio(villains) {
+        if (villains.some(v => v.type === 'bailong')) {
+            playCustomAudio(AUDIO_POOL.bailongDefeated);
+        }
+    }
+
     function checkVillainDamage(r, c) {
         let hitList = [];
         gameState.activeVillains.forEach(v => {
-            if (Math.abs(v.r - r) + Math.abs(v.c - c) === 1) hitList.push(v);
+            if (Math.abs(v.r - r) + Math.abs(v.c - c) <= 1) hitList.push(v);
         });
 
         if (hitList.length > 0) {
             hitList.forEach(v => {
                 v.hp--;
                 if (v.hp <= 0) {
+                    playVillainDefeatAudio([v]);
                     showToast(`⚔️ 成功击破反派【${v.name}】！`);
                     playCuteSFX('explode');
                 } else {
@@ -1011,6 +1034,7 @@
     };
 
     function openAllyModal() {
+        if (gameState.isAnimating || gameState.isGameOver || activeDragTool) return;
         const container = document.getElementById('ally-cards-container');
         container.innerHTML = '';
         
@@ -1040,6 +1064,7 @@
 
     // 🌟 核心修复：纳文出招后，不仅从反派列表清除，还将原位置的底层数据与 DOM 彻底重新填充随机普通棋子
     function executeAllySkill(ally) {
+        if (gameState.isAnimating || gameState.isGameOver || activeDragTool || !gameState.allyReady || gameState.usedAlliesInCurrentStage.includes(ally.id)) return;
         playCuteSFX('ultimate');
         gameState.allyCharge = 0; 
         gameState.allyReady = false;
@@ -1060,6 +1085,8 @@
         if (ally.id === 'gongwei') {
             if (gameState.activeVillains.length > 0) {
                 let cleared = gameState.activeVillains.slice(0, 2);
+                playVillainDefeatAudio(cleared);
+                cleared.forEach(v => { board[v.r][v.c] = board[v.r][v.c] || {type: TYPES[Math.floor(Math.random()*TYPES.length)], effect: 'none'}; });
                 gameState.activeVillains = gameState.activeVillains.filter(v => !cleared.includes(v));
                 showToast('🤝【巩伟·父子同心】父子联手，双杀反派！');
             } else {
@@ -1084,6 +1111,7 @@
             document.getElementById('score').innerText = gameState.score;
         }
         refreshAllDOMVisuals();
+        autoSave();
     }
 
     function showAllyUltimateOverlay(ally) {
@@ -1092,7 +1120,7 @@
         const title = document.getElementById('ally-ult-title');
         const speech = document.getElementById('ally-ult-speech');
 
-        img.style.backgroundImage = `url('${ally.avatar}')`;
+        img.style.backgroundImage = `url('${ally.groupPhoto}')`;
         title.innerText = `【${ally.skillName}】${ally.name.split('（')[0]}`;
         speech.innerText = ally.speech;
 
@@ -1125,7 +1153,7 @@
 
     async function triggerCharacterUltimate() {
         const ring = document.getElementById('avatar-container');
-        if (!ring.classList.contains('ready') || gameState.isAnimating || gameState.isGameOver) {
+        if (activeDragTool || !ring.classList.contains('ready') || gameState.isAnimating || gameState.isGameOver) {
             showToast('⚠️ 奥义未就绪，请通过战力突破解锁！');
             return;
         }
@@ -1142,6 +1170,7 @@
         gridContainer.appendChild(span);
         setTimeout(() => span.remove(), 1200);
 
+        playVillainDefeatAudio(gameState.activeVillains);
         gameState.activeVillains = [];
         let toRemove = new Set();
         for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) { toRemove.add(`${r},${c}`); } }
@@ -1170,7 +1199,7 @@
     }
 
     document.getElementById('refresh-tool').onclick = async () => {
-        if (gameState.isAnimating || gameState.props.refresh <= 0 || gameState.isGameOver) return; 
+        if (activeDragTool || gameState.isAnimating || gameState.props.refresh <= 0 || gameState.isGameOver) return; 
         gameState.props.refresh--; updatePropUI(); gameState.isAnimating = true; gameState.globalCombo = 0; playCuteSFX('explode');
         for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) {
             if (gameState.activeVillains.some(v => v.r === r && v.c === c)) continue;
@@ -1179,8 +1208,9 @@
             updateTileDOMVisual(r, c, board[r][c]);
         }} 
         await sleep(200); 
-        gameState.isAnimating = false; 
-        autoSave(); 
+        const matches = analyzeMatches();
+        if (matches.toRemove.size) await processMatches(matches);
+        else { checkDeadlock(); gameState.isAnimating = false; autoSave(); resetIdleTimer(); }
     };
 
     const ghostTool = document.getElementById('ghost-tool'), ghostIcon = document.getElementById('ghost-tool-icon'), ghostInd = document.getElementById('ghost-tool-indicator');
@@ -1190,7 +1220,7 @@
     function setupToolDrag(btnId, type) {
         const btn = document.getElementById(btnId);
         btn.addEventListener('pointerdown', (e) => {
-            if (gameState.props[type] <= 0 || gameState.isAnimating || gameState.isGameOver) return;
+            if (activeDragTool || gameState.props[type] <= 0 || gameState.isAnimating || gameState.isGameOver) return;
             e.preventDefault(); activeDragTool = type;
             ghostIcon.innerText = type === 'hammer' ? '🔨' : '💣';
             
@@ -1219,6 +1249,13 @@
             document.addEventListener('pointerup', endDrag, { passive: false });
         });
     }
+
+    document.addEventListener('pointercancel', () => {
+        if (!activeDragTool) return;
+        activeDragTool = null; ghostTool.style.display = 'none';
+        clearInterval(bombRadiusTimer); bombRadiusTimer = null;
+        document.removeEventListener('pointermove', moveDrag); document.removeEventListener('pointerup', endDrag);
+    });
 
     function updateGhostPos(e) {
         const x = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
@@ -1272,69 +1309,134 @@
     }
 
     const settingsMask = document.getElementById('settings-mask');
-    document.getElementById('settings-toggle').onclick = () => { renderSaveList(); settingsMask.style.display = 'flex'; };
+    document.getElementById('settings-toggle').onclick = () => { if (gameState.isAnimating || activeDragTool) { showToast('请等待本回合结束'); return; } renderSaveList(); settingsMask.style.display = 'flex'; };
     function closeSettings() { settingsMask.style.display = 'none'; }
 
-    function getSaves() { return JSON.parse(localStorage.getItem('miaoSavesV2') || '{}'); }
-    function setSaves(saves) { localStorage.setItem('miaoSavesV2', JSON.stringify(saves)); }
+
+    function readStored(key, fallback = null) {
+        try { const raw = localStorage.getItem(key); return raw === null ? fallback : JSON.parse(raw); }
+        catch (_) { showToast('本地存档无法读取，已跳过'); return fallback; }
+    }
+    function writeStored(key, value) {
+        try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+        catch (_) { showToast('存档失败：请检查浏览器存储空间或权限'); return false; }
+    }
+    function snapshot() {
+        return JSON.parse(JSON.stringify({version: 3, score: gameState.score, currentStage: gameState.currentStage,
+            props: gameState.props, activeVillains: gameState.activeVillains,
+            usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage,
+            noAdeUntil: gameState.noAdeUntil, allyCharge: gameState.allyCharge, allyReady: gameState.allyReady,
+            ultimateReady: document.getElementById('avatar-container').classList.contains('ready'), board}));
+    }
+    function validateSave(data) {
+        const validInt = n => Number.isSafeInteger(n) && n >= 0;
+        if (!data || !validInt(data.score) || !validInt(data.currentStage) || data.currentStage >= EVOLUTION.length) throw Error('存档数值无效');
+        if (!data.props || !['hammer','bomb','refresh'].every(k => validInt(data.props[k]))) throw Error('道具数据无效');
+        if (!Array.isArray(data.board) || data.board.length !== ROWS || !data.board.every(row => Array.isArray(row) && row.length === COLS)) throw Error('棋盘尺寸无效');
+        const copy = JSON.parse(JSON.stringify(data));
+        const occupied = new Set();
+        if (!Array.isArray(copy.activeVillains || [])) throw Error('反派数据无效');
+        copy.activeVillains = (copy.activeVillains || []).map(v => {
+            const template = v && VILLAINS.find(t => t.type === v.type);
+            if (!template || !validInt(v.r) || v.r >= ROWS || !validInt(v.c) || v.c >= COLS || !validInt(v.hp) || v.hp < 1 || v.hp > template.hp) throw Error('反派数据无效');
+            const key = v.r + ',' + v.c; if (occupied.has(key)) throw Error('反派位置重复'); occupied.add(key);
+            return {...template, r:v.r, c:v.c, hp:v.hp};
+        });
+        copy.board = copy.board.map(row => row.map(cell => {
+            if (cell === null || (cell && typeof cell === 'object' && Object.keys(cell).length === 0)) return {type:TYPES[Math.floor(Math.random()*TYPES.length)], effect:'none'};
+            if (!cell || !TYPES.includes(cell.type) || !['none','row','col','cross'].includes(cell.effect)) throw Error('棋子数据无效');
+            return {type:cell.type, effect:cell.effect};
+        }));
+        if (copy.usedAlliesInCurrentStage !== undefined && !Array.isArray(copy.usedAlliesInCurrentStage)) throw Error('友军数据无效');
+        copy.usedAlliesInCurrentStage = [...new Set((copy.usedAlliesInCurrentStage || []).filter(id => ALLIES_POOL.some(a => a.id === id)))];
+        copy.noAdeUntil = copy.usedAlliesInCurrentStage.includes('nawen') ? Number.MAX_SAFE_INTEGER : 0;
+        if (copy.noAdeUntil) copy.activeVillains = copy.activeVillains.filter(v => v.type !== 'ade');
+        copy.allyCharge = validInt(copy.allyCharge) ? Math.min(3, copy.allyCharge) : 0;
+        copy.allyReady = copy.allyCharge >= 3;
+        return copy;
+    }
+    function resetTransientState() {
+        clearTimeout(idleTimer); clearInterval(bombRadiusTimer); bombRadiusTimer = null;
+        if (activeTileDom) activeTileDom.classList.remove('selected');
+        touchStartCoord = null; activeTileDom = null; activeDragTool = null; lastSwapPos = null;
+        ghostTool.style.display = 'none';
+        document.removeEventListener('pointermove', moveDrag); document.removeEventListener('pointerup', endDrag);
+        gameState.isAnimating = false; gameState.isGameOver = false; gameState.globalCombo = 0;
+        gameState.noNewVillainUntil = 0;
+    }
+    function restoreSave(raw) {
+        const data = validateSave(raw);
+        resetTransientState();
+        Object.assign(gameState, {score:data.score, currentStage:data.currentStage, props:data.props,
+            activeVillains:data.activeVillains, usedAlliesInCurrentStage:data.usedAlliesInCurrentStage,
+            noAdeUntil:data.noAdeUntil, allyCharge:data.allyCharge, allyReady:data.allyReady});
+        board = data.board; domTiles = []; gridContainer.innerHTML = ''; initSize();
+        for (let r=0;r<ROWS;r++) { domTiles[r]=[]; for(let c=0;c<COLS;c++) { createBgCell(r,c); createTileDOM(r,c,board[r][c]); } }
+        applyEvolution(data.currentStage, false); updatePropUI(); updateAllyUI();
+        document.getElementById('score').innerText = gameState.score;
+        document.getElementById('avatar-container').classList.toggle('ready', data.ultimateReady === true);
+        resetIdleTimer();
+    }
+
+    function getSaves() { const saves = readStored('miaoSavesV2', {}); return saves && typeof saves === 'object' && !Array.isArray(saves) ? saves : {}; }
+    function setSaves(saves) { return writeStored('miaoSavesV2', saves); }
     
-    function saveGame() { 
-        let saves = getSaves(); 
-        let timeStr = new Date().toLocaleString('zh-CN', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}); 
-        saves[`存档_${timeStr}`] = { score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage, board: board.map(r => r.map(c => ({...c}))) }; 
-        setSaves(saves); renderSaveList(); showToast('进度保存成功！'); 
+    function saveGame() {
+        if (gameState.isAnimating || activeDragTool || gameState.isGameOver) { showToast('请等待本回合结束再保存'); return; }
+        const saves = getSaves(); const key = '存档_' + new Date().toLocaleString('zh-CN') + '_' + Date.now();
+        saves[key] = snapshot();
+        if (setSaves(saves)) { renderSaveList(); showToast('进度保存成功！'); }
     }
 
     function renderSaveList() {
         const container = document.getElementById('save-list-container'); container.innerHTML = '';
-        Object.keys(getSaves()).reverse().forEach(key => {
-            let div = document.createElement('div'); div.className = 'save-item'; div.innerText = `${key} (战力: ${getSaves()[key].score})`;
-            let pressTimer;
-            div.addEventListener('touchstart', () => pressTimer = setTimeout(() => { if(confirm(`确定删除 [${key}] 吗？`)){ let s = getSaves(); delete s[key]; setSaves(s); renderSaveList(); } }, 800));
-            div.addEventListener('touchend', () => { clearTimeout(pressTimer); loadGame(key); });
-            container.appendChild(div);
+        const saves = getSaves();
+        Object.keys(saves).reverse().forEach(key => {
+            const div = document.createElement('div'); div.className = 'save-item';
+            const load = document.createElement('button'); load.type = 'button';
+            load.textContent = key + ' (战力: ' + (saves[key]?.score ?? '未知') + ')';
+            load.style.cssText = 'background:none;border:0;color:inherit;cursor:pointer;max-width:80%;';
+            load.onclick = () => loadGame(key);
+            const del = document.createElement('button'); del.type = 'button'; del.textContent = '删除';
+            del.style.cssText = 'margin-left:8px;cursor:pointer;';
+            del.onclick = () => { if(confirm('确定删除 [' + key + '] 吗？')) { const latest=getSaves(); delete latest[key]; if(setSaves(latest)) renderSaveList(); } };
+            div.appendChild(load); div.appendChild(del); container.appendChild(div);
         });
-        if(container.innerHTML === '') container.innerHTML = '<div style="color:#999; font-size:12px; margin-top:15px;">暂无本地存档</div>';
+        if (!container.children.length) container.textContent = '暂无本地存档';
     }
 
     function loadGame(key) {
-        const data = getSaves()[key]; if(!data) return;
-        gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
-        gameState.usedAlliesInCurrentStage = data.usedAlliesInCurrentStage || [];
-        gameState.isGameOver = false;
-        document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); updateAllySideAvatars();
-        board = data.board; initSize(); gridContainer.innerHTML = ''; domTiles = [];
-        for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} closeSettings(); showToast('存档读取成功');
+        if (gameState.isAnimating || activeDragTool) { showToast('请等待本回合结束'); return; }
+        const data=getSaves()[key]; if(!data) return;
+        try { restoreSave(data); closeSettings(); autoSave(); showToast('存档读取成功'); }
+        catch (_) { showToast('该存档已损坏，无法读取'); }
     }
 
-    function autoSave() { localStorage.setItem('miaoAutoSaveV2', JSON.stringify({ score: gameState.score, currentStage: gameState.currentStage, props: gameState.props, activeVillains: gameState.activeVillains, usedAlliesInCurrentStage: gameState.usedAlliesInCurrentStage, board: board.map(r => r.map(c => ({...c}))) })); }
+    function autoSave() { if (!gameState.isGameOver) return writeStored('miaoAutoSaveV2', snapshot()); return false; }
     function loadAutoSave() {
-        const saved = localStorage.getItem('miaoAutoSaveV2');
-        if (saved) {
-            const data = JSON.parse(saved); gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
-            gameState.usedAlliesInCurrentStage = data.usedAlliesInCurrentStage || [];
-            gameState.isGameOver = false;
-            document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); updateAllySideAvatars(); board = data.board; initSize();
-            for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} return true;
-        } return false;
+        const data = readStored('miaoAutoSaveV2'); if (!data) return false;
+        try { restoreSave(data); return true; } catch (_) { showToast('自动存档无效，已开启新游戏'); return false; }
     }
 
     function restartGame() {
-        localStorage.removeItem('miaoAutoSaveV2');
-        gameState.score = 0; gameState.currentStage = 0; gameState.props = { hammer: 2, bomb: 2, refresh: 2 }; gameState.activeVillains = [];
-        gameState.usedAlliesInCurrentStage = [];
-        gameState.isGameOver = false;
+        if (gameState.isAnimating && !gameState.isGameOver) { showToast('请等待本回合结束'); return; }
+        resetTransientState();
+        gameState.score=0; gameState.currentStage=0; gameState.props={hammer:2,bomb:2,refresh:2};
+        gameState.activeVillains=[]; gameState.usedAlliesInCurrentStage=[];
+        gameState.allyCharge=0; gameState.allyReady=false; gameState.noAdeUntil=0;
         document.getElementById('avatar-container').classList.remove('ready');
-        document.getElementById('score').innerText = gameState.score;
-        applyEvolution(0); updatePropUI(); updateAllySideAvatars();
-        gridContainer.innerHTML = ''; domTiles = [];
+        document.getElementById('score').innerText=0;
+        applyEvolution(0); updatePropUI(); updateAllyUI();
+        gridContainer.innerHTML=''; domTiles=[]; board=[];
         initBoard(); closeSettings(); showToast('已开启新一轮游戏！');
     }
 
-    function applyEvolution(stageIdx) {
+    function applyEvolution(stageIdx, resetStage = true) {
         gameState.currentStage = stageIdx; 
-        gameState.usedAlliesInCurrentStage = []; 
-        gameState.noAdeUntil = 0; 
+        if (resetStage) {
+            gameState.usedAlliesInCurrentStage = [];
+            gameState.noAdeUntil = 0;
+        } 
         updateAllySideAvatars();
 
         const currentData = EVOLUTION[gameState.currentStage];
@@ -1356,11 +1458,12 @@
         const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
         const span = document.createElement('div'); 
         span.className = 'combo-text'; 
+        span.style.animationDuration = '1.8s';
         span.innerText = `${word} x${comboLevel}!`;
         span.style.left = `${c * TILE_SIZE + TILE_SIZE / 2}px`; 
         span.style.top = `${r * TILE_SIZE + TILE_SIZE / 2}px`;
         gridContainer.appendChild(span); 
-        setTimeout(() => span.remove(), 600); 
+        setTimeout(() => span.remove(), 1800); 
         
         playCuteSFX('combo', comboLevel);
 
