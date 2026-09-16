@@ -891,7 +891,6 @@
         }
     }
 
-    // 🌟 蔓延扩散无上限，并补齐阿德毒液蔓延音效
     function triggerVillainActiveSkills() {
         if (gameState.isGameOver) return;
         if (Date.now() < gameState.noAdeUntil) return;
@@ -1039,6 +1038,7 @@
 
     function closeAllyModal() { document.getElementById('ally-select-mask').style.display = 'none'; }
 
+    // 🌟 核心修复：纳文出招后，不仅从反派列表清除，还将原位置的底层数据与 DOM 彻底重新填充随机普通棋子
     function executeAllySkill(ally) {
         playCuteSFX('ultimate');
         gameState.allyCharge = 0; 
@@ -1067,10 +1067,19 @@
             }
         } else if (ally.id === 'nawen') {
             gameState.noAdeUntil = Number.MAX_SAFE_INTEGER;
-            let adeCount = gameState.activeVillains.filter(v => v.type === 'ade').length;
+            
+            const ades = gameState.activeVillains.filter(v => v.type === 'ade');
+            const adeCount = ades.length;
+
+            ades.forEach(v => {
+                const randomType = TYPES[Math.floor(Math.random() * TYPES.length)];
+                board[v.r][v.c] = { type: randomType, effect: 'none' };
+            });
+
             gameState.activeVillains = gameState.activeVillains.filter(v => v.type !== 'ade');
             refreshAllDOMVisuals();
-            showToast(`🤝【纳文·JUDO冠军】已清除场上 ${adeCount} 个阿德，本形态不再出现！`);
+
+            showToast(`🤝【纳文·JUDO冠军】已清空 ${adeCount} 个阿德，本形态不再出现！`);
             gameState.score += 1500;
             document.getElementById('score').innerText = gameState.score;
         }
@@ -1342,7 +1351,6 @@
         propTest.onload = () => { prop.style.backgroundImage = `url('${currentData.prop}')`; prop.innerText = ''; };
     }
 
-    // 🌟 连击弹窗逻辑：3 连击以上触发，分段播放谢苗语音
     function showComboPopup(r, c, comboLevel) {
         if (comboLevel < 2) return;
         const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
@@ -1432,7 +1440,6 @@
     function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = 1; setTimeout(()=> t.style.opacity = 0, 2000); }
     function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
 
-    // 🌟 原生 Canvas 离线转绘海报
     function generatePosterDataURL(isEasterEgg = false) {
         const canvas = document.createElement('canvas');
         canvas.width = 680;
