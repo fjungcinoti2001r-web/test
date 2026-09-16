@@ -510,7 +510,7 @@
             const bgm = document.getElementById('bgm');
             if (bgm && !bgmSource) {
                 bgmGain = audioCtx.createGain();
-                bgmGain.gain.value = 0.15;
+                bgmGain.gain.value = 0.2;
                 bgmGain.connect(audioCtx.destination);
                 bgmSource = audioCtx.createMediaElementSource(bgm);
                 bgmSource.connect(bgmGain);
