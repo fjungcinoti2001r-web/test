@@ -322,8 +322,6 @@
     <div id="settings-mask">
         <div class="settings-box">
             <div class="settings-title">系统菜单</div>
-            <button class="settings-btn btn-blue" onclick="testGameAudio(this, 'villain')">🔊 试听反派音效</button>
-            <button class="settings-btn btn-blue" onclick="testGameAudio(this, 'combo')">🔊 试听连击音效</button>
             <button class="settings-btn btn-green" onclick="saveGame()">💾 记录当前进度</button>
             <div style="text-align: left; margin-top: 15px; color: #8B5A2B; font-weight: 900; font-size: 14px;">本地存档：</div>
             <div class="save-hint">※ 点击读取，点击存档读取，点击删除按钮删除</div>
@@ -559,17 +557,6 @@
             showToast(error.name === 'NotAllowedError' ? '🔊 请点一下屏幕，再在菜单试听音效' : '🔊 音效加载失败，请检查网络后重试');
             return false;
         }
-    }
-
-    async function testGameAudio(button, kind) {
-        unlockCustomAudio();
-        const original = button.innerText;
-        button.disabled = true;
-        button.innerText = '音效加载中…';
-        try {
-            const played = await playCustomAudio(kind === 'villain' ? AUDIO_POOL.villains.da : AUDIO_POOL.xiemiaoCombo);
-            if (played) showToast('🔊 正在试听' + (kind === 'villain' ? '反派音效' : '连击音效'));
-        } finally { button.disabled = false; button.innerText = original; }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
