@@ -162,7 +162,7 @@
             transition: top 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), left 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.18s;
         }
         
-        .tile.is-villain { background-image: none !important; font-size: 24px; z-index: 25 !important; }
+        .tile.is-villain { background-size: cover !important; background-repeat: no-repeat !important; background-position: center !important; font-size: 24px; z-index: 25 !important; }
         .tile.villain-da { border: 3px solid #1E90FF !important; background-color: #E0FFFF !important; }
         .tile.villain-ade { border: 3px solid #9932CC !important; background-color: #E6E6FA !important; }
         .tile.villain-bailong { border: 3px solid #FF8C00 !important; animation: bailongHop 0.5s infinite alternate; background-color: #FFFACD !important; }
@@ -335,10 +335,10 @@
         <div id="capture-area">
             <div class="poster-header-pill">
                 <img src="images/gonggu.png" alt="" style="width: 28px; height: 28px; object-fit: contain; mix-blend-mode: multiply;" onerror="this.style.display='none'">
-                <div class="poster-badge">✨ 苗友成绩单 ✨</div>
+                <div class="poster-badge" id="poster-badge-text">✨ 苗友成绩单 ✨</div>
                 <img src="images/xiemiao.png" alt="" style="width: 28px; height: 28px; object-fit: contain; mix-blend-mode: multiply;" onerror="this.style.display='none'">
             </div>
-            <div class="poster-title">开心苗苗乐</div>
+            <div class="poster-title" id="poster-main-title">开心苗苗乐</div>
             <div id="poster-avatar-preview" style="width: 90px; height: 90px; background-size: contain; background-repeat: no-repeat; background-position: center; font-size: 60px; text-align: center; line-height: 90px;">👦</div>
             <div class="poster-role-tag" id="poster-role-text">已解锁：洪文定</div>
             <div class="poster-score-box">
@@ -350,7 +350,7 @@
                 <span>演员谢苗超话</span>
             </div>
         </div>
-        <img id="final-poster-img" src="">
+        <img id="final-poster-img" src="" alt="战绩卡片">
         <div class="save-tip" id="save-tip-text">战绩卡片生成完毕</div>
         <button class="btn-close-poster" onclick="closePoster()">返回游戏</button>
     </div>
@@ -381,19 +381,21 @@
         { score: 80000, name: "苗哥本人",movie: "演员谢苗", avatar: "images/avatar_11.png",fallback: "😎", prop: "images/prop_11.png",propFallback: "🎬", ultText: "真打！真狠！真解恨！动作宇宙主宰！" }
     ];
 
+    // 🌟 反派专属切图配置
     const VILLAINS = [
-        { type: 'da', name: "大块头", icon: "🧊", skillDesc: "【冰块阻碍】需在其周围相邻消除或特效波及2次方可碎裂！", hp: 2 },
-        { type: 'ade', name: "阿德", icon: "🟣", skillDesc: "【毒液蔓延】回合不清理会向周围吞噬有效空间！", hp: 1 },
-        { type: 'bailong', name: "柏龙", icon: "🥎", skillDesc: "【乱跑毛球】覆盖棋子且每步随机乱跑！", hp: 1 }
+        { type: 'da', name: "大块头", image: "images/villain_da.png", icon: "🧊", skillDesc: "【冰块阻碍】需在其周围相邻消除或特效波及2次方可碎裂！", hp: 2 },
+        { type: 'ade', name: "阿德", image: "images/villain_ade.png", icon: "🟣", skillDesc: "【毒液蔓延】回合不清理会向周围吞噬有效空间！", hp: 1 },
+        { type: 'bailong', name: "柏龙", image: "images/villain_bailong.png", icon: "🥎", skillDesc: "【乱跑毛球】覆盖棋子且每步随机乱跑！", hp: 1 }
     ];
 
+    // 🌟 友军专属立绘配置
     const ALLIES_POOL = [
         { 
             id: 'gongwei', 
             name: "巩伟（《给爸爸的信》）", 
             skillName: "父子同心", 
             desc: "技能：瞬间点名清除场上的 2 个敌对反派目标！", 
-            avatar: "images/avatar_3.png",
+            avatar: "images/gongwei.png",
             speech: "“老爸，父子同心，其利断金！”"
         },
         { 
@@ -401,7 +403,7 @@
             name: "纳文（《火遮眼》）", 
             skillName: "JUDO冠军", 
             desc: "技能：清剿毒瘤！本阶段不再出现阿德，且场上阿德全部清除！", 
-            avatar: "images/avatar_10.png",
+            avatar: "images/nawen.png",
             speech: "“绝对压制，杂碎清零！”"
         }
     ];
@@ -436,7 +438,8 @@
         usedAlliesInCurrentStage: [],
         noNewVillainUntil: 0,
         noAdeUntil: 0,
-        bgmEnabled: true
+        bgmEnabled: true,
+        isGameOver: false
     };
 
     let board = [], domTiles = [], lastSwapPos = null, idleTimer = null;
@@ -532,17 +535,27 @@
         return tile;
     }
 
-    // 🌟 反派渲染彻底拦截：先清空普通背景再 return，同时在异步 onload 处加双重防窜锁
+    // 🌟 反派优先读取专属切图，失败降级显示 Emoji；彻底杜绝普通贴图异步覆盖
     function updateTileDOMVisual(r, c, data) {
         const tile = domTiles[r][c];
         if (!tile) return;
         
         let villain = gameState.activeVillains.find(v => v.r === r && v.c === c);
         if (villain) {
-            tile.style.backgroundImage = 'none';
             tile.className = `tile is-villain villain-${villain.type}`;
-            tile.innerText = villain.icon;
-            return; // 强制拦截，绝对不走普通贴图覆盖
+            const vImg = new Image();
+            vImg.src = villain.image;
+            vImg.onload = () => {
+                if (gameState.activeVillains.some(v => v.r === r && v.c === c)) {
+                    tile.style.backgroundImage = `url('${villain.image}')`;
+                    tile.innerText = '';
+                }
+            };
+            vImg.onerror = () => {
+                tile.style.backgroundImage = 'none';
+                tile.innerText = villain.icon;
+            };
+            return;
         }
 
         tile.classList.remove('is-villain', 'villain-da', 'villain-ade', 'villain-bailong');
@@ -601,7 +614,7 @@
     const gridContainer = document.getElementById('grid-container');
 
     gridContainer.addEventListener('pointerdown', (e) => {
-        if (gameState.isAnimating || activeDragTool) return;
+        if (gameState.isAnimating || activeDragTool || gameState.isGameOver) return;
         resetIdleTimer();
         const rect = gridContainer.getBoundingClientRect();
         const clientX = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
@@ -623,7 +636,7 @@
     });
 
     gridContainer.addEventListener('pointermove', (e) => {
-        if (!touchStartCoord || gameState.isAnimating) return;
+        if (!touchStartCoord || gameState.isAnimating || gameState.isGameOver) return;
         const clientX = e.clientX !== undefined ? e.clientX : (e.touches ? e.touches[0].clientX : 0);
         const clientY = e.clientY !== undefined ? e.clientY : (e.touches ? e.touches[0].clientY : 0);
 
@@ -742,6 +755,8 @@
         await applyGravity(); 
         triggerVillainActiveSkills(); 
 
+        if (checkAdeGameOver()) return;
+
         lastSwapPos = null; 
         const nextInfo = analyzeMatches();
         if (nextInfo.toRemove.size > 0) { 
@@ -825,6 +840,13 @@
     }
 
     function checkDeadlock() {
+        if (gameState.isGameOver) return;
+        const totalCells = ROWS * COLS;
+        const villainCount = gameState.activeVillains.length;
+        const freeCount = totalCells - villainCount;
+
+        if (freeCount <= 10) return;
+
         if (!findAValidMove()) {
             showToast('🔄 盘面无解，自动洗牌重排中...');
             playCuteSFX('explode');
@@ -841,6 +863,7 @@
     }
 
     function spawnVillainIfNeeded() {
+        if (gameState.isGameOver) return;
         if (gameState.activeVillains.length < 3 && Math.random() < 0.35) {
             let availableTemplates = VILLAINS.filter(v => {
                 if (v.type === 'ade' && Date.now() < gameState.noAdeUntil) return false;
@@ -859,7 +882,7 @@
             if (emptySpots.length > 0) {
                 let spot = emptySpots[Math.floor(Math.random() * emptySpots.length)];
                 let vTemplate = availableTemplates[Math.floor(Math.random() * availableTemplates.length)];
-                gameState.activeVillains.push({ r: spot.r, c: spot.c, type: vTemplate.type, name: vTemplate.name, icon: vTemplate.icon, hp: vTemplate.type === 'da' ? 2 : 1 });
+                gameState.activeVillains.push({ r: spot.r, c: spot.c, type: vTemplate.type, name: vTemplate.name, icon: vTemplate.icon, image: vTemplate.image, hp: vTemplate.type === 'da' ? 2 : 1 });
                 refreshAllDOMVisuals();
                 triggerScreenShake();
                 showToast(`⚠️ 警报！【${vTemplate.name}】降临！`);
@@ -871,8 +894,8 @@
         }
     }
 
-    // 🌟 阿德毒液蔓延无上限逻辑
     function triggerVillainActiveSkills() {
+        if (gameState.isGameOver) return;
         if (Date.now() < gameState.noAdeUntil) return;
 
         const newAdes = [];
@@ -889,15 +912,17 @@
                                        newAdes.some(na => na.r === nr && na.c === nc);
 
                     if (inBounds && !isOccupied) {
-                        newAdes.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', hp: 1 });
+                        board[nr][nc] = null;
+                        const vTemplate = VILLAINS.find(item => item.type === 'ade');
+                        newAdes.push({ r: nr, c: nc, type: 'ade', name: '阿德', icon: '🟣', image: vTemplate ? vTemplate.image : 'images/villain_ade.png', hp: 1 });
                         showToast('🟣 【毒液蔓延】吞噬了新的格子！');
                         break;
                     }
                 }
             } else if (v.type === 'bailong') {
-                let dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
-                let dir = dirs[Math.floor(Math.random() * dirs.length)];
-                let nr = v.r + dir.r, nc = v.c + dir.c;
+                const dirs = [{r:-1,c:0},{r:1,c:0},{r:0,c:-1},{r:0,c:1}];
+                const dir = dirs[Math.floor(Math.random() * dirs.length)];
+                const nr = v.r + dir.r, nc = v.c + dir.c;
                 if (nr >= 0 && nr < ROWS && nc >= 0 && nc < COLS && !gameState.activeVillains.some(av => av.r === nr && av.c === nc)) {
                     v.r = nr; v.c = nc;
                     showToast('🥎 【声东击西】闪现换位！');
@@ -910,6 +935,36 @@
         }
 
         refreshAllDOMVisuals();
+    }
+
+    function checkAdeGameOver() {
+        if (gameState.isGameOver) return true;
+        const totalCells = ROWS * COLS;
+        const occupied = gameState.activeVillains.length;
+        const remainingSpaces = totalCells - occupied;
+
+        if (remainingSpaces <= 3) {
+            gameState.isGameOver = true;
+            gameState.isAnimating = true;
+            triggerScreenShake();
+            playCuteSFX('explode');
+            showToast('🟣 棋盘已被完全吞噬！');
+            setTimeout(() => {
+                showEasterEggPoster();
+            }, 600);
+            return true;
+        }
+        return false;
+    }
+
+    function showEasterEggPoster() {
+        const badge = document.getElementById('poster-badge-text');
+        const mainTitle = document.getElementById('poster-main-title');
+        badge.innerText = '💀 特殊彩蛋：全盘失守 💀';
+        mainTitle.innerText = '故意呢吧';
+        mainTitle.style.color = '#9932CC';
+
+        openPosterModal(true);
     }
 
     function checkVillainDamage(r, c) {
@@ -1058,7 +1113,7 @@
 
     async function triggerCharacterUltimate() {
         const ring = document.getElementById('avatar-container');
-        if (!ring.classList.contains('ready') || gameState.isAnimating) {
+        if (!ring.classList.contains('ready') || gameState.isAnimating || gameState.isGameOver) {
             showToast('⚠️ 奥义未就绪，请通过战力突破解锁！');
             return;
         }
@@ -1103,7 +1158,7 @@
     }
 
     document.getElementById('refresh-tool').onclick = async () => {
-        if (gameState.isAnimating || gameState.props.refresh <= 0) return; 
+        if (gameState.isAnimating || gameState.props.refresh <= 0 || gameState.isGameOver) return; 
         gameState.props.refresh--; updatePropUI(); gameState.isAnimating = true; gameState.globalCombo = 0; playCuteSFX('explode');
         for (let r = 0; r < ROWS; r++) { for (let c = 0; c < COLS; c++) {
             if (gameState.activeVillains.some(v => v.r === r && v.c === c)) continue;
@@ -1123,7 +1178,7 @@
     function setupToolDrag(btnId, type) {
         const btn = document.getElementById(btnId);
         btn.addEventListener('pointerdown', (e) => {
-            if (gameState.props[type] <= 0 || gameState.isAnimating) return;
+            if (gameState.props[type] <= 0 || gameState.isAnimating || gameState.isGameOver) return;
             e.preventDefault(); activeDragTool = type;
             ghostIcon.innerText = type === 'hammer' ? '🔨' : '💣';
             
@@ -1234,6 +1289,7 @@
         const data = getSaves()[key]; if(!data) return;
         gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
         gameState.usedAlliesInCurrentStage = data.usedAlliesInCurrentStage || [];
+        gameState.isGameOver = false;
         document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); updateAllySideAvatars();
         board = data.board; initSize(); gridContainer.innerHTML = ''; domTiles = [];
         for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} closeSettings(); showToast('存档读取成功');
@@ -1245,6 +1301,7 @@
         if (saved) {
             const data = JSON.parse(saved); gameState.score = data.score; gameState.currentStage = data.currentStage; gameState.props = data.props; gameState.activeVillains = data.activeVillains || [];
             gameState.usedAlliesInCurrentStage = data.usedAlliesInCurrentStage || [];
+            gameState.isGameOver = false;
             document.getElementById('score').innerText = gameState.score; applyEvolution(gameState.currentStage); updatePropUI(); updateAllySideAvatars(); board = data.board; initSize();
             for (let r = 0; r < ROWS; r++) { domTiles[r] = []; for (let c = 0; c < COLS; c++) { createBgCell(r, c); createTileDOM(r, c, board[r][c]); }} return true;
         } return false;
@@ -1254,6 +1311,7 @@
         localStorage.removeItem('miaoAutoSaveV2');
         gameState.score = 0; gameState.currentStage = 0; gameState.props = { hammer: 2, bomb: 2, refresh: 2 }; gameState.activeVillains = [];
         gameState.usedAlliesInCurrentStage = [];
+        gameState.isGameOver = false;
         document.getElementById('avatar-container').classList.remove('ready');
         document.getElementById('score').innerText = gameState.score;
         applyEvolution(0); updatePropUI(); updateAllySideAvatars();
@@ -1298,7 +1356,7 @@
     }
 
     function showHintMove() {
-        if (gameState.isAnimating) return;
+        if (gameState.isAnimating || gameState.isGameOver) return;
         const hint = findAValidHintMove();
         if (hint) {
             domTiles[hint.r1][hint.c1]?.classList.add('hint-pulse');
@@ -1318,7 +1376,7 @@
         for (let r = 0; r < ROWS; r++) {
             for (let c = 0; c < COLS; c++) {
                 if (c < COLS - 1 && checkSwap(r, c, r, c + 1)) return { r1: r, c1: c, r2: r, c2: c + 1 };
-                if (r < ROWS - 1 && checkSwap(r, c, r + 1, c)) return { r1: r, c1: c, r2: r + 1, c2: c };
+                if (r < ROWS - 1 && checkSwap(r, c, r + 1, c)) return { r1: r, c1: c, r2: r, c2: c + 1 };
             }
         }
         return null;
@@ -1354,18 +1412,117 @@
     function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.opacity = 1; setTimeout(()=> t.style.opacity = 0, 2000); }
     function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
 
-    document.getElementById('camera-toggle').onclick = () => {
-        document.getElementById('poster-mask').style.display = 'flex'; 
-        document.getElementById('poster-score').innerText = gameState.score; 
-        document.getElementById('poster-role-text').innerText = `已解锁：${EVOLUTION[gameState.currentStage].name} 《${EVOLUTION[gameState.currentStage].movie}》`;
-        
-        const prev = document.getElementById('poster-avatar-preview');
+    function generatePosterDataURL(isEasterEgg = false) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 680;
+        canvas.height = 840;
+        const ctx = canvas.getContext('2d');
+
+        ctx.fillStyle = '#FFF5E1';
+        ctx.strokeStyle = '#FAD6A5';
+        ctx.lineWidth = 8;
+        roundRect(ctx, 10, 10, 660, 820, 36);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#FAD6A5';
+        ctx.lineWidth = 4;
+        roundRect(ctx, 90, 40, 500, 60, 30);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#8B5A2B';
+        ctx.font = 'bold 26px PingFang SC, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(isEasterEgg ? '💀 特殊彩蛋：全盘失守 💀' : '✨ 苗友成绩单 ✨', 340, 80);
+
+        ctx.fillStyle = isEasterEgg ? '#9932CC' : '#D2691E';
+        ctx.font = '900 44px PingFang SC, sans-serif';
+        ctx.fillText(isEasterEgg ? '故意呢吧' : '开心苗苗乐', 340, 160);
+
         const currentData = EVOLUTION[gameState.currentStage];
-        prev.style.backgroundImage = 'none'; prev.innerText = currentData.fallback;
-        const posterImgTest = new Image(); posterImgTest.src = currentData.avatar;
-        posterImgTest.onload = () => { prev.style.backgroundImage = `url('${currentData.avatar}')`; prev.innerText = ''; };
+        ctx.font = '110px Apple Color Emoji, Segoe UI Emoji, sans-serif';
+        ctx.fillText(currentData.fallback || '👦', 340, 300);
+
+        ctx.fillStyle = '#FFF0F5';
+        ctx.strokeStyle = '#FFB6C1';
+        ctx.lineWidth = 3;
+        roundRect(ctx, 100, 340, 480, 56, 28);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#D2691E';
+        ctx.font = 'bold 26px PingFang SC, sans-serif';
+        ctx.fillText(`已解锁：${currentData.name} 《${currentData.movie}》`, 340, 378);
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#DEB887';
+        ctx.lineWidth = 4;
+        roundRect(ctx, 80, 430, 520, 220, 24);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#8B5A2B';
+        ctx.font = 'bold 24px PingFang SC, sans-serif';
+        ctx.fillText('历史最高战力', 340, 480);
+
+        ctx.fillStyle = isEasterEgg ? '#9932CC' : '#D2691E';
+        ctx.font = '900 80px Arial Black, sans-serif';
+        ctx.fillText(gameState.score, 340, 580);
+
+        ctx.fillStyle = '#CD853F';
+        ctx.font = 'bold 22px PingFang SC, sans-serif';
+        ctx.fillText('演员谢苗超话 · 制作：林科森 | 制图：老周', 340, 740);
+
+        return canvas.toDataURL('image/png');
+    }
+
+    function roundRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+    }
+
+    function openPosterModal(isEasterEgg = false) {
+        const mask = document.getElementById('poster-mask');
+        const captureArea = document.getElementById('capture-area');
+        const finalImg = document.getElementById('final-poster-img');
+        const tipText = document.getElementById('save-tip-text');
+
+        mask.style.display = 'flex';
+        captureArea.style.display = 'none';
+
+        const imgData = generatePosterDataURL(isEasterEgg);
+        finalImg.src = imgData;
+        finalImg.style.display = 'block';
+
+        tipText.innerText = '长按上方卡片即可保存到相册';
+    }
+
+    document.getElementById('camera-toggle').onclick = () => {
+        const badge = document.getElementById('poster-badge-text');
+        const mainTitle = document.getElementById('poster-main-title');
+        badge.innerText = '✨ 苗友成绩单 ✨';
+        mainTitle.innerText = '开心苗苗乐';
+        mainTitle.style.color = '#D2691E';
+        openPosterModal(false);
     };
-    function closePoster() { document.getElementById('poster-mask').style.display = 'none'; }
+
+    function closePoster() { 
+        document.getElementById('poster-mask').style.display = 'none'; 
+        if (gameState.isGameOver) {
+            restartGame();
+        }
+    }
 </script>
 </body>
 </html>
