@@ -819,7 +819,11 @@
         let firstMatch = Array.from(toRemove)[0];
         if (firstMatch) { 
             let [fr, fc] = firstMatch.split(',').map(Number); 
-            showComboPopup(fr, fc, gameState.globalCombo); 
+            const hasDirectionalSpecial = newSpecials.length > 0 || Array.from(toRemove).some(key => {
+                const [sr, sc] = key.split(',').map(Number);
+                return board[sr][sc] && (board[sr][sc].effect === 'row' || board[sr][sc].effect === 'col');
+            });
+            showComboPopup(fr, fc, gameState.globalCombo, !hasDirectionalSpecial); 
         } else { 
             playCuteSFX('match'); 
         }
@@ -1579,7 +1583,7 @@
         propTest.onload = () => { prop.style.backgroundImage = `url('${currentData.prop}')`; prop.innerText = ''; };
     }
 
-    function showComboPopup(r, c, comboLevel) {
+    function showComboPopup(r, c, comboLevel, playGenericAudio = true) {
         if (comboLevel < 1) return;
         const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
         const span = document.createElement('div'); 
@@ -1594,7 +1598,7 @@
         playCuteSFX('combo', comboLevel);
 
         // 普通 combo 统一从 combo_1～combo_6 随机播放。
-        playCustomAudio(AUDIO_POOL.xiemiaoCombo.slice(0, 6));
+        if (playGenericAudio) playCustomAudio(AUDIO_POOL.xiemiaoCombo.slice(0, 6));
     }
 
     function resetIdleTimer() {
