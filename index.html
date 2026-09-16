@@ -450,11 +450,62 @@
     let audioCtx = null;
     let gameEntered = false;
 
+    // 复用播放器，并在用户点击时解锁，供消除动画后的异步事件使用。
+    const customAudioPlayers = new Map();
+    const customAudioPaths = [...Object.values(AUDIO_POOL.villains).flat(),
+        ...Object.values(AUDIO_POOL.allies).flat(), ...AUDIO_POOL.bailongDefeated,
+        ...AUDIO_POOL.adeGameOver, ...AUDIO_POOL.xiemiaoCombo];
+    customAudioPaths.forEach(path => {
+        const audio = new Audio(path);
+        audio.preload = 'auto';
+        customAudioPlayers.set(path, { audio, unlocked: false, priming: false, pending: false });
+    });
+
+    function startCustomAudio(player) {
+        const audio = player.audio;
+        audio.volume = 1;
+        audio.currentTime = 0;
+        audio.play().then(() => { player.unlocked = true; }).catch(error => {
+            if (error.name !== 'AbortError') console.warn('音效播放失败:', audio.src, error);
+        });
+    }
+
+    function unlockCustomAudio() {
+        customAudioPlayers.forEach(player => {
+            if (player.unlocked || player.priming) return;
+            player.priming = true;
+            player.audio.volume = 0;
+            player.audio.play().then(() => {
+                player.audio.pause();
+                player.audio.currentTime = 0;
+                player.audio.volume = 1;
+                player.unlocked = true;
+                player.priming = false;
+                if (player.pending) {
+                    player.pending = false;
+                    startCustomAudio(player);
+                }
+            }).catch(error => {
+                player.priming = false;
+                player.audio.volume = 1;
+                if (player.pending) {
+                    player.pending = false;
+                    startCustomAudio(player);
+                }
+                console.warn('音效尚未解锁:', player.audio.src, error);
+            });
+        });
+    }
+    document.addEventListener('pointerdown', unlockCustomAudio, { capture: true });
+    document.addEventListener('click', unlockCustomAudio, { capture: true });
+
     function playCustomAudio(audioArray) {
         if (!audioArray || audioArray.length === 0) return;
-        const randomIndex = Math.floor(Math.random() * audioArray.length);
-        const audio = new Audio(audioArray[randomIndex]);
-        audio.play().catch(e => console.warn('自定义音频被拦截:', e));
+        const path = audioArray[Math.floor(Math.random() * audioArray.length)];
+        const player = customAudioPlayers.get(path);
+        if (!player) return;
+        if (player.priming) { player.pending = true; return; }
+        startCustomAudio(player);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
