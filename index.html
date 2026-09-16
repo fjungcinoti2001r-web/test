@@ -494,7 +494,7 @@
             if (!supportsBufferedAudio || !audioCtx) return;
             if (!effectGain) {
                 effectGain = audioCtx.createGain();
-                effectGain.gain.value = 1.8;
+                effectGain.gain.value = 1.4;
                 const limiter = audioCtx.createDynamicsCompressor();
                 limiter.threshold.value = -3;
                 limiter.knee.value = 0;
@@ -510,7 +510,7 @@
             const bgm = document.getElementById('bgm');
             if (bgm && !bgmSource) {
                 bgmGain = audioCtx.createGain();
-                bgmGain.gain.value = 0.15;
+                bgmGain.gain.value = 0.1;
                 bgmGain.connect(audioCtx.destination);
                 bgmSource = audioCtx.createMediaElementSource(bgm);
                 bgmSource.connect(bgmGain);
@@ -946,11 +946,13 @@
 
     function triggerSpecial(r, c, effect, toRemoveSet) {
         playCuteSFX('explode');
-        if (effect === 'row' || effect === 'cross') { 
+        if (effect === 'row' || effect === 'cross') {
+            playCustomAudio(['audio/combo_7.mp3']);
             createBlastVisual('row', r, c);
             for(let ic=0; ic<COLS; ic++) processBlastCell(r, ic, toRemoveSet); 
         }
-        if (effect === 'col' || effect === 'cross') { 
+        if (effect === 'col' || effect === 'cross') {
+            playCustomAudio(['audio/combo_8.mp3']);
             createBlastVisual('col', r, c);
             for(let ir=0; ir<ROWS; ir++) processBlastCell(ir, c, toRemoveSet); 
         }
@@ -1038,7 +1040,7 @@
 
         gameState.activeVillains.forEach(v => {
             if (v.type === 'ade') {
-                if (Date.now() < gameState.noAdeUntil || newAdes.length >= 2) return;
+                if (Date.now() < gameState.noAdeUntil || newAdes.length >= 1) return;
                 const dirs = [{r:-1,c:0}, {r:1,c:0}, {r:0,c:-1}, {r:0,c:1}];
                 dirs.sort(() => Math.random() - 0.5);
 
@@ -1578,7 +1580,7 @@
     }
 
     function showComboPopup(r, c, comboLevel) {
-        if (comboLevel < 2) return;
+        if (comboLevel < 1) return;
         const word = COMBO_WORDS[Math.floor(Math.random() * COMBO_WORDS.length)];
         const span = document.createElement('div'); 
         span.className = 'combo-text'; 
@@ -1591,17 +1593,8 @@
         
         playCuteSFX('combo', comboLevel);
 
-        if (comboLevel >= 2) {
-            let selectedPool = [];
-            if (comboLevel <= 4) {
-                selectedPool = [AUDIO_POOL.xiemiaoCombo[0], AUDIO_POOL.xiemiaoCombo[1], AUDIO_POOL.xiemiaoCombo[2]];
-            } else if (comboLevel <= 6) {
-                selectedPool = [AUDIO_POOL.xiemiaoCombo[3], AUDIO_POOL.xiemiaoCombo[4], AUDIO_POOL.xiemiaoCombo[5]];
-            } else {
-                selectedPool = [AUDIO_POOL.xiemiaoCombo[6], AUDIO_POOL.xiemiaoCombo[7]];
-            }
-            playCustomAudio(selectedPool);
-        }
+        // 普通 combo 统一从 combo_1～combo_6 随机播放。
+        playCustomAudio(AUDIO_POOL.xiemiaoCombo.slice(0, 6));
     }
 
     function resetIdleTimer() {
