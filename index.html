@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>苗哥的衣橱·演员谢苗超话</title>
+    <style>
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; margin: 0; padding: 0; touch-action: manipulation; }
+        
+        html, body {
+            width: 100vw; height: 100vh; height: 100dvh; overflow: hidden;
+            background-color: #FFF8EA; color: #5C4033; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(#FAD6A5 10%, transparent 11%); background-size: 24px 24px;
+        }
+
+        /* 初始页弹窗 */
+        #intro-mask {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #FFF5E1 0%, #FFEFD5 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 99999; text-align: center; padding: 20px; transition: opacity 0.35s ease-out;
+        }
+        .intro-content {
+            display: flex; flex-direction: column; align-items: center; gap: 14px;
+            animation: introBounce 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes introBounce {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .intro-title-1 { font-size: 32px; font-weight: 900; color: #D2691E; letter-spacing: 2px; text-shadow: 0 4px 10px rgba(210, 105, 30, 0.2); }
+        .intro-title-2 {
+            display: flex; align-items: center; gap: 8px; font-size: 14px; color: #8B5A2B; font-weight: bold;
+            background: rgba(255, 255, 255, 0.8); padding: 5px 16px; border-radius: 30px; border: 2px solid #FAD6A5;
+        }
+        .logo-wrap {
+            width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #DEB887;
+            display: inline-flex; justify-content: center; align-items: center; background: #FF7043;
+            overflow: hidden; flex-shrink: 0;
+        }
+        .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
+        .badge-text { font-size: 14px; font-weight: 900; color: #FFF; line-height: 1; }
+        .intro-title-3 { font-size: 11px; color: #CD853F; font-weight: bold; letter-spacing: 1px; background: rgba(255, 255, 255, 0.75); padding: 4px 14px; border-radius: 20px; border: 1px dashed #DEB887; }
+        
+        .intro-enter-btn {
+            margin-top: 10px; padding: 10px 38px; background-color: #3CB371; color: white;
+            font-size: 18px; font-weight: 900; border: none; border-radius: 30px; cursor: pointer;
+            box-shadow: 0 5px 0 #2E8B57, 0 8px 16px rgba(60, 179, 113, 0.3); transition: transform 0.1s;
+            animation: pulseBtn 1.8s infinite;
+        }
+        .intro-enter-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #2E8B57; }
+        @keyframes pulseBtn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+        /* 手机主容器 */
+        #arcade-container {
+            width: 100vw; max-width: 440px; height: 100vh; height: 100dvh; display: flex; flex-direction: column;
+            background-color: #FFFFFF; border-left: 2px solid #FAD6A5; border-right: 2px solid #FAD6A5;
+            box-shadow: 0 0 25px rgba(200, 180, 160, 0.4); position: relative; overflow: hidden;
+        }
+
+        /* 顶部导航栏 */
+        .top-bar {
+            width: 100%; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;
+            background: #FFEFD5; border-bottom: 2px solid #DEB887; z-index: 20; flex-shrink: 0;
+        }
+        .header-layout { display: flex; align-items: center; gap: 8px; }
+        .title-group h1 { font-size: 15px; color: #D2691E; font-weight: 900; margin: 0; line-height: 1.2; }
+        .subtitle { font-size: 9px; color: #8B5A2B; font-weight: bold; }
+        
+        .icon-btn {
+            width: 34px; height: 34px; background: #FFF; border: 2px solid #DEB887; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 15px; cursor: pointer;
+            box-shadow: 0 2px 0 #E2BA8B; transition: transform 0.1s; flex-shrink: 0;
+        }
+        .icon-btn:active { transform: translateY(2px); box-shadow: none; }
+
+        /* 模特主舞台 */
+        #top-stage {
+            height: 44%; min-height: 230px; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
+            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+            background-color: #FFFDF9; border-bottom: 3px solid #DEB887; overflow: hidden;
+        }
+        #stage-bg-canvas { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; opacity: 0.55; }
+
+        /* 模特立绘容器：统一宽高比 (600x700 比例) */
+        #model-display {
+            position: relative; width: 220px; height: 256px; z-index: 2; margin-bottom: -4px;
+            display: flex; justify-content: center; align-items: flex-end;
+        }
+        .model-layer {
+            position: absolute; width: 100%; height: 100%; bottom: 0; left: 0;
+            pointer-events: none;
+        }
+        .model-layer img {
+            width: 100%; height: 100%; object-fit: contain; display: block;
+        }
+
+        /* 桌面与摆件 */
+        #desk {
+            width: 100%; height: 26px; z-index: 5; display: flex; justify-content: center; align-items: flex-start;
+            background: linear-gradient(180deg, #E6C291 0%, #D4A86C 100%); border-top: 3px solid #CD853F; border-bottom: 2px solid #5C4033;
+        }
+        #desk-prop { width: 30px; height: 30px; margin-top: -15px; font-size: 18px; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25)); }
+
+        /* 下部双层菜单区域 */
+        #wardrobe-wrapper {
+            flex: 1; display: flex; flex-direction: column; background: #FFFDF9; position: relative; overflow: hidden;
+        }
+
+        /* 第一层大模式菜单 */
+        .mode-tabs {
+            display: flex; justify-content: space-between; gap: 6px; padding: 8px 10px 4px 10px;
+            background: #FFFDF9; flex-shrink: 0;
+        }
+        .mode-btn {
+            flex: 1; padding: 7px 4px; border-radius: 10px; font-size: 12px; font-weight: 900;
+            border: 2px solid #DEB887; background: #FFF5E1; color: #8B5A2B; cursor: pointer;
+            text-align: center; white-space: nowrap; box-shadow: 0 2px 0 #DEB887; transition: all 0.15s;
+        }
+        .mode-btn.active-scatter {
+            background: #3CB371; border-color: #2E8B57; color: #FFF; box-shadow: 0 2px 0 #1E6B37;
+        }
+        .mode-btn.active-suit {
+            background: #FF8C00; border-color: #D2691E; color: #FFF; box-shadow: 0 2px 0 #8B4513;
+        }
+        .mode-btn.active-archive {
+            background: #FF6B81; border-color: #E84158; color: #FFF; box-shadow: 0 2px 0 #C23646;
+        }
+
+        /* 第二层胶囊分类标签 */
+        .part-pills {
+            display: flex; gap: 6px; padding: 6px 10px; overflow-x: auto; scrollbar-width: none;
+            background: #FFFDF9; border-bottom: 1.5px solid #F0E0CE; flex-shrink: 0;
+        }
+        .part-pills::-webkit-scrollbar { display: none; }
+        .pill-btn {
+            padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 900;
+            border: 1.5px solid #DEB887; background: #FFF; color: #8B5A2B; cursor: pointer; white-space: nowrap;
+        }
+        .pill-btn.active {
+            background: #FF7F00; border-color: #CC6600; color: #FFF;
+        }
+
+        /* 竖向长方形大卡片橱窗网格 */
+        .cards-scroll-container {
+            flex: 1; padding: 10px; overflow-x: auto; overflow-y: hidden;
+            display: flex; gap: 10px; scrollbar-width: none; align-items: stretch;
+        }
+        .cards-scroll-container::-webkit-scrollbar { display: none; }
+        
+        .tall-card {
+            width: 86px; flex-shrink: 0; background: #FFF; border: 2px solid #EADBCE; border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+            cursor: pointer; padding: 10px 4px; box-shadow: 0 3px 0 #E2BA8B; transition: transform 0.1s, border-color 0.15s;
+        }
+        .tall-card:active { transform: translateY(2px); box-shadow: none; }
+        .tall-card.selected {
+            border: 2.5px solid #FF5500; background: #FFF7ED; box-shadow: 0 3px 0 #FF5500;
+        }
+        .card-icon {
+            font-size: 32px; line-height: 1; display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px;
+        }
+        .card-icon img { width: 100%; height: 100%; object-fit: contain; }
+        .card-title {
+            font-size: 11px; font-weight: 900; color: #5C4033; text-align: center;
+            line-height: 1.3; word-break: break-all; padding: 0 2px;
+        }
+
+        /* 快捷底栏 */
+        #bottom-tools {
+            padding: 6px 12px; background: #FFEFD5; border-top: 2px solid #DEB887;
+            display: flex; justify-content: space-around; align-items: center; flex-shrink: 0;
+            padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+        }
+        .tool-btn {
+            padding: 7px 22px; border-radius: 20px; font-size: 13px; font-weight: 900; color: white;
+            border: none; cursor: pointer; display: flex; align-items: center; gap: 4px;
+        }
+        .btn-random { background: #4169E1; box-shadow: 0 3px 0 #27408B; }
+        .btn-reset { background: #9370DB; box-shadow: 0 3px 0 #6A5ACD; }
+        .btn-random:active, .btn-reset:active { transform: translateY(2px); box-shadow: none; }
+
+        /* 触屏火花 */
+        .touch-sparkle {
+            position: fixed; pointer-events: none; z-index: 999999;
+            font-size: 18px; line-height: 1; transform: translate(-50%, -50%);
+            animation: sparklePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes sparklePop {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.6) rotate(0deg); }
+            100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.4) rotate(var(--rot)); }
+        }
+
+        /* 拍立得写真弹窗 */
+        #poster-mask {
+            display: none; position: fixed; inset: 0;
+            background: rgba(40, 20, 10, 0.75); backdrop-filter: blur(4px); z-index: 10000;
+            flex-direction: column; justify-content: center; align-items: center; padding: 16px;
+        }
+
+        /* 拍立得卡纸结构 (1:1 正方形) */
+        #polaroid-card-box {
+            width: 84vw;
+            max-width: 320px;
+            aspect-ratio: 1 / 1;
+            height: auto;
+            border-radius: 22px;
+            background: #FFF5E1;
+            border: 4px solid #FAD6A5;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 10px 8px 10px;
+            position: relative;
+            overflow: hidden;
+            user-select: auto !important;
+            -webkit-user-select: auto !important;
+            -webkit-touch-callout: default !important;
+        }
+
+        /* 拍立得相框 (正方形 1:1 人物居中) */
+        #polaroid-photo-frame {
+            width: 62%;
+            aspect-ratio: 1 / 1;
+            background: #FFF;
+            border: 2px dashed #DEB887;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-top: 2px;
+        }
+
+        /* 可爱倾斜胶带 */
+        .tape {
+            position: absolute; width: 44px; height: 12px;
+            background: rgba(255, 170, 150, 0.85);
+            box-shadow: 0 1px 3px rgba(180, 100, 60, 0.2);
+            border-radius: 2px; z-index: 10; pointer-events: none;
+        }
+        .tape-left { top: -4px; left: -10px; transform: rotate(-28deg); }
+        .tape-right { top: -4px; right: -10px; transform: rotate(28deg); }
+
+        #polaroid-model-inner {
+            width: 100%; height: 100%; position: relative;
+            display: flex; justify-content: center; align-items: flex-end;
+        }
+
+        .polaroid-top-pill {
+            display: inline-flex; align-items: center; justify-content: center; background: #FFF;
+            border-radius: 20px; padding: 2px 10px; border: 1.5px solid #FAD6A5; font-size: 10px;
+            font-weight: 900; color: #8B5A2B;
+        }
+        .polaroid-main-title {
+            font-size: 15px; font-weight: 900; color: #D2691E; line-height: 1.1; margin-top: -2px;
+        }
+        .polaroid-author-text {
+            font-size: 11px; font-weight: 900; color: #D2691E;
+        }
+
+        /* 胶囊标牌：logo + 演员谢苗超话 */
+        .polaroid-badge-pill {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: rgba(255, 255, 255, 0.9); border: 1.5px solid #FAD6A5; border-radius: 16px;
+            padding: 2px 10px 2px 4px;
+        }
+        .badge-logo-mini {
+            width: 18px; height: 18px; border-radius: 50%; background: #FF7043; border: 1px solid #DEB887;
+            display: flex; justify-content: center; align-items: center; font-size: 10px; color: white; font-weight: 900;
+            overflow: hidden;
+        }
+        .badge-logo-mini img { width: 100%; height: 100%; object-fit: contain; }
+        .badge-text-mini { font-size: 10px; font-weight: 900; color: #8B5A2B; }
+        .polaroid-save-hint { font-size: 9px; font-weight: bold; color: #CD853F; letter-spacing: 0.5px; }
+
+        /* 昵称输入区 */
+        .user-id-wrapper {
+            margin-top: 10px; display: flex; align-items: center; gap: 6px;
+            background: #FFF5E1; padding: 4px 6px 4px 10px; border-radius: 20px; border: 1.5px solid #DEB887;
+        }
+        .user-id-wrapper span { font-size: 12px; font-weight: 900; color: #8B5A2B; }
+        .user-id-input {
+            width: 90px; border: none; background: #FFF; outline: none; font-size: 12px; font-weight: bold;
+            color: #D2691E; padding: 3px 6px; border-radius: 10px; text-align: center; border: 1.5px solid #FAD6A5;
+        }
+        .btn-confirm-id {
+            padding: 4px 12px; background-color: #3CB371; border: none; border-radius: 12px;
+            font-size: 12px; font-weight: 900; color: white; cursor: pointer; box-shadow: 0 2px 0 #2E8B57;
+        }
+        .btn-confirm-id:active { transform: translateY(1px); box-shadow: none; }
+        
+        .btn-close-poster {
+            margin-top: 10px; padding: 7px 34px; background-color: #3CB371; border: none; border-radius: 25px;
+            font-size: 14px; font-weight: 900; color: white; box-shadow: 0 4px 0 #2E8B57; cursor: pointer;
+        }
+        .btn-close-poster:active { transform: translateY(2px); box-shadow: none; }
+
+        #toast {
+            position: absolute; top: 65px; left: 50%; transform: translateX(-50%); background: rgba(210, 105, 30, 0.95);
+            color: white; padding: 6px 16px; border-radius: 20px; font-weight: bold; font-size: 13px; z-index: 999;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s; box-shadow: 0 3px 8px rgba(0,0,0,0.2); white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<audio id="bgm-audio" src="audio/bgm.mp3" loop preload="auto"></audio>
+
+<div id="toast">提示信息</div>
+
+<!-- 初始进入界面 -->
+<div id="intro-mask">
+    <div class="intro-content">
+        <div class="intro-title-1">苗哥的衣橱</div>
+        <div class="intro-title-2">
+            <div class="logo-wrap">
+                <img src="images/avatar-logo.png" alt="" onerror="handleLogoFallback(this)">
+            </div>
+            <span>演员谢苗超话</span>
+        </div>
+        <div class="intro-title-3">制作：林科森 | 制图：老周</div>
+        <button class="intro-enter-btn" id="enter-game-btn">点击进入</button>
+    </div>
+</div>
+
+<div id="arcade-container">
+    <div class="top-bar">
+        <div class="header-layout">
+            <div class="logo-wrap">
+                <img src="images/avatar-logo.png" alt="" onerror="handleLogoFallback(this)">
+            </div>
+            <div class="title-group">
+                <h1>苗哥的衣橱</h1>
+                <div class="subtitle">演员谢苗超话</div>
+            </div>
+        </div>
+        <div class="header-layout">
+            <div id="bgm-toggle" class="icon-btn" title="音乐开关">🎵</div>
+            <div id="camera-toggle" class="icon-btn" style="background:#FFE4E1; border-color:#FFB6C1;" title="拍立得写真">📸</div>
+        </div>
+    </div>
+
+    <!-- 模特展示舞台 -->
+    <div id="top-stage">
+        <canvas id="stage-bg-canvas"></canvas>
+        <div id="model-display">
+            <!-- 严格对应 Z-Index 层叠顺序 -->
+            <div class="model-layer" id="layer-body"></div>
+            <div class="model-layer" id="layer-pants"></div>
+            <div class="model-layer" id="layer-shoes"></div>
+            <div class="model-layer" id="layer-top"></div>
+            <div class="model-layer" id="layer-hair"></div>
+            <div class="model-layer" id="layer-face"></div>
+            <div class="model-layer" id="layer-headwear"></div>
+            <div class="model-layer" id="layer-accessory"></div>
+        </div>
+        <div id="desk"><div id="desk-prop">🍵</div></div>
+    </div>
+
+    <!-- 双层菜单区 -->
+    <div id="wardrobe-wrapper">
+        <div class="mode-tabs">
+            <div class="mode-btn active-scatter" id="btn-mode-scatter" onclick="switchMainMode('scatter')">👗 散件搭配</div>
+            <div class="mode-btn" id="btn-mode-suit" onclick="switchMainMode('suit')">👑 套装一键换穿</div>
+            <div class="mode-btn" id="btn-mode-archive" onclick="switchMainMode('archive')">💖 私服存档位</div>
+        </div>
+
+        <div class="part-pills" id="part-pills"></div>
+        <div class="cards-scroll-container" id="cards-container"></div>
+
+        <div id="bottom-tools">
+            <button class="tool-btn btn-random" onclick="randomizeOutfit()">🎲 随机搭配</button>
+            <button class="tool-btn btn-reset" onclick="resetOutfit()">🔄 恢复经典</button>
+        </div>
+    </div>
+</div>
+
+<!-- 拍立得写真弹窗 (1:1 纯净呈现) -->
+<div id="poster-mask">
+    <div id="polaroid-card-box">
+        <div class="polaroid-top-pill">✨ 苗哥私服写真 ✨</div>
+        <div class="polaroid-main-title">苗哥的衣橱</div>
+        
+        <!-- 1:1 正方形相框与可爱斜角胶带 -->
+        <div id="polaroid-photo-frame">
+            <div class="tape tape-left"></div>
+            <div class="tape tape-right"></div>
+            <div id="polaroid-model-inner"></div>
+        </div>
+
+        <div class="polaroid-author-text" id="polaroid-author">搭配师：林科森</div>
+
+        <!-- 胶囊标牌：logo + 演员谢苗超话 -->
+        <div class="polaroid-badge-pill">
+            <div class="badge-logo-mini">
+                <img src="images/avatar-logo.png" alt="" onerror="this.style.display='none';this.parentElement.innerText='苗';">
+            </div>
+            <span class="badge-text-mini">演员谢苗超话</span>
+        </div>
+
+        <div class="polaroid-save-hint">· 截图或长按保存图片 ·</div>
+    </div>
+
+    <!-- 昵称/ID 输入配置及确认按键 -->
+    <div class="user-id-wrapper">
+        <span>署名ID：</span>
+        <input type="text" id="nickname-input" class="user-id-input" maxlength="8" value="林科森" placeholder="输入ID" />
+        <button class="btn-confirm-id" onclick="updatePhotoWithID()">确认</button>
+    </div>
+    <button class="btn-close-poster" onclick="closePoster()">返回衣橱</button>
+</div>
+
+<script>
+    function handleLogoFallback(img) {
+        img.style.display = 'none';
+        const parent = img.parentElement;
+        if (!parent.querySelector('.badge-text')) {
+            const span = document.createElement('span');
+            span.className = 'badge-text';
+            span.innerText = '苗';
+            parent.appendChild(span);
+        }
+    }
+
+    /* ========================================================
+       【重点：可随时扩展的换装配置池】
+       后面要加新衣服，只需在对应的数组中追加对象即可！
+       img: 填入图片切片路径（如 images/top/top_05.png）
+       svg: 当图片还未放置时的内置矢量兜底
+       ======================================================== */
+    const WARDROBE_PARTS = {
+        hair: [
+            { id: 'hair_1', name: '少林双丸髻', icon: '🍡', img: 'images/hair/hair_01.png', svg: `<path d="M70,75 Q110,25 150,75 Q110,50 70,75 Z" fill="#2B1B17"/><circle cx="68" cy="65" r="9" fill="#2B1B17"/><circle cx="152" cy="65" r="9" fill="#2B1B17"/>` },
+            { id: 'hair_2', name: '硬朗寸头', icon: '👦', img: 'images/hair/hair_02.png', svg: `<path d="M75,70 Q110,38 145,70 Q110,55 75,70 Z" fill="#1C1C1C"/>` },
+            { id: 'hair_3', name: '活力侧扎马尾', icon: '👱', img: 'images/hair/hair_03.png', svg: `<path d="M70,75 Q110,25 150,75 Q110,50 70,75 Z" fill="#2B1B17"/><path d="M145,70 Q180,60 165,115 Q150,90 145,70 Z" fill="#2B1B17"/>` },
+            { id: 'hair_4', name: '武侠红束带长发', icon: '🦱', img: 'images/hair/hair_04.png', svg: `<path d="M65,80 Q110,20 155,80 Q165,135 150,145 Q110,50 70,145 Z" fill="#2B1B17"/><rect x="100" y="45" width="20" height="6" fill="#B22222"/>` }
+        ],
+        face: [
+            { id: 'face_1', name: '英气坚定', icon: '😊', img: 'images/face/face_01.png', svg: `<circle cx="95" cy="88" r="4" fill="#333"/><circle cx="125" cy="88" r="4" fill="#333"/><path d="M102,104 Q110,112 118,104" stroke="#D2691E" stroke-width="2.5" fill="none"/>` },
+            { id: 'face_2', name: '正气严肃', icon: '😠', img: 'images/face/face_02.png', svg: `<line x1="88" y1="80" x2="102" y2="85" stroke="#333" stroke-width="2.5"/><line x1="132" y1="80" x2="118" y2="85" stroke="#333" stroke-width="2.5"/><circle cx="95" cy="90" r="3.5" fill="#333"/><circle cx="125" cy="90" r="3.5" fill="#333"/><line x1="104" y1="106" x2="116" y2="106" stroke="#C85A17" stroke-width="2.5"/>` },
+            { id: 'face_3', name: '听风辨位', icon: '🕶️', img: 'images/face/face_03.png', svg: `<path d="M85,82 Q110,75 135,82 L138,95 L82,95 Z" fill="#2B2B2B"/><path d="M102,106 Q110,110 118,106" stroke="#8B4513" stroke-width="2" fill="none"/>` },
+            { id: 'face_4', name: '沉着自信', icon: '😎', img: 'images/face/face_04.png', svg: `<circle cx="95" cy="88" r="4" fill="#333"/><circle cx="125" cy="88" r="4" fill="#333"/><path d="M100,102 Q110,116 120,102" stroke="#B83800" stroke-width="2.5" fill="none"/>` }
+        ],
+        top: [
+            { id: 'top_1', name: '洪家练功长袍', icon: '🥋', img: 'images/top/top_01.png', svg: `<path d="M80,120 L140,120 L152,185 L68,185 Z" fill="#F4F0EA"/><path d="M80,120 L110,145 L140,120" stroke="#CD853F" stroke-width="3" fill="none"/><rect x="80" y="150" width="60" height="9" fill="#B22222"/>` },
+            { id: 'top_2', name: '红旗警服夹克', icon: '👮', img: 'images/top/top_02.png', svg: `<path d="M75,120 L145,120 L150,185 L70,185 Z" fill="#2F4F4F"/><polygon points="92,120 110,142 128,120 110,128" fill="#FFF"/><rect x="85" y="158" width="50" height="6" fill="#1C1C1C"/>` },
+            { id: 'top_3', name: '成瞎子黑棉袍', icon: '🧥', img: 'images/top/top_03.png', svg: `<path d="M70,120 L150,120 L158,190 L62,190 Z" fill="#2B2625"/><rect x="78" y="152" width="64" height="12" fill="#8B4513"/>` },
+            { id: 'top_4', name: '深蓝战术背心', icon: '👔', img: 'images/top/top_04.png', svg: `<path d="M78,120 L142,120 L148,185 L72,185 Z" fill="#1E293B"/><line x1="110" y1="120" x2="110" y2="185" stroke="#94A3B8" stroke-width="2.5"/>` }
+        ],
+        pants: [
+            { id: 'pants_1', name: '绑腿白练功裤', icon: '👖', img: 'images/pants/pants_01.png', svg: `<path d="M85,182 L135,182 L142,230 L114,230 L110,195 L106,230 L78,230 Z" fill="#EAE5DE"/>` },
+            { id: 'pants_2', name: '特勤黑色长裤', icon: '🩳', img: 'images/pants/pants_02.png', svg: `<path d="M84,182 L136,182 L140,230 L114,230 L110,195 L106,230 L80,230 Z" fill="#1E1E1E"/>` },
+            { id: 'pants_3', name: '布衣游侠宽裤', icon: '🟤', img: 'images/pants/pants_03.png', svg: `<path d="M82,182 L138,182 L144,230 L115,230 L110,195 L105,230 L76,230 Z" fill="#3D322C"/>` }
+        ],
+        shoes: [
+            { id: 'shoes_1', name: '少林十方踏云鞋', icon: '👞', img: 'images/shoes/shoes_01.png', svg: `<ellipse cx="88" cy="235" rx="12" ry="6" fill="#1C1C1C"/><ellipse cx="132" cy="235" rx="12" ry="6" fill="#1C1C1C"/>` },
+            { id: 'shoes_2', name: '耐磨战术作战靴', icon: '🥾', img: 'images/shoes/shoes_02.png', svg: `<rect x="76" y="226" width="22" height="14" rx="4" fill="#333"/><rect x="122" y="226" width="22" height="14" rx="4" fill="#333"/>` }
+        ],
+        headwear: [
+            { id: 'head_none', name: '不戴头饰', icon: '❌', img: '', svg: `` },
+            { id: 'head_1', name: '游侠防风斗笠', icon: '👒', img: 'images/headwear/head_01.png', svg: `<ellipse cx="110" cy="55" rx="55" ry="14" fill="#C29B38" stroke="#8A6818" stroke-width="2"/>` },
+            { id: 'head_2', name: '红旗警官大檐帽', icon: '🧢', img: 'images/headwear/head_02.png', svg: `<ellipse cx="110" cy="62" rx="36" ry="12" fill="#2F4F4F"/><circle cx="110" cy="60" r="4" fill="#FFD700"/>` }
+        ],
+        accessory: [
+            { id: 'acc_none', name: '无手持物', icon: '✋', img: '', svg: `` },
+            { id: 'acc_1', name: '夺命少林银枪', icon: '🗡️', img: 'images/accessory/acc_01.png', svg: `<line x1="68" y1="35" x2="68" y2="230" stroke="#C0C0C0" stroke-width="4"/><polygon points="62,35 74,35 68,10" fill="#DC143C"/>` },
+            { id: 'acc_2', name: '听风佩刀', icon: '⚔️', img: 'images/accessory/acc_02.png', svg: `<path d="M152,55 Q160,130 148,210 L144,205 Q155,130 148,55 Z" fill="#4682B4"/>` },
+            { id: 'acc_3', name: '特勤手铐钥匙', icon: '🗝️', img: 'images/accessory/acc_03.png', svg: `<circle cx="152" cy="160" r="8" stroke="#708090" stroke-width="3" fill="none"/><line x1="152" y1="168" x2="152" y2="182" stroke="#708090" stroke-width="3"/>` }
+        ]
+    };
+
+    // 套装数据池（后续加套装在此追加）
+    const SUITS_DATA = [
+        { id: 'suit_1', name: '新少林五祖·文定', icon: '🥋', hair: 'hair_1', face: 'face_1', top: 'top_1', pants: 'pants_1', shoes: 'shoes_1', headwear: 'head_none', acc: 'acc_1', prop: '🍵' },
+        { id: 'suit_2', name: '东北警察·李红旗', icon: '👮', hair: 'hair_2', face: 'face_2', top: 'top_2', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_2', acc: 'acc_3', prop: '🚔' },
+        { id: 'suit_3', name: '目中无人·成瞎子', icon: '🦯', hair: 'hair_3', face: 'face_3', top: 'top_3', pants: 'pants_3', shoes: 'shoes_1', headwear: 'head_1', acc: 'acc_2', prop: '🍶' },
+        { id: 'suit_4', name: '缉恶·黄铭金', icon: '🕶️', hair: 'hair_4', face: 'face_4', top: 'top_4', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_none', acc: 'acc_none', prop: '💼' }
+    ];
+
+    let currentDress = {
+        hair: 'hair_1',
+        face: 'face_1',
+        top: 'top_1',
+        pants: 'pants_1',
+        shoes: 'shoes_1',
+        headwear: 'head_none',
+        accessory: 'acc_1',
+        prop: '🍵'
+    };
+
+    let mainMode = 'scatter'; 
+    let activePart = 'hair';
+    let bgmEnabled = true;
+
+    const partLabels = [
+        { key: 'hair', label: '发型' },
+        { key: 'face', label: '五官' },
+        { key: 'top', label: '上装' },
+        { key: 'pants', label: '下装' },
+        { key: 'shoes', label: '鞋袜' },
+        { key: 'headwear', label: '头饰' },
+        { key: 'accessory', label: '配饰' }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('enter-game-btn').addEventListener('click', enterGame);
+        document.getElementById('intro-mask').addEventListener('click', enterGame);
+        initStageCanvas();
+        renderPartPills();
+        renderCardsView();
+        updateModelDisplay();
+
+        window.addEventListener('pointerdown', spawnTouchSparkle, { passive: true });
+
+        // BGM 播放与静音切换
+        const bgmAudio = document.getElementById('bgm-audio');
+        const bgmBtn = document.getElementById('bgm-toggle');
+        bgmBtn.addEventListener('click', () => {
+            bgmEnabled = !bgmEnabled;
+            if (bgmEnabled) {
+                bgmAudio.play().catch(()=>{});
+                bgmBtn.innerText = '🎵';
+                showToast('🎵 苗哥背景音乐已开启');
+            } else {
+                bgmAudio.pause();
+                bgmBtn.innerText = '🔇';
+                showToast('🔇 背景音乐已静音');
+            }
+            playCuteSound('pop');
+        });
+
+        // 拍照写真
+        document.getElementById('camera-toggle').addEventListener('click', openPolaroidPoster);
+    });
+
+    function enterGame(e) {
+        if (e) e.stopPropagation();
+        playCuteSound('enter');
+        
+        // 尝试启动背景音乐
+        const bgm = document.getElementById('bgm-audio');
+        if (bgm && bgmEnabled) {
+            bgm.play().catch(()=>{});
+        }
+
+        const mask = document.getElementById('intro-mask');
+        mask.style.opacity = '0';
+        setTimeout(() => mask.style.display = 'none', 350);
+        showToast('✨ 欢迎来到苗哥的衣橱！');
+    }
+
+    function initStageCanvas() {
+        const cvs = document.getElementById('stage-bg-canvas');
+        const ctx = cvs.getContext('2d');
+        cvs.width = 440;
+        cvs.height = 320;
+        ctx.fillStyle = '#FFF5E1';
+        ctx.fillRect(0, 0, cvs.width, cvs.height);
+        ctx.strokeStyle = '#FAD6A5';
+        ctx.lineWidth = 1.5;
+        for (let x = 0; x < cvs.width; x += 22) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, cvs.height); ctx.stroke();
+        }
+        for (let y = 0; y < cvs.height; y += 22) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cvs.width, y); ctx.stroke();
+        }
+    }
+
+    function spawnTouchSparkle(e) {
+        const icons = ['✨', '⭐', '🌟', '💖', '🎈'];
+        const star = document.createElement('div');
+        star.className = 'touch-sparkle';
+        star.innerText = icons[Math.floor(Math.random() * icons.length)];
+        const x = e.clientX || (e.touches && e.touches[0].clientX);
+        const y = e.clientY || (e.touches && e.touches[0].clientY);
+        star.style.left = `${x}px`;
+        star.style.top = `${y}px`;
+        star.style.setProperty('--dx', `${(Math.random() - 0.5) * 50}px`);
+        star.style.setProperty('--dy', `${-20 - Math.random() * 40}px`);
+        star.style.setProperty('--rot', `${(Math.random() - 0.5) * 60}deg`);
+        document.body.appendChild(star);
+        setTimeout(() => star.remove(), 600);
+    }
+
+    function switchMainMode(mode) {
+        mainMode = mode;
+        playCuteSound('tap');
+        document.getElementById('btn-mode-scatter').className = `mode-btn ${mode === 'scatter' ? 'active-scatter' : ''}`;
+        document.getElementById('btn-mode-suit').className = `mode-btn ${mode === 'suit' ? 'active-suit' : ''}`;
+        document.getElementById('btn-mode-archive').className = `mode-btn ${mode === 'archive' ? 'active-archive' : ''}`;
+
+        const pillsWrap = document.getElementById('part-pills');
+        pillsWrap.style.display = (mode === 'scatter') ? 'flex' : 'none';
+
+        renderCardsView();
+    }
+
+    function renderPartPills() {
+        const wrap = document.getElementById('part-pills');
+        wrap.innerHTML = '';
+        partLabels.forEach(p => {
+            const pill = document.createElement('div');
+            pill.className = `pill-btn ${p.key === activePart ? 'active' : ''}`;
+            pill.innerText = p.label;
+            pill.onclick = () => {
+                activePart = p.key;
+                playCuteSound('tap');
+                renderPartPills();
+                renderCardsView();
+            };
+            wrap.appendChild(pill);
+        });
+    }
+
+    function renderCardsView() {
+        const container = document.getElementById('cards-container');
+        container.innerHTML = '';
+
+        if (mainMode === 'scatter') {
+            const items = WARDROBE_PARTS[activePart] || [];
+            items.forEach(item => {
+                const card = document.createElement('div');
+                const isSel = currentDress[activePart] === item.id;
+                card.className = `tall-card ${isSel ? 'selected' : ''}`;
+                card.innerHTML = `
+                    <div class="card-icon">${item.icon}</div>
+                    <div class="card-title">${item.name}</div>
+                `;
+                card.onclick = () => {
+                    playCuteSound('dress');
+                    currentDress[activePart] = item.id;
+                    showToast(`已装扮：${item.name}`);
+                    updateModelDisplay();
+                    renderCardsView();
+                };
+                container.appendChild(card);
+            });
+        } else if (mainMode === 'suit') {
+            SUITS_DATA.forEach(suit => {
+                const card = document.createElement('div');
+                const isSel = currentDress.top === suit.top && currentDress.hair === suit.hair;
+                card.className = `tall-card ${isSel ? 'selected' : ''}`;
+                card.innerHTML = `
+                    <div class="card-icon">${suit.icon}</div>
+                    <div class="card-title">${suit.name}</div>
+                `;
+                card.onclick = () => {
+                    playCuteSound('fanfare');
+                    currentDress.hair = suit.hair;
+                    currentDress.face = suit.face;
+                    currentDress.top = suit.top;
+                    currentDress.pants = suit.pants;
+                    currentDress.shoes = suit.shoes;
+                    currentDress.headwear = suit.headwear;
+                    currentDress.accessory = suit.acc;
+                    currentDress.prop = suit.prop;
+                    showToast(`✨ 一键换上【${suit.name}】全套！`);
+                    updateModelDisplay();
+                    renderCardsView();
+                };
+                container.appendChild(card);
+            });
+        } else if (mainMode === 'archive') {
+            const saves = JSON.parse(localStorage.getItem('miao_closet_saves') || '[null,null,null,null]');
+            for (let i = 0; i < 4; i++) {
+                const card = document.createElement('div');
+                const hasSave = saves[i] !== null;
+                card.className = `tall-card ${hasSave ? 'selected' : ''}`;
+                card.innerHTML = `
+                    <div class="card-icon">${hasSave ? '💖' : '➕'}</div>
+                    <div class="card-title">${hasSave ? `私服槽位 ${i+1}<br><span style="font-size:9px;color:#3CB371;">点击穿上</span>` : `存入槽位 ${i+1}`}</div>
+                `;
+                card.onclick = () => {
+                    if (hasSave) {
+                        playCuteSound('dress');
+                        currentDress = { ...saves[i] };
+                        updateModelDisplay();
+                        showToast(`💖 已穿上私服存档 ${i+1}！`);
+                    } else {
+                        playCuteSound('fanfare');
+                        saves[i] = { ...currentDress };
+                        localStorage.setItem('miao_closet_saves', JSON.stringify(saves));
+                        showToast(`💾 当前穿搭已存入槽位 ${i+1}！`);
+                        renderCardsView();
+                    }
+                };
+                container.appendChild(card);
+            }
+        }
+    }
+
+    // 智能层叠渲染：优先渲染切片图片，若无图片自动使用内置矢量
+    function renderLayerContent(item, fallbackSvg) {
+        if (item && item.img) {
+            return `<img src="${item.img}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><svg viewBox="0 0 220 260" width="100%" height="100%" style="display:none;">${fallbackSvg}</svg>`;
+        }
+        return `<svg viewBox="0 0 220 260" width="100%" height="100%">${fallbackSvg}</svg>`;
+    }
+
+    function updateModelDisplay() {
+        // 素体
+        document.getElementById('layer-body').innerHTML = `
+            <img src="images/body/body_base.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+            <svg viewBox="0 0 220 260" width="100%" height="100%">
+                <circle cx="110" cy="90" r="32" fill="#FBD5B5"/>
+                <rect x="102" y="112" width="16" height="18" fill="#E8BD96"/>
+                <path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#FBD5B5"/>
+            </svg>
+        `;
+
+        const getObj = (list, id) => list.find(it => it.id === id);
+
+        const pantsObj = getObj(WARDROBE_PARTS.pants, currentDress.pants);
+        document.getElementById('layer-pants').innerHTML = renderLayerContent(pantsObj, pantsObj ? pantsObj.svg : '');
+
+        const shoesObj = getObj(WARDROBE_PARTS.shoes, currentDress.shoes);
+        document.getElementById('layer-shoes').innerHTML = renderLayerContent(shoesObj, shoesObj ? shoesObj.svg : '');
+
+        const topObj = getObj(WARDROBE_PARTS.top, currentDress.top);
+        document.getElementById('layer-top').innerHTML = renderLayerContent(topObj, topObj ? topObj.svg : '');
+
+        const hairObj = getObj(WARDROBE_PARTS.hair, currentDress.hair);
+        document.getElementById('layer-hair').innerHTML = renderLayerContent(hairObj, hairObj ? hairObj.svg : '');
+
+        const faceObj = getObj(WARDROBE_PARTS.face, currentDress.face);
+        document.getElementById('layer-face').innerHTML = renderLayerContent(faceObj, faceObj ? faceObj.svg : '');
+
+        const headObj = getObj(WARDROBE_PARTS.headwear, currentDress.headwear);
+        document.getElementById('layer-headwear').innerHTML = renderLayerContent(headObj, headObj ? headObj.svg : '');
+
+        const accObj = getObj(WARDROBE_PARTS.accessory, currentDress.accessory);
+        document.getElementById('layer-accessory').innerHTML = renderLayerContent(accObj, accObj ? accObj.svg : '');
+
+        document.getElementById('desk-prop').innerText = currentDress.prop;
+    }
+
+    function randomizeOutfit() {
+        playCuteSound('fanfare');
+        const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        currentDress.hair = rand(WARDROBE_PARTS.hair).id;
+        currentDress.face = rand(WARDROBE_PARTS.face).id;
+        currentDress.top = rand(WARDROBE_PARTS.top).id;
+        currentDress.pants = rand(WARDROBE_PARTS.pants).id;
+        currentDress.shoes = rand(WARDROBE_PARTS.shoes).id;
+        currentDress.headwear = rand(WARDROBE_PARTS.headwear).id;
+        currentDress.accessory = rand(WARDROBE_PARTS.accessory).id;
+        updateModelDisplay();
+        renderCardsView();
+        showToast('🎲 灵感爆发！随机穿搭完毕！');
+    }
+
+    function resetOutfit() {
+        playCuteSound('pop');
+        currentDress = {
+            hair: 'hair_1',
+            face: 'face_1',
+            top: 'top_1',
+            pants: 'pants_1',
+            shoes: 'shoes_1',
+            headwear: 'head_none',
+            accessory: 'acc_1',
+            prop: '🍵'
+        };
+        updateModelDisplay();
+        renderCardsView();
+        showToast('🔄 已恢复经典少林造型');
+    }
+
+    // 拍立得写真秒开：克隆主舞台模型，无任何异步拦截
+    function openPolaroidPoster() {
+        playCuteSound('shutter');
+        const stageModel = document.getElementById('model-display');
+        const polaroidTarget = document.getElementById('polaroid-model-inner');
+        
+        // 瞬间同步主舞台完整搭配内容
+        polaroidTarget.innerHTML = stageModel.innerHTML;
+        
+        const userNick = (document.getElementById('nickname-input')?.value.trim()) || '林科森';
+        document.getElementById('polaroid-author').innerText = `搭配师：${userNick}`;
+
+        document.getElementById('poster-mask').style.display = 'flex';
+    }
+
+    function updatePhotoWithID() {
+        playCuteSound('tap');
+        const userNick = (document.getElementById('nickname-input')?.value.trim()) || '林科森';
+        document.getElementById('polaroid-author').innerText = `搭配师：${userNick}`;
+        showToast('✅ 搭配师署名已更新');
+    }
+
+    function closePoster() {
+        playCuteSound('pop');
+        document.getElementById('poster-mask').style.display = 'none';
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        clearTimeout(toastTimer);
+        t.innerText = msg;
+        t.style.opacity = 1;
+        toastTimer = setTimeout(() => t.style.opacity = 0, 1800);
+    }
+
+    // 可爱音效合成驱动
+    function playCuteSound(type) {
+        try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return;
+            const ctx = new AudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            const now = ctx.currentTime;
+
+            if (type === 'tap') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+                osc.start(now); osc.stop(now + 0.05);
+            } else if (type === 'dress') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.12);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+                osc.start(now); osc.stop(now + 0.12);
+            } else if (type === 'fanfare') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.06);
+                osc.frequency.setValueAtTime(880, now + 0.12);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now); osc.stop(now + 0.2);
+            } else if (type === 'shutter') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now); osc.stop(now + 0.08);
+            } else {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now); osc.stop(now + 0.08);
+            }
+        } catch(e) {}
+    }
+</script>
+</body>
+</html>
