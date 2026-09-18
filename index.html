@@ -83,7 +83,7 @@
         }
         #stage-bg-canvas { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; opacity: 0.55; }
 
-        /* 模特立绘容器：统一宽高比 (600x700 比例) */
+        /* 模特立绘容器 */
         #model-display {
             position: relative; width: 220px; height: 256px; z-index: 2; margin-bottom: -4px;
             display: flex; justify-content: center; align-items: flex-end;
@@ -200,82 +200,23 @@
             flex-direction: column; justify-content: center; align-items: center; padding: 16px;
         }
 
-        /* 拍立得卡纸结构 (1:1 正方形) */
-        #polaroid-card-box {
-            width: 84vw;
+        /* 拍立得真实渲染图片容器 (1:1 正方形) */
+        #final-photo-img {
+            width: 82vw;
             max-width: 320px;
             aspect-ratio: 1 / 1;
             height: auto;
             border-radius: 22px;
-            background: #FFF5E1;
-            border: 4px solid #FAD6A5;
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 10px 8px 10px;
-            position: relative;
-            overflow: hidden;
+            display: block;
+            background: #FFF5E1;
+            /* 关键：开放所有长按与手势，允许手机系统原生拦截 */
             user-select: auto !important;
             -webkit-user-select: auto !important;
             -webkit-touch-callout: default !important;
+            touch-action: auto !important;
+            cursor: pointer;
         }
-
-        /* 拍立得相框 (正方形 1:1 人物居中) */
-        #polaroid-photo-frame {
-            width: 62%;
-            aspect-ratio: 1 / 1;
-            background: #FFF;
-            border: 2px dashed #DEB887;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            margin-top: 2px;
-        }
-
-        /* 可爱倾斜胶带 */
-        .tape {
-            position: absolute; width: 44px; height: 12px;
-            background: rgba(255, 170, 150, 0.85);
-            box-shadow: 0 1px 3px rgba(180, 100, 60, 0.2);
-            border-radius: 2px; z-index: 10; pointer-events: none;
-        }
-        .tape-left { top: -4px; left: -10px; transform: rotate(-28deg); }
-        .tape-right { top: -4px; right: -10px; transform: rotate(28deg); }
-
-        #polaroid-model-inner {
-            width: 100%; height: 100%; position: relative;
-            display: flex; justify-content: center; align-items: flex-end;
-        }
-
-        .polaroid-top-pill {
-            display: inline-flex; align-items: center; justify-content: center; background: #FFF;
-            border-radius: 20px; padding: 2px 10px; border: 1.5px solid #FAD6A5; font-size: 10px;
-            font-weight: 900; color: #8B5A2B;
-        }
-        .polaroid-main-title {
-            font-size: 15px; font-weight: 900; color: #D2691E; line-height: 1.1; margin-top: -2px;
-        }
-        .polaroid-author-text {
-            font-size: 11px; font-weight: 900; color: #D2691E;
-        }
-
-        /* 胶囊标牌：logo + 演员谢苗超话 */
-        .polaroid-badge-pill {
-            display: inline-flex; align-items: center; gap: 4px;
-            background: rgba(255, 255, 255, 0.9); border: 1.5px solid #FAD6A5; border-radius: 16px;
-            padding: 2px 10px 2px 4px;
-        }
-        .badge-logo-mini {
-            width: 18px; height: 18px; border-radius: 50%; background: #FF7043; border: 1px solid #DEB887;
-            display: flex; justify-content: center; align-items: center; font-size: 10px; color: white; font-weight: 900;
-            overflow: hidden;
-        }
-        .badge-logo-mini img { width: 100%; height: 100%; object-fit: contain; }
-        .badge-text-mini { font-size: 10px; font-weight: 900; color: #8B5A2B; }
-        .polaroid-save-hint { font-size: 9px; font-weight: bold; color: #CD853F; letter-spacing: 0.5px; }
 
         /* 昵称输入区 */
         .user-id-wrapper {
@@ -298,6 +239,9 @@
             font-size: 14px; font-weight: 900; color: white; box-shadow: 0 4px 0 #2E8B57; cursor: pointer;
         }
         .btn-close-poster:active { transform: translateY(2px); box-shadow: none; }
+
+        /* 离屏合成绘制 Canvas (720x720 严格 1:1) */
+        #hidden-canvas { display: none; }
 
         #toast {
             position: absolute; top: 65px; left: 50%; transform: translateX(-50%); background: rgba(210, 105, 30, 0.95);
@@ -322,7 +266,7 @@
             </div>
             <span>演员谢苗超话</span>
         </div>
-        <div class="intro-title-3">制作：林科森 | 制图：左海</div>
+        <div class="intro-title-3">制作：林科森 | 制图：老周</div>
         <button class="intro-enter-btn" id="enter-game-btn">点击进入</button>
     </div>
 </div>
@@ -348,7 +292,6 @@
     <div id="top-stage">
         <canvas id="stage-bg-canvas"></canvas>
         <div id="model-display">
-            <!-- 严格对应 Z-Index 层叠顺序 -->
             <div class="model-layer" id="layer-body"></div>
             <div class="model-layer" id="layer-pants"></div>
             <div class="model-layer" id="layer-shoes"></div>
@@ -379,32 +322,10 @@
     </div>
 </div>
 
-<!-- 拍立得写真弹窗 (1:1 纯净呈现) -->
+<!-- 拍立得写真弹窗 (直接呈现合成好的图片，完美支持长按保存) -->
 <div id="poster-mask">
-    <div id="polaroid-card-box">
-        <div class="polaroid-top-pill">✨ 苗哥私服写真 ✨</div>
-        <div class="polaroid-main-title">苗哥的衣橱</div>
-        
-        <!-- 1:1 正方形相框与可爱斜角胶带 -->
-        <div id="polaroid-photo-frame">
-            <div class="tape tape-left"></div>
-            <div class="tape tape-right"></div>
-            <div id="polaroid-model-inner"></div>
-        </div>
-
-        <div class="polaroid-author-text" id="polaroid-author">搭配师：林科森</div>
-
-        <!-- 胶囊标牌：logo + 演员谢苗超话 -->
-        <div class="polaroid-badge-pill">
-            <div class="badge-logo-mini">
-                <img src="images/avatar-logo.png" alt="" onerror="this.style.display='none';this.parentElement.innerText='苗';">
-            </div>
-            <span class="badge-text-mini">演员谢苗超话</span>
-        </div>
-
-        <div class="polaroid-save-hint">· 截图或长按保存图片 ·</div>
-    </div>
-
+    <img id="final-photo-img" alt="苗哥的衣橱写真" src="" />
+    
     <!-- 昵称/ID 输入配置及确认按键 -->
     <div class="user-id-wrapper">
         <span>署名ID：</span>
@@ -413,6 +334,9 @@
     </div>
     <button class="btn-close-poster" onclick="closePoster()">返回衣橱</button>
 </div>
+
+<!-- 离屏合成绘制 Canvas (720x720 严格 1:1) -->
+<canvas id="hidden-canvas" width="720" height="720"></canvas>
 
 <script>
     function handleLogoFallback(img) {
@@ -426,12 +350,6 @@
         }
     }
 
-    /* ========================================================
-       【重点：可随时扩展的换装配置池】
-       后面要加新衣服，只需在对应的数组中追加对象即可！
-       img: 填入图片切片路径（如 images/top/top_05.png）
-       svg: 当图片还未放置时的内置矢量兜底
-       ======================================================== */
     const WARDROBE_PARTS = {
         hair: [
             { id: 'hair_1', name: '少林双丸髻', icon: '🍡', img: 'images/hair/hair_01.png', svg: `<path d="M70,75 Q110,25 150,75 Q110,50 70,75 Z" fill="#2B1B17"/><circle cx="68" cy="65" r="9" fill="#2B1B17"/><circle cx="152" cy="65" r="9" fill="#2B1B17"/>` },
@@ -473,7 +391,6 @@
         ]
     };
 
-    // 套装数据池（后续加套装在此追加）
     const SUITS_DATA = [
         { id: 'suit_1', name: '新少林五祖·文定', icon: '🥋', hair: 'hair_1', face: 'face_1', top: 'top_1', pants: 'pants_1', shoes: 'shoes_1', headwear: 'head_none', acc: 'acc_1', prop: '🍵' },
         { id: 'suit_2', name: '东北警察·李红旗', icon: '👮', hair: 'hair_2', face: 'face_2', top: 'top_2', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_2', acc: 'acc_3', prop: '🚔' },
@@ -516,7 +433,7 @@
 
         window.addEventListener('pointerdown', spawnTouchSparkle, { passive: true });
 
-        // BGM 播放与静音切换
+        // BGM 控制
         const bgmAudio = document.getElementById('bgm-audio');
         const bgmBtn = document.getElementById('bgm-toggle');
         bgmBtn.addEventListener('click', () => {
@@ -533,7 +450,6 @@
             playCuteSound('pop');
         });
 
-        // 拍照写真
         document.getElementById('camera-toggle').addEventListener('click', openPolaroidPoster);
     });
 
@@ -541,7 +457,6 @@
         if (e) e.stopPropagation();
         playCuteSound('enter');
         
-        // 尝试启动背景音乐
         const bgm = document.getElementById('bgm-audio');
         if (bgm && bgmEnabled) {
             bgm.play().catch(()=>{});
@@ -693,7 +608,6 @@
         }
     }
 
-    // 智能层叠渲染：优先渲染切片图片，若无图片自动使用内置矢量
     function renderLayerContent(item, fallbackSvg) {
         if (item && item.img) {
             return `<img src="${item.img}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><svg viewBox="0 0 220 260" width="100%" height="100%" style="display:none;">${fallbackSvg}</svg>`;
@@ -702,7 +616,6 @@
     }
 
     function updateModelDisplay() {
-        // 素体
         document.getElementById('layer-body').innerHTML = `
             <img src="images/body/body_base.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
             <svg viewBox="0 0 220 260" width="100%" height="100%">
@@ -770,26 +683,182 @@
         showToast('🔄 已恢复经典少林造型');
     }
 
-    // 拍立得写真秒开：克隆主舞台模型，无任何异步拦截
+    /* ========================================================
+       【核心修复】：离屏纯净 Canvas 同步绘制，生成 1:1 图片 Base64
+       直接注入原生 <img>，彻底打通手机与微信“长按保存到相册”[cite: 1, 6]
+       ======================================================== */
     function openPolaroidPoster() {
         playCuteSound('shutter');
-        const stageModel = document.getElementById('model-display');
-        const polaroidTarget = document.getElementById('polaroid-model-inner');
-        
-        // 瞬间同步主舞台完整搭配内容
-        polaroidTarget.innerHTML = stageModel.innerHTML;
-        
-        const userNick = (document.getElementById('nickname-input')?.value.trim()) || '林科森';
-        document.getElementById('polaroid-author').innerText = `搭配师：${userNick}`;
-
+        renderCanvasToImage();
         document.getElementById('poster-mask').style.display = 'flex';
     }
 
     function updatePhotoWithID() {
         playCuteSound('tap');
-        const userNick = (document.getElementById('nickname-input')?.value.trim()) || '林科森';
-        document.getElementById('polaroid-author').innerText = `搭配师：${userNick}`;
+        renderCanvasToImage();
         showToast('✅ 搭配师署名已更新');
+    }
+
+    function renderCanvasToImage() {
+        const cvs = document.getElementById('hidden-canvas');
+        const ctx = cvs.getContext('2d');
+        const S = 720; // 正方形标准边长
+
+        // 1. 绘制拍立得卡纸底色
+        ctx.fillStyle = '#FFF5E1';
+        ctx.fillRect(0, 0, S, S);
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#FAD6A5';
+        ctx.strokeRect(4, 4, S - 8, S - 8);
+
+        // 2. 绘制顶部徽章与主标题
+        ctx.save();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#FAD6A5';
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.roundRect(S / 2 - 110, 20, 220, 38, [19]);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = '900 18px -apple-system, sans-serif';
+        ctx.fillStyle = '#8B5A2B';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('✨ 苗哥私服写真 ✨', S / 2, 39);
+
+        ctx.font = '900 30px -apple-system, sans-serif';
+        ctx.fillStyle = '#D2691E';
+        ctx.fillText('苗哥的衣橱', S / 2, 88);
+        ctx.restore();
+
+        // 3. 绘制 1:1 居中相框 (420 x 420 正方形)[cite: 7]
+        const frameSize = 420;
+        const frameX = (S - frameSize) / 2; // 150
+        const frameY = 118;
+        ctx.save();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(frameX, frameY, frameSize, frameSize);
+        ctx.lineWidth = 3.5;
+        ctx.strokeStyle = '#DEB887';
+        ctx.setLineDash([10, 8]);
+        ctx.strokeRect(frameX, frameY, frameSize, frameSize);
+        ctx.restore();
+
+        // 4. 绘制可爱手账斜角胶带 (草莓暖粉胶带)
+        function drawCuteTape(cx, cy, angleDeg) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(angleDeg * Math.PI / 180);
+            ctx.fillStyle = 'rgba(255, 175, 155, 0.85)';
+            ctx.shadowColor = 'rgba(180, 100, 60, 0.2)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetY = 2;
+            ctx.beginPath();
+            ctx.roundRect(-42, -10, 84, 20, [4]);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(-38, -7, 76, 14);
+            ctx.restore();
+        }
+        drawCuteTape(frameX + 16, frameY + 16, -26);
+        drawCuteTape(frameX + frameSize - 16, frameY + 16, 26);
+
+        // 5. 组装当前装扮的综合矢量数据[cite: 7]
+        const findSvg = (list, id) => {
+            const obj = list.find(item => item.id === id);
+            return obj ? obj.svg : '';
+        };
+
+        const compositeSvgString = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 260" width="220" height="260">
+                <circle cx="110" cy="90" r="32" fill="#FBD5B5"/>
+                <rect x="102" y="112" width="16" height="18" fill="#E8BD96"/>
+                <path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#FBD5B5"/>
+                ${findSvg(WARDROBE_PARTS.pants, currentDress.pants)}
+                ${findSvg(WARDROBE_PARTS.shoes, currentDress.shoes)}
+                ${findSvg(WARDROBE_PARTS.top, currentDress.top)}
+                ${findSvg(WARDROBE_PARTS.hair, currentDress.hair)}
+                ${findSvg(WARDROBE_PARTS.face, currentDress.face)}
+                ${findSvg(WARDROBE_PARTS.headwear, currentDress.headwear)}
+                ${findSvg(WARDROBE_PARTS.accessory, currentDress.accessory)}
+            </svg>
+        `;
+
+        // 使用纯安全 data:image/svg+xml 绘制到离屏 Canvas，避免同源与 Blob 拦截
+        const encodedSvg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(compositeSvgString);
+        const svgImg = new Image();
+
+        svgImg.onload = function() {
+            // 人物主体在 1:1 相框内绝对居中[cite: 7]
+            const renderW = 310;
+            const renderH = (310 / 220) * 260; // 366px
+            const drawX = frameX + (frameSize - renderW) / 2;
+            const drawY = frameY + (frameSize - renderH) - 8;
+            ctx.drawImage(svgImg, drawX, drawY, renderW, renderH);
+
+            // 6. 绘制署名ID[cite: 8]
+            const userNick = (document.getElementById('nickname-input')?.value.trim()) || '林科森';
+            ctx.save();
+            ctx.font = '900 21px -apple-system, sans-serif';
+            ctx.fillStyle = '#D2691E';
+            ctx.textAlign = 'center';
+            ctx.fillText(`搭配师：${userNick}`, S / 2, 574);
+            ctx.restore();
+
+            // 7. 绘制胶囊标牌与“logo + 演员谢苗超话”[cite: 8, 9]
+            const badgeCenterX = S / 2;
+            const badgeCenterY = 620;
+            const pillW = 200;
+            const pillH = 38;
+
+            ctx.save();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ctx.strokeStyle = '#FAD6A5';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.roundRect(badgeCenterX - pillW / 2, badgeCenterY - pillH / 2, pillW, pillH, [pillH / 2]);
+            ctx.fill();
+            ctx.stroke();
+
+            // Logo 圆标
+            ctx.fillStyle = '#FF7043';
+            ctx.strokeStyle = '#DEB887';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(badgeCenterX - 65, badgeCenterY, 13, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Logo 文字“苗”
+            ctx.font = '900 13px -apple-system, sans-serif';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('苗', badgeCenterX - 65, badgeCenterY);
+
+            // 文字“演员谢苗超话”[cite: 1, 8]
+            ctx.font = 'bold 15px -apple-system, sans-serif';
+            ctx.fillStyle = '#8B5A2B';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('演员谢苗超话', badgeCenterX - 45, badgeCenterY + 1);
+
+            // 下一行提示
+            ctx.font = '900 14px -apple-system, sans-serif';
+            ctx.fillStyle = '#CD853F';
+            ctx.textAlign = 'center';
+            ctx.fillText('· 截图或长按保存图片 ·', S / 2, 672);
+            ctx.restore();
+
+            // 8. 核心输出：转为真实 Base64 PNG 注入 <img>[cite: 1, 6]
+            const photoUrl = cvs.toDataURL('image/png');
+            const targetImg = document.getElementById('final-photo-img');
+            targetImg.src = photoUrl;
+        };
+
+        svgImg.src = encodedSvg;
     }
 
     function closePoster() {
@@ -806,7 +875,6 @@
         toastTimer = setTimeout(() => t.style.opacity = 0, 1800);
     }
 
-    // 可爱音效合成驱动
     function playCuteSound(type) {
         try {
             const AudioCtx = window.AudioContext || window.webkitAudioContext;
