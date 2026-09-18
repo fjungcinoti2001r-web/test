@@ -14,7 +14,7 @@
             background-image: radial-gradient(#FAD6A5 10%, transparent 11%); background-size: 24px 24px;
         }
 
-        /* 初始页弹窗 */
+        /* 初始页弹窗[cite: 12] */
         #intro-mask {
             position: fixed; inset: 0;
             background: linear-gradient(135deg, #FFF5E1 0%, #FFEFD5 100%);
@@ -52,14 +52,14 @@
         .intro-enter-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #2E8B57; }
         @keyframes pulseBtn { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
-        /* 手机主容器 */
+        /* 手机主容器[cite: 12] */
         #arcade-container {
             width: 100vw; max-width: 440px; height: 100vh; height: 100dvh; display: flex; flex-direction: column;
             background-color: #FFFFFF; border-left: 2px solid #FAD6A5; border-right: 2px solid #FAD6A5;
             box-shadow: 0 0 25px rgba(200, 180, 160, 0.4); position: relative; overflow: hidden;
         }
 
-        /* 顶部导航栏 */
+        /* 顶部导航栏[cite: 12] */
         .top-bar {
             width: 100%; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center;
             background: #FFEFD5; border-bottom: 2px solid #DEB887; z-index: 20; flex-shrink: 0;
@@ -75,7 +75,7 @@
         }
         .icon-btn:active { transform: translateY(2px); box-shadow: none; }
 
-        /* 模特主舞台 */
+        /* 模特主舞台[cite: 12] */
         #top-stage {
             height: 44%; min-height: 230px; width: 100%; position: relative; z-index: 10; flex-shrink: 0;
             display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
@@ -83,7 +83,7 @@
         }
         #stage-bg-canvas { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; opacity: 0.55; }
 
-        /* 模特立绘容器 */
+        /* 模特立绘容器[cite: 12] */
         #model-display {
             position: relative; width: 220px; height: 256px; z-index: 2; margin-bottom: -4px;
             display: flex; justify-content: center; align-items: flex-end;
@@ -96,19 +96,18 @@
             width: 100%; height: 100%; object-fit: contain; display: block;
         }
 
-        /* 桌面与摆件 */
+        /* 桌面（已移除摆件）[cite: 12] */
         #desk {
             width: 100%; height: 26px; z-index: 5; display: flex; justify-content: center; align-items: flex-start;
             background: linear-gradient(180deg, #E6C291 0%, #D4A86C 100%); border-top: 3px solid #CD853F; border-bottom: 2px solid #5C4033;
         }
-        #desk-prop { width: 30px; height: 30px; margin-top: -15px; font-size: 18px; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25)); }
 
-        /* 下部双层菜单区域 */
+        /* 下部双层菜单区域[cite: 12] */
         #wardrobe-wrapper {
             flex: 1; display: flex; flex-direction: column; background: #FFFDF9; position: relative; overflow: hidden;
         }
 
-        /* 第一层大模式菜单 */
+        /* 第一层大模式菜单[cite: 12] */
         .mode-tabs {
             display: flex; justify-content: space-between; gap: 6px; padding: 8px 10px 4px 10px;
             background: #FFFDF9; flex-shrink: 0;
@@ -128,7 +127,7 @@
             background: #FF6B81; border-color: #E84158; color: #FFF; box-shadow: 0 2px 0 #C23646;
         }
 
-        /* 第二层胶囊分类标签 */
+        /* 第二层胶囊分类标签[cite: 12] */
         .part-pills {
             display: flex; gap: 6px; padding: 6px 10px; overflow-x: auto; scrollbar-width: none;
             background: #FFFDF9; border-bottom: 1.5px solid #F0E0CE; flex-shrink: 0;
@@ -142,7 +141,7 @@
             background: #FF7F00; border-color: #CC6600; color: #FFF;
         }
 
-        /* 竖向长方形大卡片橱窗网格 */
+        /* 竖向长方形大卡片橱窗网格[cite: 12] */
         .cards-scroll-container {
             flex: 1; padding: 10px; overflow-x: auto; overflow-y: hidden;
             display: flex; gap: 10px; scrollbar-width: none; align-items: stretch;
@@ -168,7 +167,7 @@
             line-height: 1.3; word-break: break-all; padding: 0 2px;
         }
 
-        /* 快捷底栏 */
+        /* 快捷底栏[cite: 12] */
         #bottom-tools {
             padding: 6px 12px; background: #FFEFD5; border-top: 2px solid #DEB887;
             display: flex; justify-content: space-around; align-items: center; flex-shrink: 0;
@@ -182,7 +181,7 @@
         .btn-reset { background: #9370DB; box-shadow: 0 3px 0 #6A5ACD; }
         .btn-random:active, .btn-reset:active { transform: translateY(2px); box-shadow: none; }
 
-        /* 触屏火花 */
+        /* 触屏火花[cite: 12] */
         .touch-sparkle {
             position: fixed; pointer-events: none; z-index: 999999;
             font-size: 18px; line-height: 1; transform: translate(-50%, -50%);
@@ -193,14 +192,14 @@
             100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.4) rotate(var(--rot)); }
         }
 
-        /* 拍立得写真弹窗 */
+        /* 拍立得写真弹窗[cite: 12] */
         #poster-mask {
             display: none; position: fixed; inset: 0;
             background: rgba(40, 20, 10, 0.75); backdrop-filter: blur(4px); z-index: 10000;
             flex-direction: column; justify-content: center; align-items: center; padding: 16px;
         }
 
-        /* 拍立得真实渲染图片容器 (1:1 正方形) */
+        /* 拍立得真实渲染图片容器 (1:1 正方形)[cite: 12] */
         #final-photo-img {
             width: 82vw;
             max-width: 320px;
@@ -210,7 +209,6 @@
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
             display: block;
             background: #FFF5E1;
-            /* 关键：开放所有长按与手势，允许手机系统原生拦截 */
             user-select: auto !important;
             -webkit-user-select: auto !important;
             -webkit-touch-callout: default !important;
@@ -218,7 +216,7 @@
             cursor: pointer;
         }
 
-        /* 昵称输入区 */
+        /* 昵称输入区[cite: 12] */
         .user-id-wrapper {
             margin-top: 10px; display: flex; align-items: center; gap: 6px;
             background: #FFF5E1; padding: 4px 6px 4px 10px; border-radius: 20px; border: 1.5px solid #DEB887;
@@ -240,7 +238,7 @@
         }
         .btn-close-poster:active { transform: translateY(2px); box-shadow: none; }
 
-        /* 离屏合成绘制 Canvas (720x720 严格 1:1) */
+        /* 离屏合成绘制 Canvas[cite: 12] */
         #hidden-canvas { display: none; }
 
         #toast {
@@ -256,7 +254,7 @@
 
 <div id="toast">提示信息</div>
 
-<!-- 初始进入界面 -->
+<!-- 初始进入界面[cite: 12] -->
 <div id="intro-mask">
     <div class="intro-content">
         <div class="intro-title-1">苗哥的衣橱</div>
@@ -288,7 +286,7 @@
         </div>
     </div>
 
-    <!-- 模特展示舞台 -->
+    <!-- 模特展示舞台[cite: 12] -->
     <div id="top-stage">
         <canvas id="stage-bg-canvas"></canvas>
         <div id="model-display">
@@ -301,10 +299,10 @@
             <div class="model-layer" id="layer-headwear"></div>
             <div class="model-layer" id="layer-accessory"></div>
         </div>
-        <div id="desk"><div id="desk-prop">🍵</div></div>
+        <div id="desk"></div>
     </div>
 
-    <!-- 双层菜单区 -->
+    <!-- 双层菜单区[cite: 12] -->
     <div id="wardrobe-wrapper">
         <div class="mode-tabs">
             <div class="mode-btn active-scatter" id="btn-mode-scatter" onclick="switchMainMode('scatter')">👗 散件搭配</div>
@@ -322,11 +320,11 @@
     </div>
 </div>
 
-<!-- 拍立得写真弹窗 (直接呈现合成好的图片，完美支持长按保存) -->
+<!-- 拍立得写真弹窗[cite: 12] -->
 <div id="poster-mask">
     <img id="final-photo-img" alt="苗哥的衣橱写真" src="" />
     
-    <!-- 昵称/ID 输入配置及确认按键 -->
+    <!-- 昵称/ID 输入配置及确认按键[cite: 12] -->
     <div class="user-id-wrapper">
         <span>署名ID：</span>
         <input type="text" id="nickname-input" class="user-id-input" maxlength="8" value="林科森" placeholder="输入ID" />
@@ -335,7 +333,7 @@
     <button class="btn-close-poster" onclick="closePoster()">返回衣橱</button>
 </div>
 
-<!-- 离屏合成绘制 Canvas (720x720 严格 1:1) -->
+<!-- 离屏合成绘制 Canvas[cite: 12] -->
 <canvas id="hidden-canvas" width="720" height="720"></canvas>
 
 <script>
@@ -392,10 +390,10 @@
     };
 
     const SUITS_DATA = [
-        { id: 'suit_1', name: '新少林五祖·文定', icon: '🥋', hair: 'hair_1', face: 'face_1', top: 'top_1', pants: 'pants_1', shoes: 'shoes_1', headwear: 'head_none', acc: 'acc_1', prop: '🍵' },
-        { id: 'suit_2', name: '东北警察·李红旗', icon: '👮', hair: 'hair_2', face: 'face_2', top: 'top_2', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_2', acc: 'acc_3', prop: '🚔' },
-        { id: 'suit_3', name: '目中无人·成瞎子', icon: '🦯', hair: 'hair_3', face: 'face_3', top: 'top_3', pants: 'pants_3', shoes: 'shoes_1', headwear: 'head_1', acc: 'acc_2', prop: '🍶' },
-        { id: 'suit_4', name: '缉恶·黄铭金', icon: '🕶️', hair: 'hair_4', face: 'face_4', top: 'top_4', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_none', acc: 'acc_none', prop: '💼' }
+        { id: 'suit_1', name: '新少林五祖·文定', icon: '🥋', hair: 'hair_1', face: 'face_1', top: 'top_1', pants: 'pants_1', shoes: 'shoes_1', headwear: 'head_none', acc: 'acc_1' },
+        { id: 'suit_2', name: '东北警察·李红旗', icon: '👮', hair: 'hair_2', face: 'face_2', top: 'top_2', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_2', acc: 'acc_3' },
+        { id: 'suit_3', name: '目中无人·成瞎子', icon: '🦯', hair: 'hair_3', face: 'face_3', top: 'top_3', pants: 'pants_3', shoes: 'shoes_1', headwear: 'head_1', acc: 'acc_2' },
+        { id: 'suit_4', name: '缉恶·黄铭金', icon: '🕶️', hair: 'hair_4', face: 'face_4', top: 'top_4', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_none', acc: 'acc_none' }
     ];
 
     let currentDress = {
@@ -405,8 +403,7 @@
         pants: 'pants_1',
         shoes: 'shoes_1',
         headwear: 'head_none',
-        accessory: 'acc_1',
-        prop: '🍵'
+        accessory: 'acc_1'
     };
 
     let mainMode = 'scatter'; 
@@ -572,7 +569,6 @@
                     currentDress.shoes = suit.shoes;
                     currentDress.headwear = suit.headwear;
                     currentDress.accessory = suit.acc;
-                    currentDress.prop = suit.prop;
                     showToast(`✨ 一键换上【${suit.name}】全套！`);
                     updateModelDisplay();
                     renderCardsView();
@@ -647,8 +643,6 @@
 
         const accObj = getObj(WARDROBE_PARTS.accessory, currentDress.accessory);
         document.getElementById('layer-accessory').innerHTML = renderLayerContent(accObj, accObj ? accObj.svg : '');
-
-        document.getElementById('desk-prop').innerText = currentDress.prop;
     }
 
     function randomizeOutfit() {
@@ -675,18 +669,14 @@
             pants: 'pants_1',
             shoes: 'shoes_1',
             headwear: 'head_none',
-            accessory: 'acc_1',
-            prop: '🍵'
+            accessory: 'acc_1'
         };
         updateModelDisplay();
         renderCardsView();
         showToast('🔄 已恢复经典少林造型');
     }
 
-    /* ========================================================
-       【核心修复】：离屏纯净 Canvas 同步绘制，生成 1:1 图片 Base64
-       直接注入原生 <img>，彻底打通手机与微信“长按保存到相册”[cite: 1, 6]
-       ======================================================== */
+    /* 离屏合成绘制 1:1 图片，支持原生保存[cite: 1, 6, 7] */
     function openPolaroidPoster() {
         playCuteSound('shutter');
         renderCanvasToImage();
@@ -702,16 +692,16 @@
     function renderCanvasToImage() {
         const cvs = document.getElementById('hidden-canvas');
         const ctx = cvs.getContext('2d');
-        const S = 720; // 正方形标准边长
+        const S = 720; // 严格 1:1 正方形标准边长[cite: 7]
 
-        // 1. 绘制拍立得卡纸底色
+        // 1. 拍立得卡纸底色
         ctx.fillStyle = '#FFF5E1';
         ctx.fillRect(0, 0, S, S);
         ctx.lineWidth = 8;
         ctx.strokeStyle = '#FAD6A5';
         ctx.strokeRect(4, 4, S - 8, S - 8);
 
-        // 2. 绘制顶部徽章与主标题
+        // 2. 顶部徽章与标题
         ctx.save();
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#FAD6A5';
@@ -732,7 +722,7 @@
         ctx.fillText('苗哥的衣橱', S / 2, 88);
         ctx.restore();
 
-        // 3. 绘制 1:1 居中相框 (420 x 420 正方形)[cite: 7]
+        // 3. 1:1 居中相框 (420 x 420 正方形)[cite: 7]
         const frameSize = 420;
         const frameX = (S - frameSize) / 2; // 150
         const frameY = 118;
@@ -745,7 +735,7 @@
         ctx.strokeRect(frameX, frameY, frameSize, frameSize);
         ctx.restore();
 
-        // 4. 绘制可爱手账斜角胶带 (草莓暖粉胶带)
+        // 4. 可爱倾斜胶带
         function drawCuteTape(cx, cy, angleDeg) {
             ctx.save();
             ctx.translate(cx, cy);
@@ -765,7 +755,7 @@
         drawCuteTape(frameX + 16, frameY + 16, -26);
         drawCuteTape(frameX + frameSize - 16, frameY + 16, 26);
 
-        // 5. 组装当前装扮的综合矢量数据[cite: 7]
+        // 5. 组合当前装扮矢量图[cite: 7]
         const findSvg = (list, id) => {
             const obj = list.find(item => item.id === id);
             return obj ? obj.svg : '';
@@ -786,19 +776,18 @@
             </svg>
         `;
 
-        // 使用纯安全 data:image/svg+xml 绘制到离屏 Canvas，避免同源与 Blob 拦截
         const encodedSvg = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(compositeSvgString);
         const svgImg = new Image();
 
         svgImg.onload = function() {
-            // 人物主体在 1:1 相框内绝对居中[cite: 7]
+            // 人物绝对居中绘制[cite: 7]
             const renderW = 310;
             const renderH = (310 / 220) * 260; // 366px
             const drawX = frameX + (frameSize - renderW) / 2;
             const drawY = frameY + (frameSize - renderH) - 8;
             ctx.drawImage(svgImg, drawX, drawY, renderW, renderH);
 
-            // 6. 绘制署名ID[cite: 8]
+            // 6. 署名ID[cite: 8]
             const userNick = (document.getElementById('nickname-input')?.value.trim()) || '林科森';
             ctx.save();
             ctx.font = '900 21px -apple-system, sans-serif';
@@ -807,7 +796,7 @@
             ctx.fillText(`搭配师：${userNick}`, S / 2, 574);
             ctx.restore();
 
-            // 7. 绘制胶囊标牌与“logo + 演员谢苗超话”[cite: 8, 9]
+            // 7. 胶囊标牌与 logo + 演员谢苗超话[cite: 8, 9]
             const badgeCenterX = S / 2;
             const badgeCenterY = 620;
             const pillW = 200;
@@ -831,7 +820,7 @@
             ctx.fill();
             ctx.stroke();
 
-            // Logo 文字“苗”
+            // Logo 苗字
             ctx.font = '900 13px -apple-system, sans-serif';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'center';
@@ -852,7 +841,7 @@
             ctx.fillText('· 截图或长按保存图片 ·', S / 2, 672);
             ctx.restore();
 
-            // 8. 核心输出：转为真实 Base64 PNG 注入 <img>[cite: 1, 6]
+            // 8. 导出 Base64 到原生 <img>[cite: 1, 6]
             const photoUrl = cvs.toDataURL('image/png');
             const targetImg = document.getElementById('final-photo-img');
             targetImg.src = photoUrl;
