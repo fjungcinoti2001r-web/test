@@ -96,7 +96,7 @@
             width: 100%; height: 100%; object-fit: contain; display: block;
         }
 
-        /* 桌面（已移除摆件）[cite: 13] */
+        /* 桌面[cite: 13] */
         #desk {
             width: 100%; height: 26px; z-index: 5; display: flex; justify-content: center; align-items: flex-start;
             background: linear-gradient(180deg, #E6C291 0%, #D4A86C 100%); border-top: 3px solid #CD853F; border-bottom: 2px solid #5C4033;
@@ -109,19 +109,16 @@
 
         /* 第一层大模式菜单[cite: 13] */
         .mode-tabs {
-            display: flex; justify-content: space-between; gap: 6px; padding: 8px 10px 4px 10px;
+            display: flex; justify-content: space-between; gap: 8px; padding: 8px 10px 4px 10px;
             background: #FFFDF9; flex-shrink: 0;
         }
         .mode-btn {
-            flex: 1; padding: 7px 4px; border-radius: 10px; font-size: 12px; font-weight: 900;
+            flex: 1; padding: 7px 4px; border-radius: 10px; font-size: 13px; font-weight: 900;
             border: 2px solid #DEB887; background: #FFF5E1; color: #8B5A2B; cursor: pointer;
             text-align: center; white-space: nowrap; box-shadow: 0 2px 0 #DEB887; transition: all 0.15s;
         }
         .mode-btn.active-scatter {
             background: #3CB371; border-color: #2E8B57; color: #FFF; box-shadow: 0 2px 0 #1E6B37;
-        }
-        .mode-btn.active-suit {
-            background: #FF8C00; border-color: #D2691E; color: #FFF; box-shadow: 0 2px 0 #8B4513;
         }
         .mode-btn.active-archive {
             background: #FF6B81; border-color: #E84158; color: #FFF; box-shadow: 0 2px 0 #C23646;
@@ -129,13 +126,14 @@
 
         /* 第二层胶囊分类标签[cite: 13] */
         .part-pills {
-            display: flex; gap: 6px; padding: 6px 10px; overflow-x: auto; scrollbar-width: none;
-            background: #FFFDF9; border-bottom: 1.5px solid #F0E0CE; flex-shrink: 0;
+            display: flex; gap: 6px; padding: 6px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; background: #FFFDF9; border-bottom: 1.5px solid #F0E0CE; flex-shrink: 0;
         }
         .part-pills::-webkit-scrollbar { display: none; }
         .pill-btn {
             padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 900;
             border: 1.5px solid #DEB887; background: #FFF; color: #8B5A2B; cursor: pointer; white-space: nowrap;
+            flex-shrink: 0;
         }
         .pill-btn.active {
             background: #FF7F00; border-color: #CC6600; color: #FFF;
@@ -145,27 +143,25 @@
         .cards-scroll-container {
             flex: 1; padding: 10px; overflow-x: auto; overflow-y: hidden;
             display: flex; gap: 10px; scrollbar-width: none; align-items: stretch;
+            -webkit-overflow-scrolling: touch;
         }
         .cards-scroll-container::-webkit-scrollbar { display: none; }
         
         .tall-card {
-            width: 86px; flex-shrink: 0; background: #FFF; border: 2px solid #EADBCE; border-radius: 16px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-            cursor: pointer; padding: 10px 4px; box-shadow: 0 3px 0 #E2BA8B; transition: transform 0.1s, border-color 0.15s;
+            width: 82px; flex-shrink: 0; background: #FFF; border: 2px solid #EADBCE; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; padding: 8px 4px; box-shadow: 0 3px 0 #E2BA8B; transition: transform 0.1s, border-color 0.15s;
         }
         .tall-card:active { transform: translateY(2px); box-shadow: none; }
         .tall-card.selected {
             border: 2.5px solid #FF5500; background: #FFF7ED; box-shadow: 0 3px 0 #FF5500;
         }
         .card-icon {
-            font-size: 32px; line-height: 1; display: flex; align-items: center; justify-content: center;
-            width: 48px; height: 48px;
+            width: 60px; height: 70px; display: flex; align-items: center; justify-content: center;
+            position: relative;
         }
         .card-icon img { width: 100%; height: 100%; object-fit: contain; }
-        .card-title {
-            font-size: 11px; font-weight: 900; color: #5C4033; text-align: center;
-            line-height: 1.3; word-break: break-all; padding: 0 2px;
-        }
+        .card-icon svg { width: 100%; height: 100%; }
 
         /* 快捷底栏[cite: 13] */
         #bottom-tools {
@@ -184,12 +180,15 @@
         /* 触屏火花[cite: 13] */
         .touch-sparkle {
             position: fixed; pointer-events: none; z-index: 999999;
-            font-size: 18px; line-height: 1; transform: translate(-50%, -50%);
-            animation: sparklePop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            width: 14px; height: 14px; border-radius: 50%;
+            background: radial-gradient(circle, #FFD700 0%, #FF8C00 100%);
+            box-shadow: 0 0 6px #FFD700;
+            transform: translate(-50%, -50%);
+            animation: sparklePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @keyframes sparklePop {
-            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.6) rotate(0deg); }
-            100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.4) rotate(var(--rot)); }
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
+            100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.3); }
         }
 
         /* 拍立得写真弹窗[cite: 13] */
@@ -286,7 +285,7 @@
         </div>
     </div>
 
-    <!-- 模特展示舞台（已对齐九大部件图层） -->
+    <!-- 模特展示舞台[cite: 13] -->
     <div id="top-stage">
         <canvas id="stage-bg-canvas"></canvas>
         <div id="model-display">
@@ -307,17 +306,16 @@
     <!-- 双层菜单区[cite: 13] -->
     <div id="wardrobe-wrapper">
         <div class="mode-tabs">
-            <div class="mode-btn active-scatter" id="btn-mode-scatter" onclick="switchMainMode('scatter')">👗 散件搭配</div>
-            <div class="mode-btn" id="btn-mode-suit" onclick="switchMainMode('suit')">👑 套装一键换穿</div>
-            <div class="mode-btn" id="btn-mode-archive" onclick="switchMainMode('archive')">💖 私服存档位</div>
+            <div class="mode-btn active-scatter" id="btn-mode-scatter" onclick="switchMainMode('scatter')">散件搭配</div>
+            <div class="mode-btn" id="btn-mode-archive" onclick="switchMainMode('archive')">私服存档位</div>
         </div>
 
         <div class="part-pills" id="part-pills"></div>
         <div class="cards-scroll-container" id="cards-container"></div>
 
         <div id="bottom-tools">
-            <button class="tool-btn btn-random" onclick="randomizeOutfit()">🎲 随机搭配</button>
-            <button class="tool-btn btn-reset" onclick="resetOutfit()">🔄 恢复经典</button>
+            <button class="tool-btn btn-random" onclick="randomizeOutfit()">随机搭配</button>
+            <button class="tool-btn btn-reset" onclick="resetOutfit()">恢复经典</button>
         </div>
     </div>
 </div>
@@ -350,85 +348,92 @@
         }
     }
 
-    /* ========================================================
-       【换装配置池】：完全匹配实际文件夹结构
-       body / face / hair / headwear / maker / pants / shoes / top / accessory[cite: 14]
-       ======================================================== */
     const WARDROBE_PARTS = {
         body: [
-            { id: 'body_1', name: '标准素体', icon: '🧍', img: 'images/body/body_base_01.png', svg: `<circle cx="110" cy="90" r="32" fill="#FBD5B5"/><rect x="102" y="112" width="16" height="18" fill="#E8BD96"/><path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#FBD5B5"/>` },
-            { id: 'body_2', name: '小麦古铜', icon: '💪', img: 'images/body/body_base_02.png', svg: `<circle cx="110" cy="90" r="32" fill="#E2AC7E"/><rect x="102" y="112" width="16" height="18" fill="#C99061"/><path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#E2AC7E"/>` }
+            { id: 'body_base_01', img: 'images/body/body_base_01.png', svg: `<circle cx="110" cy="90" r="32" fill="#FBD5B5"/><rect x="102" y="112" width="16" height="18" fill="#E8BD96"/><path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#FBD5B5"/>` },
+            { id: 'body_base_02', img: 'images/body/body_base_02.png', svg: `<circle cx="110" cy="90" r="32" fill="#F5CBA7"/><rect x="102" y="112" width="16" height="18" fill="#DC9F72"/><path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#F5CBA7"/>` },
+            { id: 'body_base_03', img: 'images/body/body_base_03.png', svg: `<circle cx="110" cy="90" r="32" fill="#E2AC7E"/><rect x="102" y="112" width="16" height="18" fill="#C99061"/><path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#E2AC7E"/>` },
+            { id: 'body_base_04', img: 'images/body/body_base_04.png', svg: `<circle cx="110" cy="90" r="32" fill="#C68A58"/><rect x="102" y="112" width="16" height="18" fill="#A86F3F"/><path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#C68A58"/>` },
+            { id: 'body_base_05', img: 'images/body/body_base_05.png', svg: `<circle cx="110" cy="90" r="32" fill="#FFE0BD"/><rect x="102" y="112" width="16" height="18" fill="#EBC49D"/><path d="M80,126 Q110,130 140,126 L150,195 L70,195 Z" fill="#FFE0BD"/>` }
         ],
         face: [
-            { id: 'face_1', name: '英气坚定', icon: '😊', img: 'images/face/face_01.png', svg: `<circle cx="95" cy="88" r="4" fill="#333"/><circle cx="125" cy="88" r="4" fill="#333"/><path d="M102,104 Q110,112 118,104" stroke="#D2691E" stroke-width="2.5" fill="none"/>` },
-            { id: 'face_2', name: '正气严肃', icon: '😠', img: 'images/face/face_02.png', svg: `<line x1="88" y1="80" x2="102" y2="85" stroke="#333" stroke-width="2.5"/><line x1="132" y1="80" x2="118" y2="85" stroke="#333" stroke-width="2.5"/><circle cx="95" cy="90" r="3.5" fill="#333"/><circle cx="125" cy="90" r="3.5" fill="#333"/><line x1="104" y1="106" x2="116" y2="106" stroke="#C85A17" stroke-width="2.5"/>` },
-            { id: 'face_3', name: '听风辨位', icon: '🕶️', img: 'images/face/face_03.png', svg: `<path d="M85,82 Q110,75 135,82 L138,95 L82,95 Z" fill="#2B2B2B"/><path d="M102,106 Q110,110 118,106" stroke="#8B4513" stroke-width="2" fill="none"/>` },
-            { id: 'face_4', name: '沉着自信', icon: '😎', img: 'images/face/face_04.png', svg: `<circle cx="95" cy="88" r="4" fill="#333"/><circle cx="125" cy="88" r="4" fill="#333"/><path d="M100,102 Q110,116 120,102" stroke="#B83800" stroke-width="2.5" fill="none"/>` }
+            { id: 'face_01', img: 'images/face/face_01.png', svg: `<circle cx="95" cy="88" r="4" fill="#333"/><circle cx="125" cy="88" r="4" fill="#333"/><path d="M102,104 Q110,112 118,104" stroke="#D2691E" stroke-width="2.5" fill="none"/>` },
+            { id: 'face_02', img: 'images/face/face_02.png', svg: `<line x1="88" y1="80" x2="102" y2="85" stroke="#333" stroke-width="2.5"/><line x1="132" y1="80" x2="118" y2="85" stroke="#333" stroke-width="2.5"/><circle cx="95" cy="90" r="3.5" fill="#333"/><circle cx="125" cy="90" r="3.5" fill="#333"/><line x1="104" y1="106" x2="116" y2="106" stroke="#C85A17" stroke-width="2.5"/>` },
+            { id: 'face_03', img: 'images/face/face_03.png', svg: `<path d="M85,82 Q110,75 135,82 L138,95 L82,95 Z" fill="#2B2B2B"/><path d="M102,106 Q110,110 118,106" stroke="#8B4513" stroke-width="2" fill="none"/>` },
+            { id: 'face_04', img: 'images/face/face_04.png', svg: `<circle cx="95" cy="88" r="4" fill="#333"/><circle cx="125" cy="88" r="4" fill="#333"/><path d="M100,102 Q110,116 120,102" stroke="#B83800" stroke-width="2.5" fill="none"/>` },
+            { id: 'face_05', img: 'images/face/face_05.png', svg: `<circle cx="95" cy="88" r="3" fill="#1C1C1C"/><circle cx="125" cy="88" r="3" fill="#1C1C1C"/><line x1="105" y1="105" x2="115" y2="105" stroke="#993D00" stroke-width="2"/>` }
         ],
         maker: [
-            { id: 'maker_none', name: '清爽无妆', icon: '✨', img: '', svg: `` },
-            { id: 'maker_1', name: '战损血痕', icon: '🩸', img: 'images/maker/maker_01.png', svg: `<path d="M88,86 L98,104" stroke="#B22222" stroke-width="2" stroke-linecap="round"/><circle cx="126" cy="100" r="2.5" fill="#B22222"/><path d="M106,128 L114,142" stroke="#8B0000" stroke-width="2.5"/>` },
-            { id: 'maker_2', name: '热血汗渍', icon: '💦', img: 'images/maker/maker_02.png', svg: `<ellipse cx="128" cy="84" rx="2" ry="3.5" fill="#87CEFA"/><ellipse cx="90" cy="96" rx="1.5" ry="3" fill="#87CEFA"/>` }
+            { id: 'maker_none', img: '', svg: `` },
+            { id: 'maker_01', img: 'images/maker/maker_01.png', svg: `<path d="M88,86 L98,104" stroke="#B22222" stroke-width="2" stroke-linecap="round"/><circle cx="126" cy="100" r="2.5" fill="#B22222"/><path d="M106,128 L114,142" stroke="#8B0000" stroke-width="2.5"/>` },
+            { id: 'maker_02', img: 'images/maker/maker_02.png', svg: `<ellipse cx="128" cy="84" rx="2" ry="3.5" fill="#87CEFA"/><ellipse cx="90" cy="96" rx="1.5" ry="3" fill="#87CEFA"/>` },
+            { id: 'maker_03', img: 'images/maker/maker_03.png', svg: `<circle cx="100" cy="98" r="4" fill="#FF7F50" opacity="0.4"/><circle cx="120" cy="98" r="4" fill="#FF7F50" opacity="0.4"/>` },
+            { id: 'maker_04', img: 'images/maker/maker_04.png', svg: `<path d="M120,80 L132,92" stroke="#8B0000" stroke-width="1.8"/>` }
         ],
         hair: [
-            { id: 'hair_1', name: '少林双丸髻', icon: '🍡', img: 'images/hair/hair_01.png', svg: `<path d="M70,75 Q110,25 150,75 Q110,50 70,75 Z" fill="#2B1B17"/><circle cx="68" cy="65" r="9" fill="#2B1B17"/><circle cx="152" cy="65" r="9" fill="#2B1B17"/>` },
-            { id: 'hair_2', name: '硬朗寸头', icon: '👦', img: 'images/hair/hair_02.png', svg: `<path d="M75,70 Q110,38 145,70 Q110,55 75,70 Z" fill="#1C1C1C"/>` },
-            { id: 'hair_3', name: '活力侧扎马尾', icon: '👱', img: 'images/hair/hair_03.png', svg: `<path d="M70,75 Q110,25 150,75 Q110,50 70,75 Z" fill="#2B1B17"/><path d="M145,70 Q180,60 165,115 Q150,90 145,70 Z" fill="#2B1B17"/>` },
-            { id: 'hair_4', name: '武侠红束带长发', icon: '🦱', img: 'images/hair/hair_04.png', svg: `<path d="M65,80 Q110,20 155,80 Q165,135 150,145 Q110,50 70,145 Z" fill="#2B1B17"/><rect x="100" y="45" width="20" height="6" fill="#B22222"/>` }
+            { id: 'hair_01', img: 'images/hair/hair_01.png', svg: `<path d="M70,75 Q110,25 150,75 Q110,50 70,75 Z" fill="#2B1B17"/><circle cx="68" cy="65" r="9" fill="#2B1B17"/><circle cx="152" cy="65" r="9" fill="#2B1B17"/>` },
+            { id: 'hair_02', img: 'images/hair/hair_02.png', svg: `<path d="M75,70 Q110,38 145,70 Q110,55 75,70 Z" fill="#1C1C1C"/>` },
+            { id: 'hair_03', img: 'images/hair/hair_03.png', svg: `<path d="M70,75 Q110,25 150,75 Q110,50 70,75 Z" fill="#2B1B17"/><path d="M145,70 Q180,60 165,115 Q150,90 145,70 Z" fill="#2B1B17"/>` },
+            { id: 'hair_04', img: 'images/hair/hair_04.png', svg: `<path d="M65,80 Q110,20 155,80 Q165,135 150,145 Q110,50 70,145 Z" fill="#2B1B17"/><rect x="100" y="45" width="20" height="6" fill="#B22222"/>` },
+            { id: 'hair_05', img: 'images/hair/hair_05.png', svg: `<path d="M72,68 Q110,30 148,68 Q152,95 142,105 Q110,60 78,105 Z" fill="#1A1110"/>` }
         ],
         top: [
-            { id: 'top_1', name: '洪家练功长袍', icon: '🥋', img: 'images/top/top_01.png', svg: `<path d="M80,120 L140,120 L152,185 L68,185 Z" fill="#F4F0EA"/><path d="M80,120 L110,145 L140,120" stroke="#CD853F" stroke-width="3" fill="none"/><rect x="80" y="150" width="60" height="9" fill="#B22222"/>` },
-            { id: 'top_2', name: '红旗警服夹克', icon: '👮', img: 'images/top/top_02.png', svg: `<path d="M75,120 L145,120 L150,185 L70,185 Z" fill="#2F4F4F"/><polygon points="92,120 110,142 128,120 110,128" fill="#FFF"/><rect x="85" y="158" width="50" height="6" fill="#1C1C1C"/>` },
-            { id: 'top_3', name: '成瞎子黑棉袍', icon: '🧥', img: 'images/top/top_03.png', svg: `<path d="M70,120 L150,120 L158,190 L62,190 Z" fill="#2B2625"/><rect x="78" y="152" width="64" height="12" fill="#8B4513"/>` },
-            { id: 'top_4', name: '深蓝战术背心', icon: '👔', img: 'images/top/top_04.png', svg: `<path d="M78,120 L142,120 L148,185 L72,185 Z" fill="#1E293B"/><line x1="110" y1="120" x2="110" y2="185" stroke="#94A3B8" stroke-width="2.5"/>` }
+            { id: 'top_01', img: 'images/top/top_01.png', svg: `<path d="M80,120 L140,120 L152,185 L68,185 Z" fill="#F4F0EA"/><path d="M80,120 L110,145 L140,120" stroke="#CD853F" stroke-width="3" fill="none"/><rect x="80" y="150" width="60" height="9" fill="#B22222"/>` },
+            { id: 'top_02', img: 'images/top/top_02.png', svg: `<path d="M75,120 L145,120 L150,185 L70,185 Z" fill="#2F4F4F"/><polygon points="92,120 110,142 128,120 110,128" fill="#FFF"/><rect x="85" y="158" width="50" height="6" fill="#1C1C1C"/>` },
+            { id: 'top_03', img: 'images/top/top_03.png', svg: `<path d="M70,120 L150,120 L158,190 L62,190 Z" fill="#2B2625"/><rect x="78" y="152" width="64" height="12" fill="#8B4513"/>` },
+            { id: 'top_04', img: 'images/top/top_04.png', svg: `<path d="M78,120 L142,120 L148,185 L72,185 Z" fill="#1E293B"/><line x1="110" y1="120" x2="110" y2="185" stroke="#94A3B8" stroke-width="2.5"/>` },
+            { id: 'top_05', img: 'images/top/top_05.png', svg: `<path d="M78,120 L142,120 L146,182 L74,182 Z" fill="#4B5563"/><rect x="96" y="135" width="28" height="30" rx="3" fill="#374151"/>` }
         ],
         pants: [
-            { id: 'pants_1', name: '绑腿白练功裤', icon: '👖', img: 'images/pants/pants_01.png', svg: `<path d="M85,182 L135,182 L142,230 L114,230 L110,195 L106,230 L78,230 Z" fill="#EAE5DE"/>` },
-            { id: 'pants_2', name: '特勤黑色长裤', icon: '🩳', img: 'images/pants/pants_02.png', svg: `<path d="M84,182 L136,182 L140,230 L114,230 L110,195 L106,230 L80,230 Z" fill="#1E1E1E"/>` },
-            { id: 'pants_3', name: '布衣游侠宽裤', icon: '🟤', img: 'images/pants/pants_03.png', svg: `<path d="M82,182 L138,182 L144,230 L115,230 L110,195 L105,230 L76,230 Z" fill="#3D322C"/>` }
+            { id: 'pants_01', img: 'images/pants/pants_01.png', svg: `<path d="M85,182 L135,182 L142,230 L114,230 L110,195 L106,230 L78,230 Z" fill="#EAE5DE"/>` },
+            { id: 'pants_02', img: 'images/pants/pants_02.png', svg: `<path d="M84,182 L136,182 L140,230 L114,230 L110,195 L106,230 L80,230 Z" fill="#1E1E1E"/>` },
+            { id: 'pants_03', img: 'images/pants/pants_03.png', svg: `<path d="M82,182 L138,182 L144,230 L115,230 L110,195 L105,230 L76,230 Z" fill="#3D322C"/>` },
+            { id: 'pants_04', img: 'images/pants/pants_04.png', svg: `<path d="M84,182 L136,182 L138,228 L114,228 L110,195 L106,228 L82,228 Z" fill="#374151"/>` },
+            { id: 'pants_05', img: 'images/pants/pants_05.png', svg: `<path d="M84,182 L136,182 L140,228 L114,228 L110,195 L106,228 L80,228 Z" fill="#4A5568"/>` }
         ],
         shoes: [
-            { id: 'shoes_1', name: '少林十方踏云鞋', icon: '👞', img: 'images/shoes/shoes_01.png', svg: `<ellipse cx="88" cy="235" rx="12" ry="6" fill="#1C1C1C"/><ellipse cx="132" cy="235" rx="12" ry="6" fill="#1C1C1C"/>` },
-            { id: 'shoes_2', name: '耐磨战术作战靴', icon: '🥾', img: 'images/shoes/shoes_02.png', svg: `<rect x="76" y="226" width="22" height="14" rx="4" fill="#333"/><rect x="122" y="226" width="22" height="14" rx="4" fill="#333"/>` }
+            { id: 'shoes_01', img: 'images/shoes/shoes_01.png', svg: `<ellipse cx="88" cy="235" rx="12" ry="6" fill="#1C1C1C"/><ellipse cx="132" cy="235" rx="12" ry="6" fill="#1C1C1C"/>` },
+            { id: 'shoes_02', img: 'images/shoes/shoes_02.png', svg: `<rect x="76" y="226" width="22" height="14" rx="4" fill="#333"/><rect x="122" y="226" width="22" height="14" rx="4" fill="#333"/>` },
+            { id: 'shoes_03', img: 'images/shoes/shoes_03.png', svg: `<rect x="78" y="228" width="20" height="12" rx="3" fill="#8B4513"/><rect x="122" y="228" width="20" height="12" rx="3" fill="#8B4513"/>` },
+            { id: 'shoes_04', img: 'images/shoes/shoes_04.png', svg: `<ellipse cx="88" cy="235" rx="12" ry="6" fill="#F5F5F5" stroke="#999"/><ellipse cx="132" cy="235" rx="12" ry="6" fill="#F5F5F5" stroke="#999"/>` },
+            { id: 'shoes_05', img: 'images/shoes/shoes_05.png', svg: `<rect x="76" y="226" width="22" height="14" rx="3" fill="#1A202C"/><rect x="122" y="226" width="22" height="14" rx="3" fill="#1A202C"/>` }
         ],
         headwear: [
-            { id: 'head_none', name: '不戴头饰', icon: '❌', img: '', svg: `` },
-            { id: 'head_1', name: '游侠防风斗笠', icon: '👒', img: 'images/headwear/head_01.png', svg: `<ellipse cx="110" cy="55" rx="55" ry="14" fill="#C29B38" stroke="#8A6818" stroke-width="2"/>` },
-            { id: 'head_2', name: '红旗警官大檐帽', icon: '🧢', img: 'images/headwear/head_02.png', svg: `<ellipse cx="110" cy="62" rx="36" ry="12" fill="#2F4F4F"/><circle cx="110" cy="60" r="4" fill="#FFD700"/>` }
+            { id: 'headwear_none', img: '', svg: `` },
+            { id: 'headwear_01', img: 'images/headwear/headwear_01.png', svg: `<ellipse cx="110" cy="55" rx="55" ry="14" fill="#C29B38" stroke="#8A6818" stroke-width="2"/>` },
+            { id: 'headwear_02', img: 'images/headwear/headwear_02.png', svg: `<ellipse cx="110" cy="62" rx="36" ry="12" fill="#2F4F4F"/><circle cx="110" cy="60" r="4" fill="#FFD700"/>` },
+            { id: 'headwear_03', img: 'images/headwear/headwear_03.png', svg: `<path d="M80,68 Q110,60 140,68" stroke="#B22222" stroke-width="4" fill="none"/>` },
+            { id: 'headwear_04', img: 'images/headwear/headwear_04.png', svg: `<ellipse cx="110" cy="60" rx="35" ry="10" fill="#1A202C"/>` }
         ],
         accessory: [
-            { id: 'acc_none', name: '无手持物', icon: '✋', img: '', svg: `` },
-            { id: 'acc_1', name: '夺命少林银枪', icon: '🗡️', img: 'images/accessory/acc_01.png', svg: `<line x1="68" y1="35" x2="68" y2="230" stroke="#C0C0C0" stroke-width="4"/><polygon points="62,35 74,35 68,10" fill="#DC143C"/>` },
-            { id: 'acc_2', name: '听风佩刀', icon: '⚔️', img: 'images/accessory/acc_02.png', svg: `<path d="M152,55 Q160,130 148,210 L144,205 Q155,130 148,55 Z" fill="#4682B4"/>` },
-            { id: 'acc_3', name: '特勤手铐钥匙', icon: '🗝️', img: 'images/accessory/acc_03.png', svg: `<circle cx="152" cy="160" r="8" stroke="#708090" stroke-width="3" fill="none"/><line x1="152" y1="168" x2="152" y2="182" stroke="#708090" stroke-width="3"/>` }
+            { id: 'acc_none', img: '', svg: `` },
+            { id: 'accessory_01', img: 'images/accessory/accessory_01.png', svg: `<line x1="68" y1="35" x2="68" y2="230" stroke="#C0C0C0" stroke-width="4"/><polygon points="62,35 74,35 68,10" fill="#DC143C"/>` },
+            { id: 'accessory_02', img: 'images/accessory/accessory_02.png', svg: `<path d="M152,55 Q160,130 148,210 L144,205 Q155,130 148,55 Z" fill="#4682B4"/>` },
+            { id: 'accessory_03', img: 'images/accessory/accessory_03.png', svg: `<circle cx="152" cy="160" r="8" stroke="#708090" stroke-width="3" fill="none"/><line x1="152" y1="168" x2="152" y2="182" stroke="#708090" stroke-width="3"/>` },
+            { id: 'accessory_04', img: 'images/accessory/accessory_04.png', svg: `<rect x="142" y="160" width="22" height="16" rx="3" fill="#4A5568"/>` }
         ]
     };
 
-    // 套装数据池
-    const SUITS_DATA = [
-        { id: 'suit_1', name: '新少林五祖·文定', icon: '🥋', body: 'body_1', hair: 'hair_1', face: 'face_1', maker: 'maker_none', top: 'top_1', pants: 'pants_1', shoes: 'shoes_1', headwear: 'head_none', acc: 'acc_1' },
-        { id: 'suit_2', name: '东北警察·李红旗', icon: '👮', body: 'body_1', hair: 'hair_2', face: 'face_2', maker: 'maker_2', top: 'top_2', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_2', acc: 'acc_3' },
-        { id: 'suit_3', name: '目中无人·成瞎子', icon: '🦯', body: 'body_1', hair: 'hair_3', face: 'face_3', maker: 'maker_1', top: 'top_3', pants: 'pants_3', shoes: 'shoes_1', headwear: 'head_1', acc: 'acc_2' },
-        { id: 'suit_4', name: '缉恶·黄铭金', icon: '🕶️', body: 'body_2', hair: 'hair_4', face: 'face_4', maker: 'maker_none', top: 'top_4', pants: 'pants_2', shoes: 'shoes_2', headwear: 'head_none', acc: 'acc_none' }
-    ];
-
-    let currentDress = {
-        body: 'body_1',
-        hair: 'hair_1',
-        face: 'face_1',
+    /* 经典默认搭配配置：完全不带任何外加妆容和手持配饰 */
+    const DEFAULT_DRESS = {
+        body: 'body_base_01',
+        face: 'face_01',
         maker: 'maker_none',
-        top: 'top_1',
-        pants: 'pants_1',
-        shoes: 'shoes_1',
-        headwear: 'head_none',
-        accessory: 'acc_1'
+        hair: 'hair_01',
+        top: 'top_01',
+        headwear: 'headwear_01',
+        pants: 'pants_01',
+        shoes: 'shoes_01',
+        accessory: 'acc_none'
     };
+
+    // 初始点开即为该纯净经典搭配
+    let currentDress = { ...DEFAULT_DRESS };
 
     let mainMode = 'scatter'; 
     let activePart = 'body';
     let bgmEnabled = true;
 
-    // 分类胶囊标签已加入【素体】与【妆容】[cite: 13]
     const partLabels = [
         { key: 'body', label: '素体' },
         { key: 'maker', label: '妆容' },
@@ -459,11 +464,11 @@
             if (bgmEnabled) {
                 bgmAudio.play().catch(()=>{});
                 bgmBtn.innerText = '🎵';
-                showToast('🎵 苗哥背景音乐已开启');
+                showToast('背景音乐已开启');
             } else {
                 bgmAudio.pause();
                 bgmBtn.innerText = '🔇';
-                showToast('🔇 背景音乐已静音');
+                showToast('背景音乐已静音');
             }
             playCuteSound('pop');
         });
@@ -483,7 +488,7 @@
         const mask = document.getElementById('intro-mask');
         mask.style.opacity = '0';
         setTimeout(() => mask.style.display = 'none', 350);
-        showToast('✨ 欢迎来到苗哥的衣橱！');
+        showToast('欢迎来到苗哥的衣橱');
     }
 
     function initStageCanvas() {
@@ -504,26 +509,22 @@
     }
 
     function spawnTouchSparkle(e) {
-        const icons = ['✨', '⭐', '🌟', '💖', '🎈'];
         const star = document.createElement('div');
         star.className = 'touch-sparkle';
-        star.innerText = icons[Math.floor(Math.random() * icons.length)];
         const x = e.clientX || (e.touches && e.touches[0].clientX);
         const y = e.clientY || (e.touches && e.touches[0].clientY);
         star.style.left = `${x}px`;
         star.style.top = `${y}px`;
         star.style.setProperty('--dx', `${(Math.random() - 0.5) * 50}px`);
         star.style.setProperty('--dy', `${-20 - Math.random() * 40}px`);
-        star.style.setProperty('--rot', `${(Math.random() - 0.5) * 60}deg`);
         document.body.appendChild(star);
-        setTimeout(() => star.remove(), 600);
+        setTimeout(() => star.remove(), 500);
     }
 
     function switchMainMode(mode) {
         mainMode = mode;
         playCuteSound('tap');
         document.getElementById('btn-mode-scatter').className = `mode-btn ${mode === 'scatter' ? 'active-scatter' : ''}`;
-        document.getElementById('btn-mode-suit').className = `mode-btn ${mode === 'suit' ? 'active-suit' : ''}`;
         document.getElementById('btn-mode-archive').className = `mode-btn ${mode === 'archive' ? 'active-archive' : ''}`;
 
         const pillsWrap = document.getElementById('part-pills');
@@ -549,6 +550,13 @@
         });
     }
 
+    function renderCardIconContent(item) {
+        if (item && item.img) {
+            return `<img src="${item.img}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block';"><svg viewBox="0 0 220 260" width="100%" height="100%" style="display:none;">${item.svg}</svg>`;
+        }
+        return `<svg viewBox="0 0 220 260" width="100%" height="100%">${item ? item.svg : ''}</svg>`;
+    }
+
     function renderCardsView() {
         const container = document.getElementById('cards-container');
         container.innerHTML = '';
@@ -559,66 +567,40 @@
                 const card = document.createElement('div');
                 const isSel = currentDress[activePart] === item.id;
                 card.className = `tall-card ${isSel ? 'selected' : ''}`;
-                card.innerHTML = `
-                    <div class="card-icon">${item.icon}</div>
-                    <div class="card-title">${item.name}</div>
-                `;
+                card.innerHTML = `<div class="card-icon">${renderCardIconContent(item)}</div>`;
                 card.onclick = () => {
                     playCuteSound('dress');
                     currentDress[activePart] = item.id;
-                    showToast(`已装扮：${item.name}`);
-                    updateModelDisplay();
-                    renderCardsView();
-                };
-                container.appendChild(card);
-            });
-        } else if (mainMode === 'suit') {
-            SUITS_DATA.forEach(suit => {
-                const card = document.createElement('div');
-                const isSel = currentDress.top === suit.top && currentDress.hair === suit.hair;
-                card.className = `tall-card ${isSel ? 'selected' : ''}`;
-                card.innerHTML = `
-                    <div class="card-icon">${suit.icon}</div>
-                    <div class="card-title">${suit.name}</div>
-                `;
-                card.onclick = () => {
-                    playCuteSound('fanfare');
-                    currentDress.body = suit.body || 'body_1';
-                    currentDress.hair = suit.hair;
-                    currentDress.face = suit.face;
-                    currentDress.maker = suit.maker || 'maker_none';
-                    currentDress.top = suit.top;
-                    currentDress.pants = suit.pants;
-                    currentDress.shoes = suit.shoes;
-                    currentDress.headwear = suit.headwear;
-                    currentDress.accessory = suit.acc;
-                    showToast(`✨ 一键换上【${suit.name}】全套！`);
                     updateModelDisplay();
                     renderCardsView();
                 };
                 container.appendChild(card);
             });
         } else if (mainMode === 'archive') {
-            const saves = JSON.parse(localStorage.getItem('miao_closet_saves') || '[null,null,null,null]');
-            for (let i = 0; i < 4; i++) {
+            const saves = JSON.parse(localStorage.getItem('miao_closet_saves') || '[null,null,null,null,null]');
+            for (let i = 0; i < 5; i++) {
                 const card = document.createElement('div');
                 const hasSave = saves[i] !== null;
                 card.className = `tall-card ${hasSave ? 'selected' : ''}`;
-                card.innerHTML = `
-                    <div class="card-icon">${hasSave ? '💖' : '➕'}</div>
-                    <div class="card-title">${hasSave ? `私服槽位 ${i+1}<br><span style="font-size:9px;color:#3CB371;">点击穿上</span>` : `存入槽位 ${i+1}`}</div>
-                `;
+                
+                if (hasSave) {
+                    const topObj = WARDROBE_PARTS.top.find(t => t.id === saves[i].top);
+                    card.innerHTML = `<div class="card-icon">${renderCardIconContent(topObj)}</div>`;
+                } else {
+                    card.innerHTML = `<div class="card-icon" style="color:#C4A480;font-size:24px;font-weight:900;">+</div>`;
+                }
+
                 card.onclick = () => {
                     if (hasSave) {
                         playCuteSound('dress');
                         currentDress = { ...saves[i] };
                         updateModelDisplay();
-                        showToast(`💖 已穿上私服存档 ${i+1}！`);
+                        showToast(`已穿上存档 ${i+1}`);
                     } else {
                         playCuteSound('fanfare');
                         saves[i] = { ...currentDress };
                         localStorage.setItem('miao_closet_saves', JSON.stringify(saves));
-                        showToast(`💾 当前穿搭已存入槽位 ${i+1}！`);
+                        showToast(`穿搭已存入槽位 ${i+1}`);
                         renderCardsView();
                     }
                 };
@@ -673,9 +655,9 @@
         playCuteSound('fanfare');
         const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
         currentDress.body = rand(WARDROBE_PARTS.body).id;
+        currentDress.maker = rand(WARDROBE_PARTS.maker).id;
         currentDress.hair = rand(WARDROBE_PARTS.hair).id;
         currentDress.face = rand(WARDROBE_PARTS.face).id;
-        currentDress.maker = rand(WARDROBE_PARTS.maker).id;
         currentDress.top = rand(WARDROBE_PARTS.top).id;
         currentDress.pants = rand(WARDROBE_PARTS.pants).id;
         currentDress.shoes = rand(WARDROBE_PARTS.shoes).id;
@@ -683,25 +665,16 @@
         currentDress.accessory = rand(WARDROBE_PARTS.accessory).id;
         updateModelDisplay();
         renderCardsView();
-        showToast('🎲 灵感爆发！随机穿搭完毕！');
+        showToast('随机穿搭搞定');
     }
 
+    // 严格重置为无妆容、无外加配饰的纯净经典造型
     function resetOutfit() {
         playCuteSound('pop');
-        currentDress = {
-            body: 'body_1',
-            hair: 'hair_1',
-            face: 'face_1',
-            maker: 'maker_none',
-            top: 'top_1',
-            pants: 'pants_1',
-            shoes: 'shoes_1',
-            headwear: 'head_none',
-            accessory: 'acc_1'
-        };
+        currentDress = { ...DEFAULT_DRESS };
         updateModelDisplay();
         renderCardsView();
-        showToast('🔄 已恢复经典少林造型');
+        showToast('已恢复经典造型');
     }
 
     /* 离屏合成绘制 1:1 图片，支持原生保存[cite: 1, 6, 7] */
@@ -714,7 +687,7 @@
     function updatePhotoWithID() {
         playCuteSound('tap');
         renderCanvasToImage();
-        showToast('✅ 搭配师署名已更新');
+        showToast('搭配师署名已更新');
     }
 
     function renderCanvasToImage() {
@@ -783,7 +756,7 @@
         drawCuteTape(frameX + 16, frameY + 16, -26);
         drawCuteTape(frameX + frameSize - 16, frameY + 16, 26);
 
-        // 5. 组合当前全部九层装扮矢量图
+        // 5. 组合当前装扮矢量图[cite: 7]
         const findSvg = (list, id) => {
             const obj = list.find(item => item.id === id);
             return obj ? obj.svg : '';
@@ -865,10 +838,10 @@
             ctx.font = '900 14px -apple-system, sans-serif';
             ctx.fillStyle = '#CD853F';
             ctx.textAlign = 'center';
-            ctx.fillText('· 截图或长按保存图片 ·', S / 2, 672);
+            ctx.fillText('长按保存图片', S / 2, 672);
             ctx.restore();
 
-            // 8. 核心输出：转为真实 Base64 PNG 注入 <img>[cite: 1, 6]
+            // 8. 导出 Base64 到原生 <img>[cite: 1, 6]
             const photoUrl = cvs.toDataURL('image/png');
             const targetImg = document.getElementById('final-photo-img');
             targetImg.src = photoUrl;
